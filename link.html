@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Bewerbungslink</title>
+<title>Application Link</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Literata:opsz,wght@7..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -20,41 +20,39 @@
 <body>
 <main>
   <section class="builder" aria-labelledby="h">
-    <p class="kicker">Nur für mich</p>
-    <h2 id="h">Bewerbungslink erstellen</h2>
-    <p class="lead">Der Link begrüßt die Firma oder den Ansprechpartner, nennt die Stelle und öffnet die Seite im passenden Blickwinkel. Diese Seite ist nicht verlinkt und wird von Suchmaschinen ignoriert.</p>
+    <p class="kicker">For me only</p>
+    <h2 id="h">Create an application link</h2>
+    <p class="lead">The link greets the company or contact person, names the role and opens the page in the matching lens. This page is not linked anywhere and search engines ignore it.</p>
     <form id="f">
-      <label for="firma">Firma</label><input type="text" id="firma" placeholder="z. B. Porsche AG">
-      <label for="an">Ansprechpartner (mit Anrede)</label><input type="text" id="an" placeholder="z. B. Frau Müller">
-      <label for="rolle">Stelle</label><input type="text" id="rolle" placeholder="z. B. Senior Cyber Security Engineer">
-      <label for="fokus">Blickwinkel</label>
+      <label for="firma">Company</label><input type="text" id="firma" placeholder="e.g. Porsche AG">
+      <label for="an">Contact person</label><input type="text" id="an" placeholder="e.g. Ms. Müller">
+      <label for="rolle">Role</label><input type="text" id="rolle" placeholder="e.g. Senior Cyber Security Engineer">
+      <label for="fokus">Lens</label>
       <select id="fokus">
-        <option value="">Gesamtbild</option>
+        <option value="">Full picture</option>
         <option value="sec">Cyber Security</option>
-        <option value="arch">Architekt</option>
-        <option value="e2e">Solution Manager</option>
-        <option value="pm">Projektleitung</option>
+        <option value="arch">Architect</option>
+        <option value="e2e">Solution manager</option>
+        <option value="pm">Project lead</option>
       </select>
-      <label for="lang">Sprache</label>
-      <select id="lang"><option value="de">Deutsch</option><option value="en">English</option></select>
     </form>
     <div class="out">
-      <p class="lbl">Ihr Link</p>
+      <p class="lbl">Your link</p>
       <code id="url"></code>
       <div class="row">
-        <button class="btn" type="button" id="copy">Link kopieren</button>
-        <a class="btn ghost" id="open" href="./" target="_blank" rel="noopener">Vorschau öffnen</a>
+        <button class="btn" type="button" id="copy">Copy link</button>
+        <a class="btn ghost" id="open" href="./" target="_blank" rel="noopener">Open preview</a>
       </div>
     </div>
   </section>
 </main>
 <script>
 (() => {
-  const ids = ["firma", "an", "rolle", "fokus", "lang"];
+  const ids = ["firma", "an", "rolle", "fokus"];
   const base = location.href.replace(/link\.html.*$/, "");
   const build = () => {
     const p = new URLSearchParams();
-    ids.forEach(id => { const v = document.getElementById(id).value.trim(); if (v && !(id === "lang" && v === "de")) p.set(id, v); });
+    ids.forEach(id => { const v = document.getElementById(id).value.trim(); if (v) p.set(id, v); });
     const url = base + (p.toString() ? "?" + p.toString() : "");
     document.getElementById("url").textContent = url;
     document.getElementById("open").href = url;
@@ -64,7 +62,7 @@
   document.getElementById("f").addEventListener("submit", e => e.preventDefault());
   document.getElementById("copy").addEventListener("click", e => {
     const b = e.currentTarget, url = build();
-    const ok = () => { b.textContent = "Kopiert"; setTimeout(() => b.textContent = "Link kopieren", 1500); };
+    const ok = () => { b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy link", 1500); };
     (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(ok).catch(() => {
       const r = document.createRange(); r.selectNodeContents(document.getElementById("url"));
       const s = getSelection(); s.removeAllRanges(); s.addRange(r);

@@ -6,76 +6,13 @@
   const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   const reEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const store = {
-    get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
-    set(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* ignore */ } }
-  };
-  const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(location.search);
 
   /* ---------------- language ---------------- */
-  let lang = params.get("lang") || store.get("lang") || "de";
-  if (!["de", "en"].includes(lang)) lang = "de";
-  const t = v => (v && typeof v === "object" && !Array.isArray(v) && ("de" in v || "en" in v)) ? (v[lang] ?? v.de) : v;
+  const lang = "en";
+  const t = v => (v && typeof v === "object" && !Array.isArray(v) && ("de" in v || "en" in v)) ? (v.en ?? v.de) : v;
 
   const UI = {
-    de: {
-      skip: "Zum Fit-Check springen", "nav.fit": "Fit-Check", "nav.path": "Werdegang", "nav.tree": "Profil", "nav.twin": "Fragen", "nav.contact": "Kontakt",
-      "lens.prompt": "Lebenslauf ansehen als", "lens.all": "Gesamtbild",
-      "fit.kicker": "Für Recruiter", "fit.title": "Passt Engin zu Ihrer Stelle?",
-      "fit.lead": "Fügen Sie eine Stellenanzeige ein. Die Seite vergleicht sie mit dem Lebenslauf, markiert Treffer, zeigt ehrlich, was nicht passt, und schreibt ein Kurzprofil für genau diese Stelle. Alles läuft in Ihrem Browser, nichts wird übertragen.",
-      "fit.label": "Stellenanzeige", "fit.run": "Passung prüfen", "fit.sample1": "Beispiel: Security", "fit.sample2": "Beispiel: Projektleitung",
-      "fit.ph": "Stellenanzeige hier einfügen, zum Beispiel aus StepStone, LinkedIn oder Ihrer Karriereseite.",
-      "fit.empty.t": "Was Sie in wenigen Sekunden bekommen",
-      "fit.empty.1": "Einen Passungswert von 0 bis 100 mit Aufschlüsselung nach den vier Kompetenzsäulen",
-      "fit.empty.2": "Ihre Anzeige mit markierten Treffern und ehrlich markierten Lücken",
-      "fit.empty.3": "Ein Kurzprofil, das Engins Erfahrung auf Ihre Anforderungen abbildet",
-      "fit.short": "Bitte fügen Sie eine längere Stellenanzeige ein, mindestens ein paar Sätze.",
-      "fit.none": "Keine Überschneidung mit diesem Lebenslauf gefunden. Entweder liegt die Stelle außerhalb meines Profils, oder die Anzeige nutzt ganz andere Begriffe. Schreiben Sie mir gern direkt.",
-      "fit.scoreOf": "von 100", "fit.v4": "Starke Passung", "fit.v3": "Gute Passung", "fit.v2": "Teilweise Passung", "fit.v1": "Geringe Passung",
-      "fit.matches": n => `${n} Anforderungen erkannt, die im Lebenslauf belegt sind`,
-      "fit.strong": "Hier bin ich stark", "fit.solid": "Hier bin ich solide", "fit.gaps": "Nicht mein Schwerpunkt", "fit.nogaps": "In dieser Anzeige nichts gefunden",
-      "fit.hl": "Ihre Anzeige mit markierten Treffern",
-      "fit.letter": "Kurzprofil für diese Stelle", "fit.letterNote": "Automatisch aus Ihrer Anzeige und den Fakten dieser Seite erstellt, direkt in Ihrem Browser.",
-      "fit.copy": "Text kopieren", "fit.copied": "Kopiert", "fit.method": "Methode: Die Seite sucht Fachbegriffe aus dem Lebenslauf in der Anzeige, gewichtet sie mit meiner Selbsteinschätzung und zieht für jede Anforderung ab, die ich nicht abdecke. Ein schnelles Signal für ein Gespräch, kein Urteil.",
-      "pil.kicker": "Kompetenz", "pil.title": "Vier Säulen, eine Person",
-      "pil.lead": "Tippen Sie auf eine Säule oder eine Fähigkeit. Die Punkte sind meine eigene Einschätzung auf der Skala des Lebenslaufs, 1 bis 4.",
-      "pil.pick": "Wählen Sie eine Fähigkeit, um den Nachweis zu sehen.", "pil.level": (l) => `Stufe ${l} von 4`,
-      "path.kicker": "Werdegang", "path.title": "23 Jahre auf einen Blick", "path.lead": "Jeder Balken ist eine Station. Tippen Sie darauf, um zu den Details zu springen.",
-      "type.job": "Beruf", "type.practice": "Praxis & Abschlussarbeiten", "type.edu": "Ausbildung & Studium", "type.all": "Alle",
-      "now": "heute", "yrs": (y, m) => [y ? `${y} J.` : "", m ? `${m} Mon.` : ""].filter(Boolean).join(" "),
-      "st.kicker": "Bildungsweg", "st.title": "Von 1994 an, Stufe für Stufe", "st.lead": "Keine Abkürzung, jede Stufe einzeln genommen. Tippen Sie auf eine Stufe.",
-      "tree.kicker": "Profil", "tree.title": "Eine Mischung aus „Mechie“ und „Techi“",
-      "tree.lead": "Management und Technik wachsen aus demselben Fundament. Tippen Sie auf eine Stufe, um die zugehörigen Nachweise zu sehen.",
-      "tree.mechie": "„Mechie“", "tree.mechieSub": "Management", "tree.techi": "„Techi“", "tree.techiSub": "Technik",
-      "tree.certs": "Nachweise", "tree.nocerts": "Belegt durch die Berufspraxis im Werdegang.", "tree.lens": "Seite aus diesem Blickwinkel zeigen",
-      "tree.pick": "Tippen Sie auf eine Stufe im Baum.",
-      "tr.kicker": "Weiterbildung", "tr.title": "Zertifikate und Trainings", "tr.cert": "Zertifikat",
-      "lang.title": "Sprachen", "char.title": "Persönlich", "proj.title": "Eigene Projekte", "interests": "Interessen: ",
-      "twin.kicker": "Digitaler Zwilling", "twin.title": "Fragen Sie mich etwas",
-      "twin.lead": "Der Zwilling antwortet nur mit Fakten aus diesem Lebenslauf. Was er nicht weiß, sagt er.",
-      "twin.label": "Ihre Frage", "twin.send": "Fragen", "twin.ph": "Zum Beispiel: Bist du eher Manager oder Techniker?",
-      "twin.hello": "Hallo, ich bin Engins digitaler Zwilling. Fragen Sie mich zu Erfahrung, Projekten, Zertifikaten oder Bildungsweg.",
-      "twin.gap": term => `${term} gehört nicht zu meinen Schwerpunkten, und das sage ich lieber offen. Ich arbeite mich schnell ein, mein Weg vom Bürokaufmann zum Cyber Security Engineer zeigt das.`,
-      "twin.unknown": "Dazu habe ich keine gesicherte Antwort im Lebenslauf. Fragen Sie Engin am besten direkt: engincelenk@web.de.",
-      "twin.source": "Aus den Fakten dieser Seite", "twin.ai": "Von einem Sprachmodell aus den Fakten dieser Seite formuliert",
-      "mk.kicker": "Hinter der Seite", "mk.title": "So ist diese Bewerbung entstanden",
-      "mk.lead": "Diese Seite ist selbst eine Arbeitsprobe: Sie zeigt, wie ich KI einsetze, um aus vorhandenem Material schnell etwas Nützliches zu machen.",
-      "ct.kicker": "Kontakt", "ct.title": "Lassen Sie uns sprechen", "ct.lead": "Offen für Rollen in Cyber Security, Solution-Architektur, Solution Management und IT-Projektleitung.",
-      "ct.mail": "E-Mail", "ct.phone": "Telefon", "ct.show": "Nummer anzeigen", "ct.vcard": "Visitenkarte", "ct.vcardBtn": "Kontakt speichern (.vcf)",
-      "ct.share": "Diese Seite", "ct.shareBtn": "Link kopieren", "ct.write": "E-Mail schreiben", "ct.call": "Anrufen",
-      "foot": "Gebaut mit HTML, CSS, JavaScript und KI. Keine Cookies, kein Tracking.",
-      "facts.years": "Jahre Konzern-IT", "facts.corps": "Konzerne: Bosch, Daimler, TRUMPF", "facts.grade": "Master-Note, mit Fakultätspreis", "facts.langs": "Sprachen",
-      "now.role": "Aktuell Cyber Security Engineer bei Bosch Digital",
-      "welcome": (an, firma, rolle) => {
-        const hi = an ? `Guten Tag ${an},` : (firma ? `Hallo ${firma}-Team,` : "Willkommen,");
-        const what = rolle ? ` diese Seite ist für die Position „${rolle}“${firma ? ` bei ${firma}` : ""} vorbereitet.` : (firma ? ` schön, dass Sie da sind. Diese Seite ist für ${firma} vorbereitet.` : " schön, dass Sie da sind.");
-        return hi + what + " Fügen Sie Ihre Anzeige unten in den Fit-Check ein.";
-      },
-      "letter.subject": r => `Bewerbung als ${r}`, "letter.hello": an => an ? `Guten Tag ${an},` : "Sehr geehrte Damen und Herren,",
-      "letter.open": (r, f, y) => `Ihre Anzeige für die Position ${r}${f ? ` bei ${f}` : ""} beschreibt vieles, was ich seit ${y} Jahren in der Konzern-IT von Bosch, Daimler und TRUMPF mache. Diese Anforderungen aus Ihrer Anzeige bringe ich direkt mit:`,
-      "letter.gap": g => `Offen gesagt: ${g} gehört nicht zu meinen Schwerpunkten. Ich arbeite mich schnell ein, mein Weg vom Bürokaufmann zum Cyber Security Engineer zeigt das.`,
-      "letter.close": "Ich freue mich auf ein Gespräch.", "letter.role": "diese Stelle"
-    },
     en: {
       skip: "Skip to fit check", "nav.fit": "Fit check", "nav.path": "Career", "nav.tree": "Profile", "nav.twin": "Ask", "nav.contact": "Contact",
       "lens.prompt": "View this CV as", "lens.all": "Full picture",
@@ -135,7 +72,7 @@
       "letter.close": "I look forward to talking.", "letter.role": "this"
     }
   };
-  const u = (k, ...a) => { const v = UI[lang][k] ?? UI.de[k]; return typeof v === "function" ? v(...a) : v; };
+  const u = (k, ...a) => { const v = UI.en[k]; return typeof v === "function" ? v(...a) : v; };
 
   /* ---------------- personalisation via link ---------------- */
   const clean = s => (s || "").replace(/[<>]/g, "").trim().slice(0, 80);
@@ -164,13 +101,12 @@
   function applyUI() {
     document.documentElement.lang = lang;
     $$("[data-i18n]").forEach(n => { n.textContent = u(n.dataset.i18n); });
-    $$(".langswitch button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
     $("#jd").placeholder = u("fit.ph");
     $("#q").placeholder = u("twin.ph");
     $("#year").textContent = "© " + new Date().getFullYear();
-    $("#path h2").textContent = lang === "de" ? `${Math.ceil(nowYM() - 2003)} Jahre auf einen Blick` : `${Math.ceil(nowYM() - 2003)} years at a glance`;
+    $("#path h2").textContent = `${Math.ceil(nowYM() - 2003)} years at a glance`;
     $("#nowrole").textContent = u("now.role");
-    $("#hero-eyebrow").textContent = `${t(P.location)} · ${lang === "de" ? "M.Sc. Wirtschaftsinformatik" : "M.Sc. Business Informatics"}`;
+    $("#hero-eyebrow").textContent = `${t(P.location)} · M.Sc. Business Informatics`;
     const w = $("#welcome");
     if (who.firma || who.an || who.rolle) { w.hidden = false; w.textContent = u("welcome", who.an, who.firma, who.rolle); }
   }
@@ -199,7 +135,7 @@
     s.textContent = t(lens.sub);
 
     const f = $("#facts");
-    const items = [[yearsIT, "+", u("facts.years")], [3, "", u("facts.corps")], [lang === "de" ? "1,7" : "1.7", "", u("facts.grade")], [P.languages.length, "", u("facts.langs")]];
+    const items = [[yearsIT, "+", u("facts.years")], [3, "", u("facts.corps")], ["1.7", "", u("facts.grade")], [P.languages.length, "", u("facts.langs")]];
     f.innerHTML = items.map(([n, suf, l]) => `<div><dt data-n="${esc(n)}">${esc(n)}${suf}</dt><dd>${esc(l)}</dd></div>`).join("");
   }
   function countUp() {
@@ -222,14 +158,6 @@
 
   /* ================= fit check ================= */
   const SAMPLES = {
-    de: [
-      `Cyber Security Engineer (m/w/d) Digital Business
-Sie verantworten die Sicherheit unserer digitalen Produkte von der Konzeption bis zum Betrieb. Sie erstellen Bedrohungs- und Risikoanalysen (TARA nach ISO/SAE 21434), definieren Sicherheitsanforderungen und begleiten Architekturentscheidungen im Sinne von Security by Design.
-Sie arbeiten eng mit Solution Architects, Product Ownern und externen Dienstleistern zusammen, in einem agilen Umfeld mit Scrum und JIRA. Erfahrung mit Cloud- und SaaS-Lösungen sowie Schnittstellen (APIs) ist erforderlich. Kenntnisse in Python oder Penetrationstests sind von Vorteil.`,
-      `IT-Projektleiter (m/w/d) E-Commerce Plattform
-Sie leiten Projekte rund um unsere Customer-Experience- und E-Commerce-Plattform und tragen die End-to-End-Verantwortung von der Anforderung bis zum Betrieb. Sie steuern Stakeholder aus Fachbereich und IT sowie externe Dienstleister, verantworten Planung, Budget und Testmanagement.
-Sie arbeiten agil (Scrum) oder hybrid, kennen ITIL-Prozesse und bringen Erfahrung in Solution-Architektur und Integration über APIs mit. Eine Projektmanagement-Zertifizierung (z. B. IPMA) ist wünschenswert. Kubernetes-Kenntnisse sind ein Plus.`
-    ],
     en: [
       `Cyber Security Engineer, Digital Business
 You own the security of our digital products from concept to operations. You perform threat analysis and risk assessment (TARA per ISO/SAE 21434), define security requirements and guide architecture decisions following security by design.
@@ -319,7 +247,7 @@ You work agile (Scrum) or hybrid, know ITIL processes and bring experience in so
       u("letter.open", role, who.firma, yearsIT), "",
       ...top.map(s => `• ${t(s.n)}: ${t(s.ev)}`), ""
     ];
-    if (F.gaps.length) lines.push(u("letter.gap", F.gaps.slice(0, 2).join(lang === "de" ? " und " : " and ")), "");
+    if (F.gaps.length) lines.push(u("letter.gap", F.gaps.slice(0, 2).join(" and ")), "");
     lines.push(u("letter.close"), "", "Engin Celenk", P.contact.email, location.origin.startsWith("http") ? location.origin + location.pathname : "");
     return lines.join("\n").trim();
   }
@@ -375,7 +303,7 @@ You work agile (Scrum) or hybrid, know ITIL processes and bring experience in so
     const start = 2003, end = Math.floor(nowYM()) + 1, span = end - start;
     const types = ["job", "practice", "edu"];
     const pos = v => ((v - start) / span * 100).toFixed(3) + "%";
-    let html = `<div class="g-axis">${Array.from({ length: span + 1 }, (_, i) => start + i).map(y => `<span style="left:${pos(y)}" class="${(y - start) % 3 ? "minor" : ""}">${(y - start) % 3 || y === end ? "" : y}</span>`).join("")}</div>`;
+    let html = `<div class="g-axis">${Array.from({ length: span + 1 }, (_, i) => start + i).map(y => `<span style="left:${pos(y)}" class="${(y - start) % 3 ? "minor" : (y - start) % 6 ? "y3" : ""}">${(y - start) % 3 || y === end ? "" : y}</span>`).join("")}</div>`;
     types.forEach(ty => {
       const items = P.timeline.map((x, i) => ({ x, i })).filter(o => o.x.type === ty).sort((a, b) => ym(a.x.from) - ym(b.x.from));
       const lanes = [];
@@ -519,15 +447,9 @@ You work agile (Scrum) or hybrid, know ITIL processes and bring experience in so
 
   /* ================= making of ================= */
   function renderSteps() {
-    const S = lang === "de" ? [
-      ["Ausgangsmaterial", "Drei Handy-Screenshots meines bisherigen PDF-Lebenslaufs. Sonst nichts."],
-      ["Lesen und strukturieren", "Die KI liest die Bilder und überführt Stationen, Zertifikate, Skills und den Kompetenzbaum in eine einzige, zweisprachige Datendatei."],
-      ["Entwerfen und bauen", "Fit-Check mit Kurzprofil, Zeitstrahl, Bildungstreppe und digitaler Zwilling. Reines HTML, CSS und JavaScript, ohne Frameworks und ohne Server."],
-      ["Prüfen", "Ich lese jede Aussage gegen. Die Seite behauptet nichts, was nicht im Lebenslauf steht, und benennt Lücken offen."],
-      ["Veröffentlichen und personalisieren", "Automatisch über GitHub Pages. Für jede Bewerbung erzeuge ich einen eigenen Link, der Firma, Ansprechpartner und Stelle begrüßt."]
-    ] : [
+    const S = [
       ["Raw material", "Three phone screenshots of my previous PDF CV. Nothing else."],
-      ["Read and structure", "The AI reads the images and turns positions, certificates, skills and the competence tree into a single bilingual data file."],
+      ["Read and structure", "The AI reads the images and turns positions, certificates, skills and the competence tree into a single data file."],
       ["Design and build", "Fit check with short profile, timeline, education stairs and digital twin. Plain HTML, CSS and JavaScript, no frameworks, no server."],
       ["Review", "I check every statement. The page claims nothing that is not in the CV and names gaps openly."],
       ["Publish and personalize", "Automatically via GitHub Pages. For each application I create a dedicated link that greets the company, contact person and role."]
@@ -565,13 +487,6 @@ You work agile (Scrum) or hybrid, know ITIL processes and bring experience in so
     renderStairs(); renderTree(); renderTraining(); renderTwin(); renderSteps(); renderContact();
     if (lastFit) runFit(); else if (!$("#result .msg")) fitEmpty();
   }
-  $$(".langswitch button").forEach(b => b.addEventListener("click", () => {
-    if (lang === b.dataset.lang) return;
-    const swap = s => { const i = SAMPLES[lang].indexOf($("#jd").value); return i; };
-    const si = swap(); lang = b.dataset.lang; store.set("lang", lang);
-    if (si >= 0) $("#jd").value = SAMPLES[lang][si];
-    renderAll(true);
-  }));
 
   document.body.dataset.lens = lens.id;
   renderAll(true);

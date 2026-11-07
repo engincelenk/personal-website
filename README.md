@@ -8,14 +8,14 @@ Live: https://ec.immofuchs.info (GitHub Pages, Deployment bei jedem Push auf `ma
 - **Werdegang** als Zeitleiste (Gantt) plus filterbare Detailliste.
 - **Bildungstreppe** ab 1994 und der **„Mechie & Techi“-Baum** aus dem Lebenslauf.
 - **Digitaler Zwilling**: beantwortet Fragen nur aus den Fakten in `data.js`.
-- **Deutsch / Englisch** per Umschalter oder `?lang=en`.
+- Sprache der Seite: Englisch.
 
 ## Personalisierte Bewerbungslinks
 `/link.html` öffnen (nicht verlinkt, `noindex`), Firma, Ansprechpartner, Stelle und Blickwinkel eintragen, Link kopieren.
-Beispiel: `https://ec.immofuchs.info/?firma=Porsche+AG&an=Frau+M%C3%BCller&rolle=Cyber+Security+Engineer&fokus=sec`
+Beispiel: `https://ec.immofuchs.info/?firma=Porsche+AG&an=Ms.+M%C3%BCller&rolle=Cyber+Security+Engineer&fokus=sec`
 
-Parameter: `firma`, `an`, `rolle`, `fokus` (`sec` | `arch` | `e2e` | `pm`), `lang` (`de` | `en`).
+Parameter: `firma` (oder `company`), `an` (oder `to`), `rolle` (oder `role`), `fokus` (`sec` | `arch` | `e2e` | `pm`).
 
 ## Inhalte ändern
-Alle Texte stehen in `data.js`, zweisprachig als `{ de: "...", en: "..." }`. Oberflächentexte stehen oben in `app.js` (`UI`).
+Alle Texte stehen in `data.js`; angezeigt wird jeweils der `en`-Text. Oberflächentexte stehen oben in `app.js` (`UI`).
 Optional: `askEndpoint` in `data.js` auf einen kleinen Proxy zu einem Sprachmodell setzen; ohne Eintrag antwortet der Zwilling offline aus den Fakten.
