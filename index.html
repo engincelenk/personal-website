@@ -1,93 +1,172 @@
 <!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Engin Celenk – IT projects, platforms, architecture and security</title>
-<meta name="description" content="Interactive CV of Engin Celenk. Switch lenses, test your job post against my skills, and ask questions.">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Engin Celenk</title>
+<meta name="description" content="Engin Celenk: Cyber Security Engineer, Solution Architect und IT-Projektmanager. Interaktiver Lebenslauf mit Stellen-Fit-Check und digitalem Zwilling.">
+<meta property="og:title" content="Engin Celenk · Cyber Security, Architektur, IT-Projekte">
+<meta property="og:description" content="Ein Lebenslauf, den man ausprobieren kann: Stellenanzeige einfügen, Passung sehen, Fragen stellen.">
+<meta property="og:image" content="assets/engin.png">
+<link rel="icon" href="assets/engin.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body data-lens="all">
-<a class="skip" href="#skills">Skip to skills</a>
+<a class="skip" href="#fit" data-i18n="skip">Zum Fit-Check springen</a>
 
 <header class="top">
-  <span class="mark" id="brand">Engin Celenk</span>
-  <nav aria-label="Sections">
-    <a href="#skills">Skills</a>
-    <a href="#fit">Fit check</a>
-    <a href="#experience">Experience</a>
-    <a href="#projects">Projects</a>
-    <a href="#ask">Ask</a>
-    <a href="#contact">Contact</a>
-  </nav>
+  <div class="top-in">
+    <a class="mark" href="#top">Engin Celenk</a>
+    <nav aria-label="Abschnitte" id="nav">
+      <a href="#fit" data-i18n="nav.fit">Fit-Check</a>
+      <a href="#path" data-i18n="nav.path">Werdegang</a>
+      <a href="#tree" data-i18n="nav.tree">Profil</a>
+      <a href="#twin" data-i18n="nav.twin">Fragen</a>
+      <a href="#contact" data-i18n="nav.contact">Kontakt</a>
+    </nav>
+    <div class="langswitch" role="group" aria-label="Sprache / Language">
+      <button type="button" data-lang="de" aria-pressed="true">DE</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
 </header>
 
-<main>
-  <section class="hero" aria-labelledby="headline">
-    <p class="hello">View my CV as a</p>
-    <div class="lenses" role="radiogroup" aria-label="Choose a lens" id="lenses"></div>
-    <h1 id="headline" aria-live="polite"></h1>
-    <p class="sub" id="sub"></p>
-    <p class="langs" id="langs"></p>
-  </section>
+<main id="top">
+  <div class="welcome" id="welcome" hidden></div>
 
-  <section id="skills" class="block" aria-labelledby="h-skills">
-    <h2 id="h-skills">Skills</h2>
-    <p class="lead">Select a skill to see where it shows up. The dot count is my own honest rating from 1 (working knowledge) to 5 (deep expertise).</p>
-    <div id="skillgroups"></div>
-    <div class="evidence" id="evidence" aria-live="polite">Select any skill above.</div>
+  <section class="hero" aria-labelledby="headline">
+    <div class="hero-text">
+      <p class="eyebrow" id="hero-eyebrow"></p>
+      <h1 id="headline" aria-live="polite"></h1>
+      <p class="sub" id="sub"></p>
+      <p class="hello" data-i18n="lens.prompt">Lebenslauf ansehen als</p>
+      <div class="lenses" role="radiogroup" aria-label="Blickwinkel" id="lenses"></div>
+    </div>
+    <figure class="portrait">
+      <img src="assets/engin.png" alt="Porträt von Engin Celenk" width="228" height="228">
+      <figcaption>
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="nowrole"></span>
+      </figcaption>
+    </figure>
+    <dl class="facts" id="facts"></dl>
   </section>
 
   <section id="fit" class="block lab" aria-labelledby="h-fit">
-    <h2 id="h-fit">Fit check</h2>
-    <p class="lead">Paste a job post. The page highlights what matches, scores each discipline and tells you plainly what is not my strength. Nothing leaves your browser.</p>
-    <label for="jd" class="sr">Job description</label>
-    <textarea id="jd" rows="7" placeholder="Paste the job description here"></textarea>
-    <div class="row">
-      <button id="run" class="btn">Check fit</button>
-      <button id="sample" class="btn ghost" type="button">Try a sample post</button>
+    <div class="sec-head">
+      <p class="kicker" data-i18n="fit.kicker">Für Recruiter</p>
+      <h2 id="h-fit" data-i18n="fit.title">Passt Engin zu Ihrer Stelle?</h2>
+      <p class="lead" data-i18n="fit.lead">Fügen Sie eine Stellenanzeige ein. Die Seite vergleicht sie mit dem Lebenslauf, markiert Treffer, zeigt ehrlich, was nicht passt, und schreibt ein Kurzprofil für genau diese Stelle. Alles läuft in Ihrem Browser, nichts wird übertragen.</p>
     </div>
-    <div id="result" class="result" hidden aria-live="polite"></div>
+    <div class="lab-grid">
+      <div class="lab-input">
+        <label for="jd" class="lbl" data-i18n="fit.label">Stellenanzeige</label>
+        <textarea id="jd" rows="9"></textarea>
+        <div class="row">
+          <button id="run" class="btn" type="button" data-i18n="fit.run">Passung prüfen</button>
+          <button id="sample1" class="btn ghost" type="button" data-i18n="fit.sample1">Beispiel: Security</button>
+          <button id="sample2" class="btn ghost" type="button" data-i18n="fit.sample2">Beispiel: Projektleitung</button>
+        </div>
+      </div>
+      <div id="result" class="result" aria-live="polite"></div>
+    </div>
   </section>
 
-  <section id="experience" class="block" aria-labelledby="h-exp">
-    <h2 id="h-exp">Experience</h2>
+  <section id="pillars" class="block" aria-labelledby="h-pil">
+    <div class="sec-head">
+      <p class="kicker" data-i18n="pil.kicker">Kompetenz</p>
+      <h2 id="h-pil" data-i18n="pil.title">Vier Säulen, eine Person</h2>
+      <p class="lead" data-i18n="pil.lead">Tippen Sie auf eine Säule oder eine Fähigkeit. Die Punkte sind meine eigene Einschätzung auf der Skala des Lebenslaufs, 1 bis 4.</p>
+    </div>
+    <div class="pillars" id="pillarlist"></div>
+    <div class="evidence" id="evidence" aria-live="polite"></div>
+  </section>
+
+  <section id="path" class="block" aria-labelledby="h-path">
+    <div class="sec-head">
+      <p class="kicker" data-i18n="path.kicker">Werdegang</p>
+      <h2 id="h-path" data-i18n="path.title">23 Jahre auf einen Blick</h2>
+      <p class="lead" data-i18n="path.lead">Jeder Balken ist eine Station. Tippen Sie darauf, um zu den Details zu springen.</p>
+    </div>
+    <div class="gantt-wrap"><div class="gantt" id="gantt"></div></div>
+    <div class="legend" id="legend"></div>
+    <div class="filters" role="group" aria-label="Filter" id="tlfilter"></div>
     <ol class="timeline" id="timeline"></ol>
   </section>
 
-  <section id="projects" class="block" aria-labelledby="h-proj">
-    <h2 id="h-proj">Projects</h2>
-    <div class="projects" id="projectlist"></div>
+  <section id="stairs" class="block" aria-labelledby="h-stairs">
+    <div class="sec-head">
+      <p class="kicker" data-i18n="st.kicker">Bildungsweg</p>
+      <h2 id="h-stairs" data-i18n="st.title">Von 1994 an, Stufe für Stufe</h2>
+      <p class="lead" data-i18n="st.lead">Keine Abkürzung, jede Stufe einzeln genommen.</p>
+    </div>
+    <div class="stairs-wrap"><ol class="stairs" id="stairlist"></ol></div>
+    <p class="stair-note" id="stairnote" aria-live="polite"></p>
   </section>
 
-  <section id="certs" class="block" aria-labelledby="h-cert">
-    <h2 id="h-cert">Certificates</h2>
-    <ul class="certs" id="certlist"></ul>
+  <section id="tree" class="block" aria-labelledby="h-tree">
+    <div class="sec-head">
+      <p class="kicker" data-i18n="tree.kicker">Profil</p>
+      <h2 id="h-tree" data-i18n="tree.title">Eine Mischung aus „Mechie“ und „Techi“</h2>
+      <p class="lead" data-i18n="tree.lead">Management und Technik wachsen aus demselben Fundament. Tippen Sie auf eine Stufe, um die zugehörigen Nachweise zu sehen.</p>
+    </div>
+    <div class="tree" id="treebox"></div>
+    <div class="tree-detail" id="treedetail" aria-live="polite"></div>
   </section>
 
-  <section id="ask" class="block" aria-labelledby="h-ask">
-    <h2 id="h-ask">Ask a question</h2>
-    <p class="lead">Answers come from the facts on this page, so they are consistent with my CV.</p>
-    <div class="chips" id="suggest"></div>
-    <form id="askform" class="askform">
-      <label for="q" class="sr">Your question</label>
-      <input id="q" type="text" autocomplete="off" placeholder="For example: Do you do hands-on security work?">
-      <button class="btn" type="submit">Ask</button>
-    </form>
-    <div id="answer" class="answer" aria-live="polite"></div>
+  <section id="growth" class="block" aria-labelledby="h-train">
+    <div class="sec-head">
+      <p class="kicker" data-i18n="tr.kicker">Weiterbildung</p>
+      <h2 id="h-train" data-i18n="tr.title">Zertifikate und Trainings</h2>
+    </div>
+    <div class="train" id="trainlist"></div>
+    <div class="side">
+      <div><h3 data-i18n="lang.title">Sprachen</h3><ul class="langs" id="langlist"></ul></div>
+      <div><h3 data-i18n="char.title">Persönlich</h3><p id="character"></p><p id="interests" class="muted"></p></div>
+      <div><h3 data-i18n="proj.title">Eigene Projekte</h3><div id="projectlist"></div></div>
+    </div>
+  </section>
+
+  <section id="twin" class="block" aria-labelledby="h-twin">
+    <div class="sec-head">
+      <p class="kicker" data-i18n="twin.kicker">Digitaler Zwilling</p>
+      <h2 id="h-twin" data-i18n="twin.title">Fragen Sie mich etwas</h2>
+      <p class="lead" data-i18n="twin.lead">Der Zwilling antwortet nur mit Fakten aus diesem Lebenslauf. Was er nicht weiß, sagt er.</p>
+    </div>
+    <div class="chat">
+      <div class="log" id="log" aria-live="polite"></div>
+      <div class="chips" id="suggest"></div>
+      <form id="askform" class="askform">
+        <label for="q" class="sr" data-i18n="twin.label">Ihre Frage</label>
+        <input id="q" type="text" autocomplete="off">
+        <button class="btn" type="submit" data-i18n="twin.send">Fragen</button>
+      </form>
+    </div>
+  </section>
+
+  <section id="making" class="block" aria-labelledby="h-make">
+    <div class="sec-head">
+      <p class="kicker" data-i18n="mk.kicker">Hinter der Seite</p>
+      <h2 id="h-make" data-i18n="mk.title">So ist diese Bewerbung entstanden</h2>
+      <p class="lead" data-i18n="mk.lead">Diese Seite ist selbst eine Arbeitsprobe: Sie zeigt, wie ich KI einsetze, um aus vorhandenem Material schnell etwas Nützliches zu machen.</p>
+    </div>
+    <ol class="steps" id="steps"></ol>
   </section>
 
   <section id="contact" class="block contact" aria-labelledby="h-contact">
-    <h2 id="h-contact">Contact</h2>
-    <p class="lead">Open to conversations about IT project, platform, architecture and security roles.</p>
-    <div class="row" id="contactlinks"></div>
+    <div class="sec-head">
+      <p class="kicker" data-i18n="ct.kicker">Kontakt</p>
+      <h2 id="h-contact" data-i18n="ct.title">Lassen Sie uns sprechen</h2>
+      <p class="lead" data-i18n="ct.lead">Offen für Rollen in Cyber Security, Solution-Architektur, Solution Management und IT-Projektleitung.</p>
+    </div>
+    <div class="cards" id="contactcards"></div>
   </section>
 </main>
 
-<footer><span id="year"></span> Engin Celenk. Built with plain HTML, CSS and JavaScript.</footer>
+<footer><div class="foot-in"><span id="year"></span> Engin Celenk · <span data-i18n="foot">Gebaut mit HTML, CSS, JavaScript und KI. Keine Cookies, kein Tracking.</span></div></footer>
 
 <script src="data.js"></script>
 <script src="app.js"></script>
