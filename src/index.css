@@ -33,3 +33,4 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .caret::after { content: "▍"; color: #E8650A; animation: blink 1s steps(2) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
+@keyframes sweep { 0% { transform: translateX(0); } 60%, 100% { transform: translateX(450%); } }

@@ -40,7 +40,7 @@ function Page() {
         <Career />
         <Education />
         <Expertise domain={domain} setDomain={setDomain} />
-        <SecurityToolbox no="04" linkServices={!msg} />
+        <SecurityToolbox no="04" />
         <Lab guest={guest} />
         <About />
         <Contact focus={focus} setFocus={setFocus} />

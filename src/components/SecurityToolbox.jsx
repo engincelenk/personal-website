@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
 import SectionHead from "./SectionHead.jsx";
 import Icon from "./Icon.jsx";
-import { principal as rawPrincipal, frameworkGroups as rawGroups, toolboxText } from "../data/frameworks.js";
-import { services as rawServices } from "../data/services.js";
+import { capabilities as rawCaps, frameworkGroups as rawGroups, toolboxText } from "../data/frameworks.js";
 import { useLang } from "../i18n.jsx";
 
-/* Principal capabilities + interactive framework explorer.
-   onService: called with a service id (freelance page); linkServices: link to /freelance.html (main page). */
-export default function SecurityToolbox({ no = "04", id = "security", onService, linkServices = true }) {
+/* Security capabilities + interactive framework explorer. */
+export default function SecurityToolbox({ no = "04", id = "security" }) {
   const { L, lang } = useLang();
   const reduce = useReducedMotion();
-  const T = L(toolboxText), caps = L(rawPrincipal), groups = L(rawGroups), services = L(rawServices);
+  const T = L(toolboxText), caps = L(rawCaps), groups = L(rawGroups);
   const [g, setG] = useState(groups[0].id);
   const group = groups.find(x => x.id === g);
   const [fw, setFw] = useState(group.items[0].name);
@@ -54,16 +51,6 @@ export default function SecurityToolbox({ no = "04", id = "security", onService,
                 className="mt-5 rounded-xl bg-ink p-5" aria-live="polite">
                 <p className="text-lg font-semibold">{cur.name}</p>
                 <p className="mt-1 leading-relaxed text-mist">{cur.what}</p>
-                <p className="label mt-4">{T.usedIn}</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {cur.services.map(sid => {
-                    const s = services.find(x => x.id === sid); if (!s) return null;
-                    const cls = "inline-flex min-h-[34px] items-center gap-1.5 rounded-full border border-white/10 px-3 text-sm text-snow/90 transition-colors hover:border-signal hover:text-signal";
-                    if (onService) return <button key={sid} type="button" className={cls} onClick={() => onService(sid)}>{s.name}</button>;
-                    if (linkServices) return <a key={sid} className={cls} href={`/freelance.html?lang=${lang}#svc-${sid}`}>{s.name}<ArrowUpRight size={13} /></a>;
-                    return <span key={sid} className="rounded-full bg-white/[0.05] px-3 py-1.5 text-sm text-snow/80">{s.name}</span>;
-                  })}
-                </div>
               </motion.div>
             </AnimatePresence>
           </div>
