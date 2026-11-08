@@ -3,8 +3,8 @@ import { Menu, X } from "lucide-react";
 import { person } from "../data/profile.js";
 
 export const sections = [
-  ["home", "Home"], ["journey", "Journey"], ["expertise", "Expertise"], ["showcase", "Showcase"],
-  ["innovation", "Innovation"], ["about", "About"], ["contact", "Contact"]
+  ["home", "Home"], ["journey", "Career"], ["education", "Education"], ["expertise", "Expertise"],
+  ["lab", "Lab"], ["about", "About"], ["contact", "Contact"]
 ];
 
 export default function Nav() {
@@ -29,7 +29,7 @@ export default function Nav() {
       <div className="wrap flex h-16 items-center justify-between">
         <a href="#home" className="flex items-center gap-3" onClick={() => setOpen(false)}>
           <span className="grid h-8 w-8 place-items-center rounded-lg border border-white/15 font-mono text-xs font-semibold">{person.initials}</span>
-          <span className="text-sm font-medium tracking-tight">{person.name}</span>
+          <span className="text-sm font-medium tracking-tight">{person.name}<span className="text-mist">, {person.degree}</span></span>
         </a>
         <nav aria-label="Sections" className="hidden lg:block">
           <ul className="flex items-center gap-1">
@@ -56,7 +56,7 @@ export default function Nav() {
               <li key={id}>
                 <a href={`#${id}`} onClick={() => setOpen(false)}
                   className="flex items-baseline gap-4 border-b border-white/[0.06] py-4 text-2xl font-medium tracking-tight">
-                  <span className="font-mono text-xs text-signal">0{i + 1}</span>{label}
+                  <span className="font-mono text-xs text-signal">{i ? `0${i}` : "00"}</span>{label}
                 </a>
               </li>
             ))}

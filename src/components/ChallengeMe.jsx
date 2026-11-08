@@ -27,13 +27,12 @@ export default function ChallengeMe({ guest }) {
 
   return (
     <div>
-      <label htmlFor="role" className="label">Paste a role description</label>
-      <textarea id="role" rows={6} value={text} onChange={e => setText(e.target.value)} placeholder="Paste the job post here. It is analysed in your browser and never sent anywhere."
-        className="mt-3 w-full resize-y rounded-xl border border-white/10 bg-ink p-4 text-[15px] leading-relaxed text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none" />
+            <textarea id="role" rows={6} value={text} onChange={e => setText(e.target.value)} aria-label="Job post" placeholder="Paste a job post here."
+        className="w-full resize-y rounded-xl border border-white/10 bg-ink p-4 text-[15px] leading-relaxed text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none" />
       <div className="mt-3 flex flex-wrap gap-2">
         <button type="button" className="btn-primary" onClick={() => run()}>Challenge me</button>
-        <button type="button" className="btn-ghost" onClick={() => run(sampleRoles.security)}>Sample: security role</button>
-        <button type="button" className="btn-ghost" onClick={() => run(sampleRoles.architecture)}>Sample: architect role</button>
+        <button type="button" className="btn-ghost" onClick={() => run(sampleRoles.security)}>Try: security</button>
+        <button type="button" className="btn-ghost" onClick={() => run(sampleRoles.architecture)}>Try: architect</button>
       </div>
 
       {res?.error && <p className="mt-5 rounded-xl border-l-2 border-signal bg-white/[0.03] p-4 text-mist">{res.error}</p>}
@@ -77,7 +76,7 @@ export default function ChallengeMe({ guest }) {
             </div>
             <pre className="mt-4 whitespace-pre-wrap font-sans text-sm leading-relaxed text-snow/90">{res.letter}</pre>
           </div>
-          <p className="text-xs leading-relaxed text-mist">Method: CV terms are matched in the post and weighted by my own rating on the CV scale; every requirement I do not cover lowers the score. A quick signal for a conversation, not a verdict.</p>
+          
         </div>
       )}
     </div>

@@ -26,8 +26,7 @@ export default function Contact({ focus, setFocus }) {
   return (
     <section id="contact" aria-labelledby="contact-title" className="section">
       <div className="wrap">
-        <SectionHead no="07" kicker="Contact" id="contact-title" title="Let’s build what’s next."
-          lead="Open to conversations about cyber security, IT architecture and technology leadership roles." />
+        <SectionHead no="06" kicker="Contact" id="contact-title" title="Let’s build what’s next." />
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
           {/* Direct contact */}
@@ -58,8 +57,7 @@ export default function Contact({ focus, setFocus }) {
           {/* Tailored CV */}
           <div className="panel p-6 sm:p-8">
             <p className="label text-signal">Tailored CV</p>
-            <h3 className="mt-2 text-2xl font-semibold tracking-tight">Choose your focus.</h3>
-            <p className="mt-2 text-mist">The CV reorders itself around what matters to you. View it online or download the matching PDF.</p>
+            <h3 className="mt-2 text-2xl font-semibold tracking-tight">Choose a focus, get the matching CV.</h3>
             <div role="radiogroup" aria-label="CV focus" className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3">
               {focuses.map(x => (
                 <button key={x.id} type="button" role="radio" aria-checked={x.id === f.id} onClick={() => setFocus(x.id)}
@@ -72,7 +70,6 @@ export default function Contact({ focus, setFocus }) {
               <motion.div key={f.id} initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0 }} transition={{ duration: 0.25 }}
                 className="mt-6 rounded-xl border border-white/[0.07] bg-ink p-5">
                 <p className="font-semibold leading-snug">{f.headline}</p>
-                <p className="mt-2 text-sm leading-relaxed text-mist">{f.profile}</p>
                 <ol className="mt-4 flex flex-wrap gap-2">
                   {f.domains.map((d, i) => <li key={d} className="rounded-full bg-white/[0.05] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-mist"><span className="text-signal">{i + 1}</span> {domains.find(x => x.id === d).title}</li>)}
                 </ol>

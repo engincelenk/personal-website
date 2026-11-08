@@ -3,10 +3,10 @@ import { ArrowUp } from "lucide-react";
 import { facts } from "../data/knowledge.js";
 import { answer } from "../lib/match.js";
 
-const suggestions = [0, 1, 2, 5, 7].map(i => facts[i].q);
+const suggestions = [2, 0, 6, 4, 7].map(i => facts[i].q);
 
 export default function AskPortfolio() {
-  const [log, setLog] = useState([{ who: "bot", text: "Ask me about Engin's experience, projects, certificates or way of working. I only answer from verified portfolio facts." }]);
+  const [log, setLog] = useState([{ who: "bot", text: "Ask about Engin's experience, projects or education." }]);
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const box = useRef(null);
@@ -17,7 +17,7 @@ export default function AskPortfolio() {
     setQ(""); setBusy(true);
     setLog(l => [...l, { who: "me", text }, { who: "bot", text: "", typing: true }]);
     await new Promise(r => setTimeout(r, 450));
-    const full = answer(text) || "I have no verified answer to that in the portfolio. Best ask Engin directly: engincelenk@web.de.";
+    const full = answer(text) || "No verified answer to that. Ask Engin directly: engincelenk@web.de.";
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let i = reduce ? full.length : 0;
     const tick = () => {
@@ -30,7 +30,7 @@ export default function AskPortfolio() {
 
   return (
     <div className="flex h-full flex-col">
-      <div ref={box} className="no-scrollbar flex max-h-[380px] min-h-[260px] flex-1 flex-col gap-3 overflow-y-auto pb-2" aria-live="polite">
+      <div ref={box} className="no-scrollbar flex max-h-[380px] min-h-[200px] flex-1 flex-col gap-3 overflow-y-auto pb-2" aria-live="polite">
         {log.map((m, i) => (
           <div key={i} className={`max-w-[88%] rounded-2xl px-4 py-3 text-[15px] leading-relaxed ${m.who === "me" ? "self-end rounded-br-md bg-signal text-ink" : "self-start rounded-bl-md bg-white/[0.05] text-snow/90"}`}>
             {m.typing && !m.text ? <span className="flex gap-1 py-1">{[0, 1, 2].map(k => <span key={k} className="h-1.5 w-1.5 animate-bounce rounded-full bg-mist" style={{ animationDelay: `${k * 0.12}s` }} />)}</span>
@@ -44,7 +44,7 @@ export default function AskPortfolio() {
       </div>
       <form className="mt-3 flex gap-2" onSubmit={e => { e.preventDefault(); ask(q); }}>
         <label htmlFor="ask" className="sr-only">Your question</label>
-        <input id="ask" value={q} onChange={e => setQ(e.target.value)} autoComplete="off" placeholder="What makes his profile different?"
+        <input id="ask" value={q} onChange={e => setQ(e.target.value)} autoComplete="off" placeholder="Your question"
           className="min-h-[48px] min-w-0 flex-1 rounded-full border border-white/10 bg-ink px-5 text-[16px] text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none" />
         <button type="submit" aria-label="Ask" className="grid h-12 w-12 flex-none place-items-center rounded-full bg-signal text-ink transition-colors hover:bg-[#ff7a1f] disabled:opacity-50" disabled={busy}><ArrowUp size={18} /></button>
       </form>
