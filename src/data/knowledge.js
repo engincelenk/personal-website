@@ -57,6 +57,9 @@ export const skills = [
   { d: "ai", l: 3, n: { en: "AI-assisted work", de: "KI-gestütztes Arbeiten" },
     keys: ["ai", "artificial intelligence", "llm", "generative ai", "genai", "machine learning", "ki", "künstliche intelligenz"],
     ev: { en: "Built ImmoFuchs and this portfolio with AI.", de: "ImmoFuchs und dieses Portfolio mit KI gebaut." } },
+  { d: "ai", l: 3, n: { en: "Agentic architectures", de: "Agentische Architekturen" },
+    keys: ["agentic", "agentic ai", "ai agents", "ai agent", "multi-agent", "agent architecture", "agentic architecture", "agentic architectures", "mcp", "model context protocol", "agentische", "ki-agenten", "agentenbasiert", "agentensysteme"],
+    ev: { en: "Familiar with agentic AI architectures.", de: "Vertraut mit agentischen KI-Architekturen." } },
   { d: "ai", l: 3, n: { en: "Product development", de: "Produktentwicklung" },
     keys: ["product development", "product management", "innovation", "mvp", "startup", "produktentwicklung", "produktmanagement"],
     ev: { en: "Developed ImmoFuchs end to end.", de: "ImmoFuchs von A bis Z entwickelt." } }
@@ -80,6 +83,8 @@ export const facts = [
     a: { en: "Bosch Confirmed Architect, IPMA Level D, PSM I, PSPO I, ITIL Foundation.", de: "Bosch Confirmed Architect, IPMA Level D, PSM I, PSPO I, ITIL Foundation." } },
   { q: { en: "What did he study?", de: "Was hat er studiert?" }, k: ["education", "study", "studies", "studied", "degree", "master", "bachelor", "university", "school", "msc", "studium", "studiert", "abschluss", "hochschule", "bildung"],
     a: { en: "M.Sc. and B.Sc. Computer Science (Wirtschaftsinformatik), Reutlingen University (M.Sc. grade 1.7), plus Software Engineering at Heilbronn University.", de: "M.Sc. und B.Sc. Informatik (Wirtschaftsinformatik) an der Hochschule Reutlingen (M.Sc. Note 1,7), dazu Software Engineering an der Hochschule Heilbronn." } },
+  { q: { en: "Does he know agentic AI?", de: "Kennt er agentische KI?" }, k: ["agentic", "agent", "agents", "agenten", "agentische", "agentisch", "mcp", "multi-agent"],
+    a: { en: "Yes, he is familiar with agentic AI architectures and uses AI agents in his own work, for example to build this portfolio.", de: "Ja, er ist vertraut mit agentischen KI-Architekturen und nutzt KI-Agenten in der eigenen Arbeit, zum Beispiel für dieses Portfolio." } },
   { q: { en: "Does he code?", de: "Programmiert er selbst?" }, k: ["hands-on", "technical", "coding", "code", "developer", "programming", "c#", "java", "programmiert", "programmieren", "entwickler"],
     a: { en: "Yes: C#, Java, Objective-C and SAP customizing. Today he builds tools with AI, such as ImmoFuchs.", de: "Ja: C#, Java, Objective-C und SAP-Customizing. Heute baut er Tools mit KI, zum Beispiel ImmoFuchs." } },
   { q: { en: "Languages?", de: "Sprachen?" }, k: ["language", "languages", "speak", "german", "english", "turkish", "sprache", "sprachen", "englisch", "deutsch", "türkisch"],

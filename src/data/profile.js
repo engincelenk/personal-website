@@ -107,8 +107,8 @@ export const domains = [
     keywords: ["Solution Management", { en: "E2E Ownership", de: "E2E-Verantwortung" }, "Stakeholder", { en: "Agile Delivery", de: "Agile Umsetzung" }],
     evidence: [{ en: "E2E owner of Bosch's worldwide TMS", de: "E2E-Verantwortung für das weltweite TMS von Bosch" }, { en: "PM for mercedes-benz.com", de: "Projektleitung mercedes-benz.com" }, "IPMA D · PSM I · PSPO I · ITIL"] },
   { id: "ai", icon: "Sparkles", title: { en: "AI & Innovation", de: "KI & Innovation" },
-    keywords: [{ en: "AI Applications", de: "KI-Anwendungen" }, { en: "AI-assisted Security", de: "KI-gestützte Security" }, { en: "Product Development", de: "Produktentwicklung" }],
-    evidence: [{ en: "Built ImmoFuchs", de: "ImmoFuchs entwickelt" }, { en: "Built this portfolio with AI", de: "Dieses Portfolio mit KI gebaut" }] }
+    keywords: [{ en: "Agentic Architectures", de: "Agentische Architekturen" }, { en: "AI Applications", de: "KI-Anwendungen" }, { en: "AI-assisted Security", de: "KI-gestützte Security" }, { en: "Product Development", de: "Produktentwicklung" }],
+    evidence: [{ en: "Familiar with agentic AI architectures", de: "Vertraut mit agentischen KI-Architekturen" }, { en: "Built ImmoFuchs", de: "ImmoFuchs entwickelt" }, { en: "Built this portfolio with AI", de: "Dieses Portfolio mit KI gebaut" }] }
 ];
 
 export const values = [
@@ -119,7 +119,7 @@ export const values = [
 export const quote = { en: "The best solutions emerge when different perspectives come together.", de: "Die besten Lösungen entstehen, wenn unterschiedliche Perspektiven zusammenkommen." };
 
 export const certificates = [
-  { year: null, name: "Bosch Confirmed Architect", badge: "/logos/bosch-architect-badge.png" },
+  { year: null, name: "Bosch Confirmed Architect", badge: "/logos/bosch-confirmed-architect.svg" },
   { year: 2018, name: "Professional Scrum Product Owner I", short: "PSPO I" },
   { year: 2014, name: "Professional Scrum Master I", short: "PSM I" },
   { year: 2014, name: "IPMA Level D (GPM)", short: "IPMA D" },
@@ -153,7 +153,7 @@ export const focuses = [
     domains: ["architecture", "security", "management"] },
   { id: "innovation", label: { en: "Technology & Innovation", de: "Technologie & Innovation" }, file: { en: "/cv/Engin-Celenk-CV-Technology-Innovation.pdf", de: "/cv/Engin-Celenk-Lebenslauf-Technologie-Innovation.pdf" },
     headline: { en: "IT professional connecting security, architecture and AI", de: "Informatiker an der Schnittstelle von Security, Architektur und KI" },
-    profile: { en: "Cyber security engineer at Bosch Digital with a background in architecture and solution management. Builds digital products with AI, such as ImmoFuchs.",
-      de: "Cyber Security Engineer bei Bosch Digital mit Hintergrund in Architektur und Solution Management. Entwickelt digitale Produkte mit KI, zum Beispiel ImmoFuchs." },
+    profile: { en: "Cyber security engineer at Bosch Digital with a background in architecture and solution management. Familiar with agentic AI architectures; builds digital products with AI, such as ImmoFuchs.",
+      de: "Cyber Security Engineer bei Bosch Digital mit Hintergrund in Architektur und Solution Management. Vertraut mit agentischen KI-Architekturen; entwickelt digitale Produkte mit KI, zum Beispiel ImmoFuchs." },
     domains: ["ai", "architecture", "security"] }
 ];

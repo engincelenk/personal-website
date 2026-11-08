@@ -13,7 +13,7 @@ export default function About() {
         <div className="grid gap-5 lg:grid-cols-3">
           <div className="panel flex flex-col p-6 lg:row-span-2">
             <div className="flex items-center gap-4">
-              <img src="/engin.png" alt={t("portrait")} width="456" height="456" loading="lazy" className="h-20 w-20 rounded-full object-cover ring-2 ring-signal/50 ring-offset-4 ring-offset-ink" />
+              <img src="/engin.jpg" alt={t("portrait")} width="456" height="456" loading="lazy" className="h-20 w-20 rounded-full object-cover ring-2 ring-signal/50 ring-offset-4 ring-offset-ink" />
               <div><p className="text-lg font-semibold">{p.name}, {p.degree}</p><p className="text-sm text-mist">{p.location}</p></div>
             </div>
             <blockquote className="mt-6 border-l-2 border-signal pl-4 text-lg font-medium leading-snug">{lang === "de" ? `„${L(quote)}“` : `“${L(quote)}”`}</blockquote>
@@ -28,7 +28,7 @@ export default function About() {
             <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
               {certificates.map(c => (
                 <li key={c.name} className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.07] p-3 text-center">
-                  {c.badge ? <img src={c.badge} alt="" className="h-14 w-14 object-contain" />
+                  {c.badge ? <img src={c.badge} alt="" className="h-16 w-16 object-contain" />
                     : <span className="grid h-14 w-14 place-items-center rounded-full border-2 border-signal/60 font-mono text-xs font-semibold">{c.short}</span>}
                   <span className="text-xs leading-tight text-snow/85">{c.name}</span>
                   {c.year && <span className="font-mono text-[10px] text-mist">{c.year}</span>}
