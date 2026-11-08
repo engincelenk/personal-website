@@ -1,38 +1,40 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Copy, Check } from "lucide-react";
 import { analyzeRole, highlight, shortProfile } from "../lib/match.js";
 import { sampleRoles } from "../data/knowledge.js";
-import { domains, person } from "../data/profile.js";
+import { domains as rawDomains, person } from "../data/profile.js";
 import { yearsSince } from "../lib/dates.js";
+import { useLang } from "../i18n.jsx";
 
 export default function ChallengeMe({ guest }) {
+  const { t, L, lang } = useLang();
+  const domains = L(rawDomains);
   const [text, setText] = useState("");
   const [res, setRes] = useState(null);
   const [copied, setCopied] = useState(false);
   const reduce = useReducedMotion();
 
-  const run = t => {
-    const v = (t ?? text).trim(); setText(t ?? text);
-    if (v.length < 60) { setRes({ error: "Paste a longer role description, at least a few sentences." }); return; }
+  const run = v0 => {
+    const v = (v0 ?? text).trim(); setText(v0 ?? text);
+    if (v.length < 60) { setRes({ error: t("tooShort") }); return; }
     const r = analyzeRole(v);
-    if (!r.matched.length) { setRes({ error: "No overlap with this portfolio found. The role may be outside my profile, or the post uses very different words." }); return; }
-    setRes({ ...r, text: v, letter: shortProfile(v, r, { years: yearsSince(person.careerStart), company: guest?.company, contact: guest?.contact }) });
+    if (!r.matched.length) { setRes({ error: t("noOverlap") }); return; }
+    setRes({ ...r, text: v, letter: shortProfile(v, r, { years: yearsSince(person.careerStart), company: guest?.company, contact: guest?.contact, lang }) });
   };
-  const copy = async () => {
-    try { await navigator.clipboard.writeText(res.letter); setCopied(true); setTimeout(() => setCopied(false), 1600); } catch { /* ignore */ }
-  };
-  const verdict = s => (s >= 75 ? "Strong fit" : s >= 55 ? "Good fit" : s >= 35 ? "Partial fit" : "Low fit");
+  const copy = async () => { try { await navigator.clipboard.writeText(res.letter); setCopied(true); setTimeout(() => setCopied(false), 1600); } catch { /* ignore */ } };
+  useEffect(() => { if (res && !res.error) run(res.text); }, [lang]); // eslint-disable-line react-hooks/exhaustive-deps
+  const verdict = s => t(s >= 75 ? "v4" : s >= 55 ? "v3" : s >= 35 ? "v2" : "v1");
   const C = 2 * Math.PI * 44;
 
   return (
     <div>
-            <textarea id="role" rows={6} value={text} onChange={e => setText(e.target.value)} aria-label="Job post" placeholder="Paste a job post here."
-        className="w-full resize-y rounded-xl border border-white/10 bg-ink p-4 text-[15px] leading-relaxed text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none" />
+      <textarea id="role" rows={6} value={text} onChange={e => setText(e.target.value)} aria-label={t("jobPost")} placeholder={t("jobPh")}
+        className="w-full resize-y rounded-xl border border-white/10 bg-ink p-4 text-[16px] leading-relaxed text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none" />
       <div className="mt-3 flex flex-wrap gap-2">
-        <button type="button" className="btn-primary" onClick={() => run()}>Challenge me</button>
-        <button type="button" className="btn-ghost" onClick={() => run(sampleRoles.security)}>Try: security</button>
-        <button type="button" className="btn-ghost" onClick={() => run(sampleRoles.architecture)}>Try: architect</button>
+        <button type="button" className="btn-primary" onClick={() => run()}>{t("tabChallenge")}</button>
+        <button type="button" className="btn-ghost" onClick={() => run(sampleRoles.security[lang])}>{t("tryA")}</button>
+        <button type="button" className="btn-ghost" onClick={() => run(sampleRoles.architecture[lang])}>{t("tryB")}</button>
       </div>
 
       {res?.error && <p className="mt-5 rounded-xl border-l-2 border-signal bg-white/[0.03] p-4 text-mist">{res.error}</p>}
@@ -47,7 +49,7 @@ export default function ChallengeMe({ guest }) {
               </svg>
               <span className="absolute inset-0 grid place-items-center text-3xl font-semibold tabular-nums">{res.score}</span>
             </div>
-            <div><p className="text-xl font-semibold">{verdict(res.score)}</p><p className="text-sm text-mist">{res.matched.length} requirements backed by the portfolio{res.gaps.length ? `, ${res.gaps.length} outside my focus` : ""}</p></div>
+            <div><p className="text-xl font-semibold">{verdict(res.score)}</p><p className="text-sm text-mist">{t("backed", res.matched.length, res.gaps.length)}</p></div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {domains.map(d => {
@@ -63,7 +65,7 @@ export default function ChallengeMe({ guest }) {
             })}
           </div>
           <details className="rounded-xl border border-white/[0.07] p-4">
-            <summary className="cursor-pointer text-sm font-medium">Your post with matches highlighted</summary>
+            <summary className="cursor-pointer text-sm font-medium">{t("highlighted")}</summary>
             <p className="mt-3 max-h-56 overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-mist">
               {highlight(res.text, res).map((p, i) => p.mark === "hit" ? <mark key={i} className="rounded bg-signal/90 px-0.5 text-ink">{p.t}</mark>
                 : p.mark === "gap" ? <span key={i} className="text-snow line-through decoration-signal decoration-2">{p.t}</span> : <span key={i}>{p.t}</span>)}
@@ -71,12 +73,11 @@ export default function ChallengeMe({ guest }) {
           </details>
           <div className="rounded-xl border border-white/10 bg-ink p-5">
             <div className="flex items-center justify-between gap-3">
-              <p className="label">Short profile for this role</p>
-              <button type="button" onClick={copy} className="chip">{copied ? <Check size={14} className="mr-1.5 text-signal" /> : <Copy size={14} className="mr-1.5" />}{copied ? "Copied" : "Copy"}</button>
+              <p className="label">{t("shortProfile")}</p>
+              <button type="button" onClick={copy} className="chip">{copied ? <Check size={14} className="mr-1.5 text-signal" /> : <Copy size={14} className="mr-1.5" />}{copied ? t("copied") : t("copy")}</button>
             </div>
             <pre className="mt-4 whitespace-pre-wrap font-sans text-sm leading-relaxed text-snow/90">{res.letter}</pre>
           </div>
-          
         </div>
       )}
     </div>

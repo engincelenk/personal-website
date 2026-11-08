@@ -5,15 +5,14 @@ import PathMap from "./PathMap.jsx";
 import Logo from "./Logo.jsx";
 import { career } from "../data/profile.js";
 import { period, duration, yearOf } from "../lib/dates.js";
+import { useLang } from "../i18n.jsx";
 
-const items = career.map(c => ({ ...c, year: `${yearOf(c.from)}`, short: c.short }));
-
-function Card({ c, compact }) {
+function Card({ c, compact, lang }) {
   return (
     <div className={`panel flex gap-5 ${compact ? "p-4" : "p-6"}`}>
-      {!compact && <Logo id={c.logo} className="hidden h-16 w-28 sm:grid" pad="p-2" />}
+      {!compact && <Logo id={c.logo} className="hidden h-16 w-28 sm:flex" pad="p-2" />}
       <div className="min-w-0">
-        <p className="font-mono text-xs text-signal">{period(c.from, c.to)} · {duration(c.from, c.to)}</p>
+        <p className="font-mono text-xs text-signal">{period(c.from, c.to, lang)} · {duration(c.from, c.to, lang)}</p>
         <h3 className="mt-1.5 text-lg font-semibold leading-snug tracking-tight">{c.role}</h3>
         <p className="mt-0.5 flex flex-wrap items-center gap-x-2 text-sm text-mist">{c.org}<span className="inline-flex items-center gap-1"><MapPin size={12} />{c.place}</span></p>
         <ul className="mt-3 space-y-1.5 text-[15px] text-snow/85">
@@ -26,12 +25,14 @@ function Card({ c, compact }) {
 }
 
 export default function Career() {
+  const { t, L, lang } = useLang();
+  const items = L(career).map(c => ({ ...c, year: `${yearOf(c.from)}` }));
   const [active, setActive] = useState(items[items.length - 1].id);
   return (
     <section id="journey" aria-labelledby="journey-title" className="section">
       <div className="wrap">
-        <SectionHead no="01" kicker="Career" id="journey-title" title="A journey across technology." lead="Tap a station. The path follows." />
-        <PathMap items={items} mode="curve" active={active} setActive={setActive} label="Career stations" renderCard={(c, compact) => <Card c={c} compact={compact} />} />
+        <SectionHead no="01" kicker={t("careerKicker")} id="journey-title" title={t("careerTitle")} lead={t("careerLead")} />
+        <PathMap items={items} mode="curve" active={active} setActive={setActive} label={t("careerStations")} renderCard={(c, compact) => <Card c={c} compact={compact} lang={lang} />} />
       </div>
     </section>
   );

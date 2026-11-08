@@ -7,21 +7,24 @@ Stack: React + Vite, Tailwind CSS, Motion, Lucide icons, self-hosted Geist fonts
 ## Sections
 Home (animated system network) · Journey (interactive timeline) · Expertise (competence model) · Showcase (case studies + interactive mini TARA) · Innovation lab (Ask my portfolio, Challenge me) · About · Contact (tailored CV in three focuses).
 
+## Languages
+German and English. Switch in the header or with `?lang=de` / `?lang=en`. Content texts are `{ en, de }` pairs in `src/data/`, interface texts in `src/strings.js`.
+
 ## Edit content
 - `src/data/profile.js` – person, journey, expertise, case studies, values, CV focuses
 - `src/data/knowledge.js` – answers for “Ask my portfolio”, skill terms for “Challenge me”
 
 ## Tailored CV PDFs
-`cv.html?focus=security|architecture|innovation` is the printable CV. After content changes regenerate the PDFs and the social image:
+`cv.html?focus=security|architecture|innovation&lang=de|en` is the printable CV. After content changes regenerate the PDFs and the social image:
 
 ```bash
 npm run build && npm run cv:pdf
 ```
 
-The PDFs land in `public/cv/` and must be committed.
+Six PDFs (three focuses, German and English) land in `public/cv/` and must be committed.
 
 ## Personal application links
-Open `/link.html` (unlisted, noindex). Parameters: `company`, `to`, `role`, `focus` (`security` | `architecture` | `innovation`). German keys `firma`, `an`, `rolle`, `fokus` still work.
+Open `/link.html` (unlisted, noindex). Parameters: `company`, `to`, `role`, `focus` (`security` | `architecture` | `innovation`), `lang` (`de` | `en`). German keys `firma`, `an`, `rolle`, `fokus` still work.
 
 ## Local development
 ```bash

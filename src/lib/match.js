@@ -37,32 +37,41 @@ export function highlight(text, result) {
   return out;
 }
 
-export function shortProfile(text, result, { years, company, contact } = {}) {
+const pick = (v, lang) => (v && typeof v === "object" ? v[lang] ?? v.en : v);
+
+export function shortProfile(text, result, { years, company, contact, lang = "en" } = {}) {
+  const de = lang === "de";
   const first = text.split(/\n/).map(s => s.trim()).find(Boolean) || "";
-  const role = first.length > 3 && first.length < 90 ? first.replace(/\s*\((m|w|d|f)[^)]*\)/i, "").trim() : "this";
+  const role = first.length > 3 && first.length < 90 ? first.replace(/\s*\((m|w|d|f)[^)]*\)/i, "").trim() : (de ? "diese Stelle" : "this");
   const top = [...result.matched].sort((a, b) => result.hits.get(b).length * b.l - result.hits.get(a).length * a.l).slice(0, 4);
-  const lines = [
+  const gapsTxt = result.gaps.slice(0, 2).join(de ? " und " : " and ");
+  const lines = de ? [
+    `Betreff: ${role}`, "",
+    contact ? `Guten Tag ${contact},` : "Sehr geehrte Damen und Herren,", "",
+    `Ihre Anzeige für die Position ${role}${company ? ` bei ${company}` : ""} beschreibt vieles, was ich seit ${years} Jahren in der Konzern-IT von Bosch, Daimler und TRUMPF mache. Diese Anforderungen bringe ich direkt mit:`, ""
+  ] : [
     `Re: ${role}`, "",
     contact ? `Dear ${contact},` : "Dear hiring team,", "",
-    `Your post for the ${role} role${company ? ` at ${company}` : ""} describes much of what I have done for ${years} years in corporate IT at Bosch, Daimler and TRUMPF. These requirements I bring directly:`, "",
-    ...top.map(s => `• ${s.n}: ${s.ev}`), ""
+    `Your post for the ${role} role${company ? ` at ${company}` : ""} describes much of what I have done for ${years} years in corporate IT at Bosch, Daimler and TRUMPF. These requirements I bring directly:`, ""
   ];
-  if (result.gaps.length) lines.push(`To be open: ${result.gaps.slice(0, 2).join(" and ")} is not one of my focus areas. I learn fast, as my path from office apprentice to cyber security engineer shows.`, "");
-  lines.push("I look forward to talking.", "", "Engin Celenk", "engincelenk@web.de");
+  lines.push(...top.map(s => `• ${pick(s.n, lang)}: ${pick(s.ev, lang)}`), "");
+  if (result.gaps.length) lines.push(de ? `Offen gesagt: ${gapsTxt} gehört nicht zu meinen Schwerpunkten. Ich arbeite mich schnell ein.` : `To be open: ${gapsTxt} is not one of my focus areas. I learn fast.`, "");
+  lines.push(de ? "Ich freue mich auf ein Gespräch." : "I look forward to talking.", "", "Engin Celenk, M.Sc.", "engincelenk@web.de");
   return lines.join("\n");
 }
 
 const tokens = s => s.toLowerCase().match(/[\p{L}\p{N}+#/.-]+/gu) || [];
-export function answer(q) {
+export function answer(q, lang = "en") {
   const qn = q.toLowerCase(); const w = new Set(tokens(q));
   let best = null, bestScore = 0;
   facts.forEach(f => {
     let sc = 0;
     f.k.forEach(k => { if (k.includes(" ") || k.includes("-") ? qn.includes(k) : w.has(k)) sc += 2; });
-    tokens(f.q).forEach(x => { if (x.length > 3 && w.has(x)) sc += 1; });
+    [f.q.en, f.q.de].forEach(x => tokens(x).forEach(t => { if (t.length > 3 && w.has(t)) sc += 1; }));
     if (sc > bestScore) { bestScore = sc; best = f; }
   });
   const gap = gaps.find(g => keyRx(g).test(qn));
-  if (gap && bestScore < 3) return `${gap[0].toUpperCase() + gap.slice(1)} is not one of Engin's focus areas.`;
-  return best && bestScore >= 2 ? best.a : null;
+  const G = gap && gap[0].toUpperCase() + gap.slice(1);
+  if (gap && bestScore < 3) return lang === "de" ? `${G} gehört nicht zu Engins Schwerpunkten.` : `${G} is not one of Engin's focus areas.`;
+  return best && bestScore >= 2 ? pick(best.a, lang) : null;
 }
