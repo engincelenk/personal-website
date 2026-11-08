@@ -7,7 +7,7 @@ export const person = {
   name: "Engin Celenk",
   degree: "M.Sc.",
   initials: "EC",
-  roles: ["M.Sc. Business Informatics", "Cyber Security Engineer", "IT Architect"],
+  roles: ["M.Sc. Computer Science", "Cyber Security Engineer", "IT Architect"],
   location: "Stuttgart region, Germany",
   email: "engincelenk@web.de",
   phone: ["+49", "163", "685", "4373"], // shown only after a click
@@ -74,9 +74,9 @@ export const education = [
   { id: "azubi", year: "2003", logo: "akzonobel", short: "Apprenticeship", title: "Apprenticeship · office administrator", text: "Akzo Nobel AG, Ludwigsburg · 2003–2005" },
   { id: "hhn", year: "2005", logo: "heilbronn", short: "Software Engineering", title: "Software Engineering studies", text: "Heilbronn University · 2005–2008",
     extra: { logo: "bosch", text: "Internship Bosch Gasoline Systems: two C# tools for LabCar test systems" } },
-  { id: "bsc", year: "2009", logo: "reutlingen", short: "B.Sc.", title: "B.Sc. Business Informatics", text: "Reutlingen University · 2008–2009 · focus SAP SRM & BI",
+  { id: "bsc", year: "2009", logo: "reutlingen", short: "B.Sc.", title: "B.Sc. Computer Science", text: "Reutlingen University · 2008–2009 · Wirtschaftsinformatik · focus SAP SRM & BI",
     extra: { logo: "apsolut", text: "Thesis at apsolut: procurement KPIs in SAP NetWeaver BI 7.0" } },
-  { id: "msc", year: "2012", logo: "reutlingen", short: "M.Sc. · 1.7", title: "M.Sc. Business Informatics · grade 1.7", text: "Reutlingen University · 2010–2012 · faculty award · publication on SOA monitoring",
+  { id: "msc", year: "2012", logo: "reutlingen", short: "M.Sc. · 1.7", title: "M.Sc. Computer Science · grade 1.7", text: "Reutlingen University · 2010–2012 · Wirtschaftsinformatik · faculty award · publication on SOA monitoring",
     extra: { logo: "tss", text: "Thesis at Daimler TSS: iOS app on Sybase Unwired Platform" } }
 ];
 
