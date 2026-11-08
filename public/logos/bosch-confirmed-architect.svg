@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 132" role="img" aria-label="Bosch Confirmed Architect, Associate Architect">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1B3A8C"/><stop offset=".55" stop-color="#2E6FD8"/><stop offset="1" stop-color="#2EC4E6"/>
+    </linearGradient>
+    <clipPath id="h"><path d="M60 6 110 35v62L60 126 10 97V35z"/></clipPath>
+  </defs>
+  <path d="M60 2 114 33v66L60 130 6 99V33z" fill="url(#g)"/>
+  <g clip-path="url(#h)">
+    <rect x="0" y="0" width="120" height="132" fill="#fff"/>
+    <path d="M0 86 120 70V132H0z" fill="url(#g)"/>
+  </g>
+  <g font-family="Helvetica, Arial, sans-serif" text-anchor="middle">
+    <circle cx="37" cy="36" r="4.8" fill="none" stroke="#E20015" stroke-width="1.4"/>
+    <path d="M34.8 33v6M39.2 33v6M34.8 36h4.4" stroke="#E20015" stroke-width="1.1"/>
+    <text x="67" y="39.8" font-size="10.5" font-weight="700" fill="#E20015" letter-spacing=".4">BOSCH</text>
+    <text x="60" y="56" font-size="10.4" font-weight="700" fill="#101827">Confirmed</text>
+    <text x="60" y="68" font-size="10.4" font-weight="700" fill="#101827">Architect</text>
+    <text x="60" y="101" font-size="8.6" font-weight="600" fill="#fff">Associate</text>
+    <text x="60" y="111" font-size="8.6" font-weight="600" fill="#fff">Architect</text>
+  </g>
+</svg>

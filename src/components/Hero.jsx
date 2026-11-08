@@ -24,7 +24,12 @@ export default function Hero({ guest, focus }) {
             <span className="h-1.5 w-1.5 flex-none rounded-full bg-signal" />{guest}
           </motion.p>
         )}
-        <motion.p {...rise(0)} className="text-lg font-medium tracking-tight sm:text-xl">{p.name}<span className="text-signal">, {p.degree}</span></motion.p>
+        <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center lg:gap-12">
+        <div>
+        <motion.p {...rise(0)} className="flex items-center gap-3 text-lg font-medium tracking-tight sm:text-xl">
+          <img src="/engin.jpg" alt="" width="720" height="720" className="h-12 w-12 rounded-full object-cover ring-2 ring-signal/60 lg:hidden" />
+          <span>{p.name}<span className="text-signal">, {p.degree}</span></span>
+        </motion.p>
         <motion.h1 {...rise(1)} id="hero-title" className="mt-4 max-w-[16ch] text-[2.4rem] font-semibold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-[5.2rem]">
           {h.title[0]} <span className="text-signal">{h.title[1]}</span>
         </motion.h1>
@@ -36,6 +41,15 @@ export default function Hero({ guest, focus }) {
           <a href="#journey" className="btn-primary">{t("explore")} <ArrowUpRight size={16} /></a>
           <a href={cv} download className="btn-ghost">{t("downloadCv")} <Download size={16} /></a>
         </motion.div>
+        </div>
+        <motion.figure {...rise(2)} className="relative hidden lg:block">
+          <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-signal/20 blur-3xl" aria-hidden="true" />
+          <img src="/engin.jpg" alt={t("portrait")} width="720" height="720" className="aspect-square w-full rounded-[2rem] border border-white/10 object-cover shadow-2xl" />
+          <figcaption className="absolute -bottom-4 left-6 rounded-full border border-white/10 bg-ink/90 px-4 py-2 text-sm backdrop-blur">
+            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-emerald-400 align-middle" />Cyber Security Engineer · Bosch
+          </figcaption>
+        </motion.figure>
+        </div>
         <motion.div {...rise(5)} className="mt-16 md:mt-20">
           <p className="label">{t("workedAt")}</p>
           <ul className="no-scrollbar -mx-5 mt-4 flex gap-3 overflow-x-auto px-5 pb-1 sm:mx-0 sm:grid sm:max-w-[620px] sm:grid-cols-5 sm:overflow-visible sm:px-0">

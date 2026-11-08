@@ -29,7 +29,7 @@ document.getElementById("cv").innerHTML = `
       <h1>${esc(person.name)}<span>, ${esc(person.degree)}</span></h1>
       <p class="headline">${esc(f.headline)}</p>
     </div>
-    <img src="/engin.png" alt="" class="photo">
+    <img src="/engin.jpg" alt="" class="photo">
   </header>
   <p class="contact"><span>${esc(person.email)}</span><span>${esc(person.location)}</span><span>${esc(person.site.replace("https://", ""))}</span></p>
   <section class="profile"><p>${esc(f.profile)}</p></section>
