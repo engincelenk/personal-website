@@ -11,7 +11,7 @@ Home (animated system network) · Journey (interactive timeline) · Expertise (c
 German and English. Switch in the header or with `?lang=de` / `?lang=en`. Content texts are `{ en, de }` pairs in `src/data/`, interface texts in `src/strings.js`.
 
 ## Freelance page
-`/freelance.html`: service catalogue (16 services in four areas), way of working, industries and a request configurator that writes a ready-made email. Content in `src/data/services.js`. Linked from the main navigation, hidden on personal application links.
+`/freelance.html`: general service portfolio with three equal pillars (architecture, cyber security, project/program & solution management) and AI as the vertical across all three, shown as an interactive matrix; way of working, industries and a request configurator that writes a ready-made email. Content in `src/data/services.js`. Linked from the main navigation, hidden on personal application links.
 
 ## Edit content
 - `src/data/profile.js` – person, journey, expertise, case studies, values, CV focuses
