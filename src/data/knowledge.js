@@ -41,7 +41,7 @@ export const facts = [
   { q: "Which certificates?", k: ["certificate", "certificates", "certified", "certification", "ipma", "itil", "scrum"],
     a: "Bosch Confirmed Architect, IPMA Level D, PSM I, PSPO I, ITIL Foundation." },
   { q: "What did he study?", k: ["education", "study", "studies", "degree", "master", "bachelor", "university", "school", "msc"],
-    a: "M.Sc. and B.Sc. Business Informatics, Reutlingen University (M.Sc. grade 1.7), plus Software Engineering at Heilbronn University." },
+    a: "M.Sc. and B.Sc. Computer Science (Wirtschaftsinformatik), Reutlingen University (M.Sc. grade 1.7), plus Software Engineering at Heilbronn University." },
   { q: "Does he code?", k: ["hands-on", "technical", "coding", "code", "developer", "programming", "c#", "java"],
     a: "Yes: C#, Java, Objective-C and SAP customizing. Today he builds tools with AI, such as ImmoFuchs." },
   { q: "Languages?", k: ["language", "languages", "speak", "german", "english", "turkish"],
