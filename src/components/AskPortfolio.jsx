@@ -2,22 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import { facts } from "../data/knowledge.js";
 import { answer } from "../lib/match.js";
-
-const suggestions = [2, 0, 6, 4, 7].map(i => facts[i].q);
+import { useLang } from "../i18n.jsx";
 
 export default function AskPortfolio() {
-  const [log, setLog] = useState([{ who: "bot", text: "Ask about Engin's experience, projects or education." }]);
+  const { t, lang } = useLang();
+  const [log, setLog] = useState([]);
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
   const box = useRef(null);
   useEffect(() => { box.current?.scrollTo({ top: box.current.scrollHeight, behavior: "smooth" }); }, [log]);
+  const suggestions = [2, 0, 6, 4, 7].map(i => facts[i].q[lang]);
 
   const ask = async text => {
     text = text.trim(); if (!text || busy) return;
     setQ(""); setBusy(true);
     setLog(l => [...l, { who: "me", text }, { who: "bot", text: "", typing: true }]);
-    await new Promise(r => setTimeout(r, 450));
-    const full = answer(text) || "No verified answer to that. Ask Engin directly: engincelenk@web.de.";
+    await new Promise(r => setTimeout(r, 400));
+    const full = answer(text, lang) || t("noAnswer");
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     let i = reduce ? full.length : 0;
     const tick = () => {
@@ -29,13 +30,14 @@ export default function AskPortfolio() {
   };
 
   return (
-    <div className="flex h-full flex-col">
-      <div ref={box} className="no-scrollbar flex max-h-[380px] min-h-[200px] flex-1 flex-col gap-3 overflow-y-auto pb-2" aria-live="polite">
+    <div className="flex flex-col">
+      <div ref={box} className="no-scrollbar flex max-h-[360px] min-h-[180px] flex-col gap-3 overflow-y-auto pb-2" aria-live="polite">
+        <div className="max-w-[88%] self-start rounded-2xl rounded-bl-md bg-white/[0.05] px-4 py-3 text-[15px] text-snow/90">{t("askHello")}</div>
         {log.map((m, i) => (
           <div key={i} className={`max-w-[88%] rounded-2xl px-4 py-3 text-[15px] leading-relaxed ${m.who === "me" ? "self-end rounded-br-md bg-signal text-ink" : "self-start rounded-bl-md bg-white/[0.05] text-snow/90"}`}>
             {m.typing && !m.text ? <span className="flex gap-1 py-1">{[0, 1, 2].map(k => <span key={k} className="h-1.5 w-1.5 animate-bounce rounded-full bg-mist" style={{ animationDelay: `${k * 0.12}s` }} />)}</span>
               : <span className={m.typing ? "caret" : ""}>{m.text}</span>}
-            {m.src && !m.typing && <span className="mt-1.5 block font-mono text-[10px] uppercase tracking-wider text-mist">From verified portfolio facts</span>}
+            {m.src && !m.typing && <span className="mt-1.5 block font-mono text-[10px] uppercase tracking-wider text-mist">{t("fromFacts")}</span>}
           </div>
         ))}
       </div>
@@ -43,10 +45,10 @@ export default function AskPortfolio() {
         {suggestions.map(s => <button key={s} type="button" className="chip flex-none whitespace-nowrap" onClick={() => ask(s)}>{s}</button>)}
       </div>
       <form className="mt-3 flex gap-2" onSubmit={e => { e.preventDefault(); ask(q); }}>
-        <label htmlFor="ask" className="sr-only">Your question</label>
-        <input id="ask" value={q} onChange={e => setQ(e.target.value)} autoComplete="off" placeholder="Your question"
+        <label htmlFor="ask" className="sr-only">{t("yourQuestion")}</label>
+        <input id="ask" value={q} onChange={e => setQ(e.target.value)} autoComplete="off" placeholder={t("askPh")}
           className="min-h-[48px] min-w-0 flex-1 rounded-full border border-white/10 bg-ink px-5 text-[16px] text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none" />
-        <button type="submit" aria-label="Ask" className="grid h-12 w-12 flex-none place-items-center rounded-full bg-signal text-ink transition-colors hover:bg-[#ff7a1f] disabled:opacity-50" disabled={busy}><ArrowUp size={18} /></button>
+        <button type="submit" aria-label={t("ask")} className="grid h-12 w-12 flex-none place-items-center rounded-full bg-signal text-ink transition-colors hover:bg-[#ff7a1f] disabled:opacity-50" disabled={busy}><ArrowUp size={18} /></button>
       </form>
     </div>
   );

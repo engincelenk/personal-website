@@ -1,33 +1,32 @@
 /* ------------------------------------------------------------------
-   All content of the site lives here. Keep it short: every line is read
-   by a recruiter in a few seconds. Facts come from Engin's CV.
+   All content of the site. Texts are bilingual: { en: "…", de: "…" }.
+   Keep it short: every line is read by a recruiter in a few seconds.
 ------------------------------------------------------------------- */
 
 export const person = {
   name: "Engin Celenk",
   degree: "M.Sc.",
   initials: "EC",
-  roles: ["M.Sc. Computer Science", "Cyber Security Engineer", "IT Architect"],
-  location: "Stuttgart region, Germany",
+  roles: [{ en: "M.Sc. Computer Science", de: "M.Sc. Informatik" }, "Cyber Security Engineer", "IT Architect"],
+  location: { en: "Stuttgart region, Germany", de: "Region Stuttgart" },
   email: "engincelenk@web.de",
   phone: ["+49", "163", "685", "4373"], // shown only after a click
   linkedin: "", // e.g. "https://www.linkedin.com/in/…"
-  github: "https://github.com/engincelenk",
   site: "https://ec.immofuchs.info",
   careerStart: "2012-03",
   languages: [
-    { name: "German", level: "Native" },
-    { name: "Turkish", level: "Native" },
-    { name: "English", level: "Fluent · daily working language" }
+    { name: { en: "German", de: "Deutsch" }, level: { en: "Native", de: "Muttersprache" } },
+    { name: { en: "Turkish", de: "Türkisch" }, level: { en: "Native", de: "Muttersprache" } },
+    { name: { en: "English", de: "Englisch" }, level: { en: "Fluent · daily working language", de: "Fließend · tägliche Arbeitssprache" } }
   ]
 };
 
 export const hero = {
-  title: ["I connect technology,", "security & business."],
-  line: "IT through and through: from code to architecture to security."
+  title: [{ en: "I connect technology,", de: "Ich verbinde Technologie," }, { en: "security & business.", de: "Security & Business." }],
+  line: { en: "IT through and through: from code to architecture to security.", de: "Durch und durch Informatiker: von Code über Architektur bis Security." }
 };
 
-/* Logos cropped from the original CV. */
+/* Logos cropped from the original CV. `text` = wordmark tile when no logo file exists. */
 export const logos = {
   bosch: { src: "/logos/bosch.png", name: "Bosch" },
   daimler: { src: "/logos/daimler.png", name: "Daimler" },
@@ -36,68 +35,88 @@ export const logos = {
   trumpf: { src: "/logos/trumpf.png", name: "TRUMPF" },
   akzonobel: { src: "/logos/akzonobel.png", name: "AkzoNobel" },
   apsolut: { src: "/logos/apsolut.png", name: "apsolut" },
+  enbw: { text: "EnBW", name: "EnBW" },
   reutlingen: { src: "/logos/hs-reutlingen.png", name: "Reutlingen University" },
   heilbronn: { src: "/logos/hs-heilbronn.png", name: "Heilbronn University" }
 };
-export const logoStrip = ["bosch", "daimler", "trumpf", "reutlingen", "heilbronn", "akzonobel"];
+export const logoStrip = ["bosch", "daimler", "trumpf", "protics", "tss", "apsolut", "enbw", "reutlingen", "heilbronn", "akzonobel"];
 
-/* Career path, oldest first. Keep points to two or three. */
+/* Career path, oldest first. */
 export const career = [
-  { id: "protics", from: "2012-03", to: "2014-09", logo: "protics", short: "IT Consultant",
-    role: "IT Consultant / IT Project Manager", org: "Daimler Protics GmbH", place: "Stuttgart",
-    points: ["E-commerce", "End-to-end responsibility"], domains: ["management"] },
-  { id: "daimler", from: "2014-10", to: "2017-08", logo: "daimler", short: "Project Manager & Architect",
-    role: "IT (Senior) Project Manager / IT Solution Architect", org: "Daimler AG · IT Sales & Marketing", place: "Stuttgart",
-    points: ["Project manager for mercedes-benz.com", "Customer experience & e-commerce for mymercedes.me", "Solution architect, IBM mainframe area"],
+  { id: "protics", from: "2012-03", to: "2014-09", logo: "protics", place: "Stuttgart",
+    short: { en: "IT Consultant", de: "IT-Consultant" },
+    role: { en: "IT Consultant / IT Project Manager", de: "IT-Consultant / IT-Projektmanager" }, org: "Daimler Protics GmbH",
+    points: [{ en: "E-commerce", de: "E-Commerce" }, { en: "End-to-end responsibility", de: "End-to-End-Verantwortung" }], domains: ["management"] },
+  { id: "daimler", from: "2014-10", to: "2017-08", logo: "daimler", place: "Stuttgart",
+    short: { en: "Project Manager & Architect", de: "Projektmanager & Architekt" },
+    role: { en: "IT (Senior) Project Manager / IT Solution Architect", de: "IT (Senior) Projektmanager / IT Solution Architect" }, org: "Daimler AG · IT Sales & Marketing",
+    points: [
+      { en: "Project manager for mercedes-benz.com", de: "Projektmanager für mercedes-benz.com" },
+      { en: "Customer experience & e-commerce for mymercedes.me", de: "Customer Experience & E-Commerce für mymercedes.me" },
+      { en: "Solution architect, IBM mainframe area", de: "Solution Architect im IBM-Mainframe-Umfeld" }],
     projects: ["mercedes-benz.com", "mymercedes.me"], domains: ["management", "architecture"] },
-  { id: "trumpf", from: "2017-09", to: "2019-04", logo: "trumpf", short: "Consultant & Architect",
-    role: "IT (Senior) Consultant Digitalization & Solution Architect", org: "TRUMPF GmbH + Co. KG · IT Marketing & Sales", place: "Ditzingen",
-    points: ["Customer experience platform", "Customer portal MyTRUMPF"], projects: ["MyTRUMPF"], domains: ["architecture", "management"] },
-  { id: "bosch-arch", from: "2019-05", to: "2021-11", logo: "bosch", short: "Lead Solution Architect",
-    role: "IT (Senior) Solution (Lead) Architect · Digital Business & CX", org: "Robert Bosch GmbH · Central IT", place: "Stuttgart",
-    points: ["Lead architect for customer-facing digital platforms"], projects: ["Bosch Smart Home website", "ATMO e-commerce", "MAM with Sharedien", "Audit SaaS", "eLAKE"], domains: ["architecture"] },
-  { id: "bosch-logistics", from: "2021-07", to: "2023-12", logo: "bosch", short: "IT Solution Manager",
-    role: "IT Solution Manager in Logistics", org: "Bosch Digital · Robert Bosch GmbH", place: "Stuttgart",
-    points: ["E2E responsibility for Bosch's central transport management application, worldwide", "Partners: SupplyOn & Eurolog"], domains: ["management"] },
-  { id: "bosch-cse", from: "2024-01", to: null, logo: "bosch", short: "Cyber Security Engineer",
-    role: "Cyber Security Engineer", org: "Bosch Digital · Robert Bosch GmbH", place: "Stuttgart",
-    points: ["Security engineering in digital business projects", "Threat analysis & risk assessment (TARA)"], domains: ["security", "architecture"] }
+  { id: "trumpf", from: "2017-09", to: "2019-04", logo: "trumpf", place: "Ditzingen",
+    short: { en: "Consultant & Architect", de: "Consultant & Architekt" },
+    role: { en: "IT (Senior) Consultant Digitalization & Solution Architect", de: "IT (Senior) Consultant Digitalisierung & Solution Architect" }, org: "TRUMPF GmbH + Co. KG · IT Marketing & Sales",
+    points: [{ en: "Customer experience platform", de: "Customer-Experience-Plattform" }, { en: "Customer portal MyTRUMPF", de: "Kundenportal MyTRUMPF" }],
+    projects: ["MyTRUMPF"], domains: ["architecture", "management"] },
+  { id: "bosch-arch", from: "2019-05", to: "2021-11", logo: "bosch", place: "Stuttgart",
+    short: { en: "Lead Solution Architect", de: "Lead Solution Architect" },
+    role: { en: "IT (Senior) Solution (Lead) Architect · Digital Business & CX", de: "IT (Senior) Solution (Lead) Architect · Digital Business & CX" }, org: "Robert Bosch GmbH · Central IT",
+    points: [{ en: "Lead architect for customer-facing digital platforms", de: "Lead-Architekt für kundennahe digitale Plattformen" }],
+    projects: ["Bosch Smart Home Website", "ATMO E-Commerce", "MAM / Sharedien", "Audit SaaS", "eLAKE"], domains: ["architecture"] },
+  { id: "bosch-logistics", from: "2021-07", to: "2023-12", logo: "bosch", place: "Stuttgart",
+    short: { en: "IT Solution Manager", de: "IT Solution Manager" },
+    role: { en: "IT Solution Manager in Logistics", de: "IT Solution Manager Logistik" }, org: "Bosch Digital · Robert Bosch GmbH",
+    points: [
+      { en: "E2E responsibility for Bosch's central transport management application, worldwide", de: "E2E-Verantwortung für die zentrale Transport-Management-Anwendung von Bosch, weltweit" },
+      { en: "Partners: SupplyOn & Eurolog", de: "Partner: SupplyOn & Eurolog" }], domains: ["management"] },
+  { id: "bosch-cse", from: "2024-01", to: null, logo: "bosch", place: "Stuttgart",
+    short: { en: "Cyber Security Engineer", de: "Cyber Security Engineer" },
+    role: { en: "Cyber Security Engineer", de: "Cyber Security Engineer" }, org: "Bosch Digital · Robert Bosch GmbH",
+    points: [
+      { en: "Security engineering in digital business projects", de: "Security Engineering in Digital-Business-Projekten" },
+      { en: "Threat analysis & risk assessment (TARA)", de: "Bedrohungs- und Risikoanalysen (TARA)" }], domains: ["security", "architecture"] }
 ];
 
 /* Education staircase, bottom step first. */
 export const education = [
-  { id: "arrival", year: "1994", icon: "MapPin", short: "Arrival in Germany", title: "Arrival in Germany", text: "The first step." },
-  { id: "grund", year: "", icon: "School", short: "Grundschule", title: "Grundschule", text: "Primary school." },
-  { id: "haupt", year: "", icon: "School", short: "Hauptschule", title: "Hauptschule", text: "Secondary school." },
-  { id: "werkreal", year: "", icon: "School", short: "Werkrealschule", title: "Werkrealschule", text: "Secondary school." },
-  { id: "wg", year: "", icon: "School", short: "Wirtschafts­gymnasium", title: "Wirtschaftsgymnasium", text: "Business high school." },
-  { id: "azubi", year: "2003", logo: "akzonobel", short: "Apprenticeship", title: "Apprenticeship · office administrator", text: "Akzo Nobel AG, Ludwigsburg · 2003–2005" },
-  { id: "hhn", year: "2005", logo: "heilbronn", short: "Software Engineering", title: "Software Engineering studies", text: "Heilbronn University · 2005–2008",
-    extra: { logo: "bosch", text: "Internship Bosch Gasoline Systems: two C# tools for LabCar test systems" } },
-  { id: "bsc", year: "2009", logo: "reutlingen", short: "B.Sc.", title: "B.Sc. Computer Science", text: "Reutlingen University · 2008–2009 · Wirtschaftsinformatik · focus SAP SRM & BI",
-    extra: { logo: "apsolut", text: "Thesis at apsolut: procurement KPIs in SAP NetWeaver BI 7.0" } },
-  { id: "msc", year: "2012", logo: "reutlingen", short: "M.Sc. · 1.7", title: "M.Sc. Computer Science · grade 1.7", text: "Reutlingen University · 2010–2012 · Wirtschaftsinformatik · faculty award · publication on SOA monitoring",
-    extra: { logo: "tss", text: "Thesis at Daimler TSS: iOS app on Sybase Unwired Platform" } }
+  { id: "arrival", year: "1994", icon: "MapPin", short: { en: "Arrival in Germany", de: "Ankunft in Deutschland" }, title: { en: "Arrival in Germany", de: "Ankunft in Deutschland" }, text: { en: "The first step.", de: "Die erste Stufe." } },
+  { id: "grund", year: "", icon: "School", short: { en: "Primary school", de: "Grundschule" }, title: { en: "Primary school", de: "Grundschule" }, text: { en: "Grundschule", de: "Die Grundlage." } },
+  { id: "haupt", year: "", icon: "School", short: { en: "Lower secondary", de: "Hauptschule" }, title: { en: "Lower secondary school", de: "Hauptschule" }, text: { en: "Hauptschule", de: "Nächste Stufe." } },
+  { id: "werkreal", year: "", icon: "School", short: { en: "Vocational secondary", de: "Werkrealschule" }, title: { en: "Vocational secondary school", de: "Werkrealschule" }, text: { en: "Werkrealschule", de: "Nächste Stufe." } },
+  { id: "wg", year: "", icon: "School", short: { en: "Business high school", de: "Wirtschafts­gymnasium" }, title: { en: "Business high school", de: "Wirtschaftsgymnasium" }, text: { en: "Wirtschaftsgymnasium", de: "Schwerpunkt Wirtschaft." } },
+  { id: "azubi", year: "2003", logo: "akzonobel", short: { en: "Apprenticeship", de: "Ausbildung" }, title: { en: "Apprenticeship · office administrator", de: "Ausbildung zum Bürokaufmann" }, text: { en: "Akzo Nobel AG, Ludwigsburg · 2003–2005", de: "Akzo Nobel AG, Ludwigsburg · 2003–2005" } },
+  { id: "hhn", year: "2005", logo: "heilbronn", short: { en: "Software Engineering", de: "Software Engineering" }, title: { en: "Software Engineering studies", de: "Studium Software Engineering" }, text: { en: "Heilbronn University · 2005–2008", de: "Hochschule Heilbronn · 2005–2008" },
+    extra: { logo: "bosch", text: { en: "Internship Bosch Gasoline Systems: two C# tools for LabCar test systems", de: "Praktikum Bosch Gasoline Systems: zwei C#-Tools für LabCar-Testsysteme" } } },
+  { id: "bsc", year: "2009", logo: "reutlingen", short: { en: "B.Sc.", de: "B.Sc." }, title: { en: "B.Sc. Computer Science", de: "B.Sc. Informatik" }, text: { en: "Reutlingen University · 2008–2009 · Wirtschaftsinformatik · focus SAP SRM & BI", de: "Hochschule Reutlingen · 2008–2009 · Wirtschaftsinformatik · Schwerpunkt SAP SRM & BI" },
+    extra: { logo: "apsolut", text: { en: "Thesis at apsolut: procurement KPIs in SAP NetWeaver BI 7.0", de: "Abschlussarbeit bei apsolut: Einkaufskennzahlen in SAP NetWeaver BI 7.0" } } },
+  { id: "msc", year: "2012", logo: "reutlingen", short: { en: "M.Sc. · 1.7", de: "M.Sc. · 1,7" }, title: { en: "M.Sc. Computer Science · grade 1.7", de: "M.Sc. Informatik · Note 1,7" }, text: { en: "Reutlingen University · 2010–2012 · Wirtschaftsinformatik · faculty award · publication on SOA monitoring", de: "Hochschule Reutlingen · 2010–2012 · Wirtschaftsinformatik · Fakultätspreis · Publikation zu SOA-Monitoring" },
+    extra: { logo: "tss", text: { en: "Thesis at Daimler TSS: iOS app on Sybase Unwired Platform", de: "Masterarbeit bei Daimler TSS: iOS-App auf Sybase Unwired Platform" } } }
 ];
 
-/* Competence model. Short on purpose. */
+/* Competence model. */
 export const domains = [
   { id: "security", icon: "ShieldCheck", title: "Cyber Security",
-    keywords: ["Security Engineering", "TARA", "STRIDE", "Risk Assessment", "Governance"],
-    evidence: ["Cyber Security Engineer, Bosch Digital, since 2024"] },
-  { id: "architecture", icon: "Boxes", title: "Architecture",
+    keywords: ["Security Engineering", "TARA", "STRIDE", { en: "Risk Assessment", de: "Risikobewertung" }, "Governance"],
+    evidence: [{ en: "Cyber Security Engineer, Bosch Digital, since 2024", de: "Cyber Security Engineer, Bosch Digital, seit 2024" }] },
+  { id: "architecture", icon: "Boxes", title: { en: "Architecture", de: "Architektur" },
     keywords: ["Solution Architecture", "System Design", "Integration", "Cloud & SaaS"],
-    evidence: ["Lead Architect, Bosch Central IT", "Solution Architect at TRUMPF & Daimler", "Bosch Confirmed Architect"] },
+    evidence: [{ en: "Lead Architect, Bosch Central IT", de: "Lead Architect, Bosch Central IT" }, { en: "Solution Architect at TRUMPF & Daimler", de: "Solution Architect bei TRUMPF & Daimler" }, "Bosch Confirmed Architect"] },
   { id: "management", icon: "Workflow", title: "Management",
-    keywords: ["Solution Management", "E2E Ownership", "Stakeholders", "Agile Delivery"],
-    evidence: ["E2E owner of Bosch's worldwide TMS", "PM for mercedes-benz.com", "IPMA D · PSM I · PSPO I · ITIL"] },
-  { id: "ai", icon: "Sparkles", title: "AI & Innovation",
-    keywords: ["AI Applications", "AI-assisted Security", "Product Development"],
-    evidence: ["Built ImmoFuchs", "Built this portfolio with AI"] }
+    keywords: ["Solution Management", { en: "E2E Ownership", de: "E2E-Verantwortung" }, "Stakeholder", { en: "Agile Delivery", de: "Agile Umsetzung" }],
+    evidence: [{ en: "E2E owner of Bosch's worldwide TMS", de: "E2E-Verantwortung für das weltweite TMS von Bosch" }, { en: "PM for mercedes-benz.com", de: "Projektleitung mercedes-benz.com" }, "IPMA D · PSM I · PSPO I · ITIL"] },
+  { id: "ai", icon: "Sparkles", title: { en: "AI & Innovation", de: "KI & Innovation" },
+    keywords: [{ en: "AI Applications", de: "KI-Anwendungen" }, { en: "AI-assisted Security", de: "KI-gestützte Security" }, { en: "Product Development", de: "Produktentwicklung" }],
+    evidence: [{ en: "Built ImmoFuchs", de: "ImmoFuchs entwickelt" }, { en: "Built this portfolio with AI", de: "Dieses Portfolio mit KI gebaut" }] }
 ];
 
-export const values = ["Analytical thinking", "Ownership & reliability", "Continuous learning", "Cross-functional collaboration", "Pragmatic problem solving"];
-export const quote = "The best solutions emerge when different perspectives come together.";
+export const values = [
+  { en: "Analytical thinking", de: "Analytisches Denken" }, { en: "Ownership & reliability", de: "Verantwortung & Verlässlichkeit" },
+  { en: "Continuous learning", de: "Kontinuierliches Lernen" }, { en: "Cross-functional collaboration", de: "Bereichsübergreifende Zusammenarbeit" },
+  { en: "Pragmatic problem solving", de: "Pragmatische Lösungen" }
+];
+export const quote = { en: "The best solutions emerge when different perspectives come together.", de: "Die besten Lösungen entstehen, wenn unterschiedliche Perspektiven zusammenkommen." };
 
 export const certificates = [
   { year: null, name: "Bosch Confirmed Architect", badge: "/logos/bosch-architect-badge.png" },
@@ -108,30 +127,33 @@ export const certificates = [
 ];
 
 export const trainings = [
-  { year: 2022, name: "Self-confidence and assertiveness" },
-  { year: 2018, name: "Design thinking" },
-  { year: 2017, name: "Communication & personality" },
+  { year: 2022, name: { en: "Self-confidence and assertiveness", de: "Selbstbewusstsein und Durchsetzungsvermögen" } },
+  { year: 2018, name: "Design Thinking" },
+  { year: 2017, name: { en: "Communication & personality", de: "Kommunikation & Persönlichkeit" } },
   { year: 2016, name: "APIs, Daimler" },
-  { year: 2015, name: "Agile projects with JIRA" },
-  { year: 2015, name: "Hybris (e-commerce)" },
+  { year: 2015, name: { en: "Agile projects with JIRA", de: "Agile Projekte mit JIRA" } },
+  { year: 2015, name: "Hybris (E-Commerce)" },
   { year: 2012, name: "Houston IT" },
-  { year: 2012, name: "Intershop (e-commerce)" }
+  { year: 2012, name: "Intershop (E-Commerce)" }
 ];
 
-export const sideProject = { name: "ImmoFuchs", link: "https://immofuchs.info", text: "Real estate analysis product, built independently with AI." };
+export const sideProject = { name: "ImmoFuchs", link: "https://immofuchs.info", text: { en: "Real estate analysis product, built independently with AI.", de: "Immobilien-Analyseprodukt, eigenständig mit KI entwickelt." } };
 
-/* Tailored CV focuses. Each has a matching PDF in /public/cv. */
+/* Tailored CV focuses. PDFs live in /public/cv (…-CV-… English, …-Lebenslauf-… German). */
 export const focuses = [
-  { id: "security", label: "Cyber Security", file: "/cv/Engin-Celenk-CV-Cyber-Security.pdf",
-    headline: "Cyber Security Engineer with an architecture and delivery background",
-    profile: "Cyber security engineer at Bosch Digital (TARA, security engineering). Over a decade of solution architecture and solution management in corporate IT at Bosch, TRUMPF and Daimler.",
+  { id: "security", label: "Cyber Security", file: { en: "/cv/Engin-Celenk-CV-Cyber-Security.pdf", de: "/cv/Engin-Celenk-Lebenslauf-Cyber-Security.pdf" },
+    headline: { en: "Cyber Security Engineer with an architecture and delivery background", de: "Cyber Security Engineer mit Architektur- und Projekterfahrung" },
+    profile: { en: "Cyber security engineer at Bosch Digital (TARA, security engineering). Over a decade of solution architecture and solution management in corporate IT at Bosch, TRUMPF and Daimler.",
+      de: "Cyber Security Engineer bei Bosch Digital (TARA, Security Engineering). Über zehn Jahre Solution-Architektur und Solution Management in der Konzern-IT von Bosch, TRUMPF und Daimler." },
     domains: ["security", "architecture", "management"] },
-  { id: "architecture", label: "IT Architecture", file: "/cv/Engin-Celenk-CV-IT-Architecture.pdf",
-    headline: "IT Solution Architect for secure digital platforms",
-    profile: "Solution architect for digital business and customer experience platforms at Bosch, TRUMPF and Daimler, now in cyber security. Integrations that teams can operate and that are secure by design.",
+  { id: "architecture", label: { en: "IT Architecture", de: "IT-Architektur" }, file: { en: "/cv/Engin-Celenk-CV-IT-Architecture.pdf", de: "/cv/Engin-Celenk-Lebenslauf-IT-Architektur.pdf" },
+    headline: { en: "IT Solution Architect for secure digital platforms", de: "IT Solution Architect für sichere digitale Plattformen" },
+    profile: { en: "Solution architect for digital business and customer experience platforms at Bosch, TRUMPF and Daimler, now in cyber security. Integrations that teams can operate and that are secure by design.",
+      de: "Solution Architect für Digital-Business- und Customer-Experience-Plattformen bei Bosch, TRUMPF und Daimler, heute in der Cyber Security. Integrationen, die Teams betreiben können und die sicher by Design sind." },
     domains: ["architecture", "security", "management"] },
-  { id: "innovation", label: "Technology & Innovation", file: "/cv/Engin-Celenk-CV-Technology-Innovation.pdf",
-    headline: "IT professional connecting security, architecture and AI",
-    profile: "Cyber security engineer at Bosch Digital with a background in architecture and solution management. Builds digital products with AI, such as ImmoFuchs.",
+  { id: "innovation", label: { en: "Technology & Innovation", de: "Technologie & Innovation" }, file: { en: "/cv/Engin-Celenk-CV-Technology-Innovation.pdf", de: "/cv/Engin-Celenk-Lebenslauf-Technologie-Innovation.pdf" },
+    headline: { en: "IT professional connecting security, architecture and AI", de: "Informatiker an der Schnittstelle von Security, Architektur und KI" },
+    profile: { en: "Cyber security engineer at Bosch Digital with a background in architecture and solution management. Builds digital products with AI, such as ImmoFuchs.",
+      de: "Cyber Security Engineer bei Bosch Digital mit Hintergrund in Architektur und Solution Management. Entwickelt digitale Produkte mit KI, zum Beispiel ImmoFuchs." },
     domains: ["ai", "architecture", "security"] }
 ];
