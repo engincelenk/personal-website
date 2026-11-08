@@ -9,7 +9,7 @@ export default function About() {
   return (
     <section id="about" aria-labelledby="about-title" className="section">
       <div className="wrap">
-        <SectionHead no="05" kicker={t("aboutKicker")} id="about-title" title={t("aboutTitle")} />
+        <SectionHead no="06" kicker={t("aboutKicker")} id="about-title" title={t("aboutTitle")} />
         <div className="grid gap-5 lg:grid-cols-3">
           <div className="panel flex flex-col p-6 lg:row-span-2">
             <div className="flex items-center gap-4">

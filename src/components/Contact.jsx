@@ -24,7 +24,7 @@ export default function Contact({ focus, setFocus }) {
   return (
     <section id="contact" aria-labelledby="contact-title" className="section">
       <div className="wrap">
-        <SectionHead no="06" kicker={t("contactKicker")} id="contact-title" title={t("contactTitle")} />
+        <SectionHead no="07" kicker={t("contactKicker")} id="contact-title" title={t("contactTitle")} />
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
           <div className="space-y-3">
             <div className="panel p-6">

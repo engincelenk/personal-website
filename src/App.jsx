@@ -5,6 +5,7 @@ import Career from "./components/Career.jsx";
 import Education from "./components/Education.jsx";
 import Expertise from "./components/Expertise.jsx";
 import Lab from "./components/Lab.jsx";
+import SecurityToolbox from "./components/SecurityToolbox.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
 import Footer from "./components/Footer.jsx";
@@ -33,12 +34,13 @@ function Page() {
   return (
     <>
       <a href="#journey" className="sr-only z-[60] rounded bg-signal px-3 py-2 text-ink focus:not-sr-only focus:fixed focus:left-3 focus:top-3">{t("skip")}</a>
-      <Nav />
+      <Nav showFreelance={!msg} />
       <main>
         <Hero guest={msg} focus={focus} />
         <Career />
         <Education />
         <Expertise domain={domain} setDomain={setDomain} />
+        <SecurityToolbox no="04" linkServices={!msg} />
         <Lab guest={guest} />
         <About />
         <Contact focus={focus} setFocus={setFocus} />
