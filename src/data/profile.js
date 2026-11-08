@@ -11,7 +11,7 @@ export const person = {
   location: { en: "Stuttgart region, Germany", de: "Region Stuttgart" },
   email: "engincelenk@web.de",
   phone: ["+49", "163", "685", "4373"], // shown only after a click
-  linkedin: "", // e.g. "https://www.linkedin.com/in/…"
+  linkedin: "https://de.linkedin.com/in/engin-celenk",
   site: "https://ec.immofuchs.info",
   careerStart: "2012-03",
   languages: [
@@ -56,8 +56,8 @@ export const career = [
       { en: "Solution architect, IBM mainframe area", de: "Solution Architect im IBM-Mainframe-Umfeld" }],
     projects: ["mercedes-benz.com", "mymercedes.me"], domains: ["management", "architecture"] },
   { id: "trumpf", from: "2017-09", to: "2019-04", logo: "trumpf", place: "Ditzingen",
-    short: { en: "Consultant & Architect", de: "Consultant & Architekt" },
-    role: { en: "IT (Senior) Consultant Digitalization & Solution Architect", de: "IT (Senior) Consultant Digitalisierung & Solution Architect" }, org: "TRUMPF GmbH + Co. KG · IT Marketing & Sales",
+    short: { en: "Solution Architect", de: "Solution Architect" },
+    role: { en: "IT (Senior) Solution Architect & Consultant Digitalization", de: "IT (Senior) Solution Architect & Consultant Digitalisierung" }, org: "TRUMPF GmbH + Co. KG · IT Marketing & Sales",
     points: [{ en: "Customer experience platform", de: "Customer-Experience-Plattform" }, { en: "Customer portal MyTRUMPF", de: "Kundenportal MyTRUMPF" }],
     projects: ["MyTRUMPF"], domains: ["architecture", "management"] },
   { id: "bosch-arch", from: "2019-05", to: "2021-11", logo: "bosch", place: "Stuttgart",
