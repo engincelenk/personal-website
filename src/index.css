@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { color-scheme: dark; }
+  html { scroll-behavior: smooth; scroll-padding-top: 84px; -webkit-text-size-adjust: 100%; }
+  body { @apply bg-ink text-snow font-sans antialiased; font-feature-settings: "ss01", "cv11"; }
+  h1, h2, h3 { text-wrap: balance; }
+  ::selection { background: #E8650A; color: #101827; }
+  :focus-visible { outline: 2px solid #E8650A; outline-offset: 3px; border-radius: 6px; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+  }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-page; padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
+  .label { @apply font-mono text-[11px] uppercase tracking-label text-mist; }
+  .section { @apply relative py-24 md:py-32; }
+  .h2 { @apply text-[2rem] leading-[1.05] font-semibold tracking-[-0.03em] md:text-5xl; }
+  .lead { @apply max-w-2xl text-lg leading-relaxed text-mist; }
+  .panel { @apply rounded-2xl border border-white/[0.07] bg-navy/25 backdrop-blur-sm; }
+  .btn { @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-5 text-sm font-medium transition-colors duration-200; }
+  .btn-primary { @apply btn bg-signal text-ink hover:bg-[#ff7a1f]; }
+  .btn-ghost { @apply btn border border-white/15 text-snow hover:border-signal hover:text-signal; }
+  .chip { @apply inline-flex min-h-[36px] items-center rounded-full border border-white/10 px-3.5 text-sm text-mist transition-colors hover:border-signal/60 hover:text-snow; }
+  .grid-bg { background-image: linear-gradient(rgba(169,180,194,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(169,180,194,.05) 1px, transparent 1px); background-size: 56px 56px; }
+}
+
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.caret::after { content: "▍"; color: #E8650A; animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: 0; } }

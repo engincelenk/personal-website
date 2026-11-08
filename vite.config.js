@@ -1,0 +1,18 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { resolve } from "node:path";
+
+export default defineConfig({
+  plugins: [react()],
+  base: "/",
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, "index.html"),
+        cv: resolve(__dirname, "cv.html"),
+        legal: resolve(__dirname, "legal.html"),
+        link: resolve(__dirname, "link.html")
+      }
+    }
+  }
+});

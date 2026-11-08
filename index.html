@@ -3,168 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Engin Celenk</title>
-<meta name="description" content="Engin Celenk: cyber security engineer, solution architect and IT project manager. Interactive CV with a job fit check and a digital twin.">
-<meta property="og:title" content="Engin Celenk · Cyber security, architecture, IT delivery">
-<meta property="og:description" content="A CV you can try out: paste a job post, see the fit, ask questions.">
-<meta property="og:image" content="assets/engin.png">
-<link rel="icon" href="assets/engin.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<title>Engin Celenk · Beyond the CV</title>
+<meta name="description" content="Engin Celenk connects technology, security and business. Cyber security engineer, IT architect and technology innovator. Explore the journey, expertise and case studies.">
+<meta name="theme-color" content="#101827">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Engin Celenk · Beyond the CV">
+<meta property="og:description" content="I connect technology, security & business. Turning complexity into clarity.">
+<meta property="og:image" content="https://ec.immofuchs.info/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
-<body data-lens="all">
-<a class="skip" href="#fit" data-i18n="skip">Skip to fit check</a>
-
-<header class="top">
-  <div class="top-in">
-    <a class="mark" href="#top">Engin Celenk</a>
-    <nav aria-label="Sections" id="nav">
-      <a href="#fit" data-i18n="nav.fit">Fit check</a>
-      <a href="#path" data-i18n="nav.path">Career</a>
-      <a href="#tree" data-i18n="nav.tree">Profile</a>
-      <a href="#twin" data-i18n="nav.twin">Ask</a>
-      <a href="#contact" data-i18n="nav.contact">Contact</a>
-    </nav>
-  </div>
-</header>
-
-<main id="top">
-  <div class="welcome" id="welcome" hidden></div>
-
-  <section class="hero" aria-labelledby="headline">
-    <div class="hero-text">
-      <p class="eyebrow" id="hero-eyebrow"></p>
-      <h1 id="headline" aria-live="polite"></h1>
-      <p class="sub" id="sub"></p>
-      <p class="hello" data-i18n="lens.prompt">View this CV as</p>
-      <div class="lenses" role="radiogroup" aria-label="Choose a lens" id="lenses"></div>
-    </div>
-    <figure class="portrait">
-      <img src="assets/engin.png" alt="Portrait of Engin Celenk" width="228" height="228">
-      <figcaption>
-        <span class="status-dot" aria-hidden="true"></span>
-        <span id="nowrole"></span>
-      </figcaption>
-    </figure>
-    <dl class="facts" id="facts"></dl>
-  </section>
-
-  <section id="fit" class="block lab" aria-labelledby="h-fit">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="fit.kicker">For recruiters</p>
-      <h2 id="h-fit" data-i18n="fit.title">Is Engin a fit for your role?</h2>
-      <p class="lead" data-i18n="fit.lead">Paste a job post. The page compares it with the CV, highlights matches, says plainly what does not fit and writes a short profile for exactly this role. Everything runs in your browser and nothing is sent anywhere.</p>
-    </div>
-    <div class="lab-grid">
-      <div class="lab-input">
-        <label for="jd" class="lbl" data-i18n="fit.label">Job post</label>
-        <textarea id="jd" rows="9"></textarea>
-        <div class="row">
-          <button id="run" class="btn" type="button" data-i18n="fit.run">Check fit</button>
-          <button id="sample1" class="btn ghost" type="button" data-i18n="fit.sample1">Sample: security</button>
-          <button id="sample2" class="btn ghost" type="button" data-i18n="fit.sample2">Sample: project lead</button>
-        </div>
-      </div>
-      <div id="result" class="result" aria-live="polite"></div>
-    </div>
-  </section>
-
-  <section id="pillars" class="block" aria-labelledby="h-pil">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="pil.kicker">Competence</p>
-      <h2 id="h-pil" data-i18n="pil.title">Four pillars, one person</h2>
-      <p class="lead" data-i18n="pil.lead">Tap a pillar or a skill. The dots are my own rating on the CV's scale from 1 to 4.</p>
-    </div>
-    <div class="pillars" id="pillarlist"></div>
-    <div class="evidence" id="evidence" aria-live="polite"></div>
-  </section>
-
-  <section id="path" class="block" aria-labelledby="h-path">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="path.kicker">Career</p>
-      <h2 id="h-path" data-i18n="path.title">23 years at a glance</h2>
-      <p class="lead" data-i18n="path.lead">Every bar is one position. Tap it to jump to the details.</p>
-    </div>
-    <div class="gantt-wrap"><div class="gantt" id="gantt"></div></div>
-    <div class="legend" id="legend"></div>
-    <div class="filters" role="group" aria-label="Filter" id="tlfilter"></div>
-    <ol class="timeline" id="timeline"></ol>
-  </section>
-
-  <section id="stairs" class="block" aria-labelledby="h-stairs">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="st.kicker">Education</p>
-      <h2 id="h-stairs" data-i18n="st.title">From 1994, one step at a time</h2>
-      <p class="lead" data-i18n="st.lead">No shortcut, every step taken on its own. Tap a step.</p>
-    </div>
-    <div class="stairs-wrap"><ol class="stairs" id="stairlist"></ol></div>
-    <p class="stair-note" id="stairnote" aria-live="polite"></p>
-  </section>
-
-  <section id="tree" class="block" aria-labelledby="h-tree">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="tree.kicker">Profile</p>
-      <h2 id="h-tree" data-i18n="tree.title">A mix of “Mechie” and “Techi”</h2>
-      <p class="lead" data-i18n="tree.lead">Management and technology grow from the same foundation. Tap a level to see the evidence behind it.</p>
-    </div>
-    <div class="tree" id="treebox"></div>
-    <div class="tree-detail" id="treedetail" aria-live="polite"></div>
-  </section>
-
-  <section id="growth" class="block" aria-labelledby="h-train">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="tr.kicker">Learning</p>
-      <h2 id="h-train" data-i18n="tr.title">Certificates and training</h2>
-    </div>
-    <div class="train" id="trainlist"></div>
-    <div class="side">
-      <div><h3 data-i18n="lang.title">Languages</h3><ul class="langs" id="langlist"></ul></div>
-      <div><h3 data-i18n="char.title">Personal</h3><p id="character"></p><p id="interests" class="muted"></p></div>
-      <div><h3 data-i18n="proj.title">Own projects</h3><div id="projectlist"></div></div>
-    </div>
-  </section>
-
-  <section id="twin" class="block" aria-labelledby="h-twin">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="twin.kicker">Digital twin</p>
-      <h2 id="h-twin" data-i18n="twin.title">Ask me something</h2>
-      <p class="lead" data-i18n="twin.lead">The twin only answers with facts from this CV. If it does not know, it says so.</p>
-    </div>
-    <div class="chat">
-      <div class="log" id="log" aria-live="polite"></div>
-      <div class="chips" id="suggest"></div>
-      <form id="askform" class="askform">
-        <label for="q" class="sr" data-i18n="twin.label">Your question</label>
-        <input id="q" type="text" autocomplete="off">
-        <button class="btn" type="submit" data-i18n="twin.send">Ask</button>
-      </form>
-    </div>
-  </section>
-
-  <section id="making" class="block" aria-labelledby="h-make">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="mk.kicker">Behind the page</p>
-      <h2 id="h-make" data-i18n="mk.title">How this application was made</h2>
-      <p class="lead" data-i18n="mk.lead">This page is a work sample in itself: it shows how I use AI to turn existing material into something useful, fast.</p>
-    </div>
-    <ol class="steps" id="steps"></ol>
-  </section>
-
-  <section id="contact" class="block contact" aria-labelledby="h-contact">
-    <div class="sec-head">
-      <p class="kicker" data-i18n="ct.kicker">Contact</p>
-      <h2 id="h-contact" data-i18n="ct.title">Let's talk</h2>
-      <p class="lead" data-i18n="ct.lead">Open to roles in cyber security, solution architecture, solution management and IT project leadership.</p>
-    </div>
-    <div class="cards" id="contactcards"></div>
-  </section>
-</main>
-
-<footer><div class="foot-in"><span id="year"></span> Engin Celenk · <span data-i18n="foot">Built with HTML, CSS, JavaScript and AI. No cookies, no tracking.</span></div></footer>
-
-<script src="data.js"></script>
-<script src="app.js"></script>
+<body class="bg-ink text-snow">
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

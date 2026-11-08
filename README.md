@@ -1,21 +1,30 @@
-# Engin Celenk – interaktiver Lebenslauf
+# Beyond the CV · Engin Celenk
 
-Live: https://ec.immofuchs.info (GitHub Pages, Deployment bei jedem Push auf `main`).
+Personal technology & cyber security portfolio. Live: https://ec.immofuchs.info
 
-## Was die Seite kann
-- **Blickwinkel**: Gesamtbild, Cyber Security, Architekt, Solution Manager, Projektleitung. Die ganze Seite stellt sich darauf ein.
-- **Fit-Check**: Stellenanzeige einfügen → Passungswert, Treffer nach Säulen, markierte Anzeige, ehrliche Lücken und ein automatisch formuliertes Kurzprofil zum Kopieren. Läuft komplett im Browser.
-- **Werdegang** als Zeitleiste (Gantt) plus filterbare Detailliste.
-- **Bildungstreppe** ab 1994 und der **„Mechie & Techi“-Baum** aus dem Lebenslauf.
-- **Digitaler Zwilling**: beantwortet Fragen nur aus den Fakten in `data.js`.
-- Sprache der Seite: Englisch.
+Stack: React + Vite, Tailwind CSS, Motion, Lucide icons, self-hosted Geist fonts. Deployed to GitHub Pages by `.github/workflows` on every push to `main`.
 
-## Personalisierte Bewerbungslinks
-`/link.html` öffnen (nicht verlinkt, `noindex`), Firma, Ansprechpartner, Stelle und Blickwinkel eintragen, Link kopieren.
-Beispiel: `https://ec.immofuchs.info/?firma=Porsche+AG&an=Ms.+M%C3%BCller&rolle=Cyber+Security+Engineer&fokus=sec`
+## Sections
+Home (animated system network) · Journey (interactive timeline) · Expertise (competence model) · Showcase (case studies + interactive mini TARA) · Innovation lab (Ask my portfolio, Challenge me) · About · Contact (tailored CV in three focuses).
 
-Parameter: `firma` (oder `company`), `an` (oder `to`), `rolle` (oder `role`), `fokus` (`sec` | `arch` | `e2e` | `pm`).
+## Edit content
+- `src/data/profile.js` – person, journey, expertise, case studies, values, CV focuses
+- `src/data/knowledge.js` – answers for “Ask my portfolio”, skill terms for “Challenge me”
 
-## Inhalte ändern
-Alle Texte stehen in `data.js`; angezeigt wird jeweils der `en`-Text. Oberflächentexte stehen oben in `app.js` (`UI`).
-Optional: `askEndpoint` in `data.js` auf einen kleinen Proxy zu einem Sprachmodell setzen; ohne Eintrag antwortet der Zwilling offline aus den Fakten.
+## Tailored CV PDFs
+`cv.html?focus=security|architecture|innovation` is the printable CV. After content changes regenerate the PDFs and the social image:
+
+```bash
+npm run build && npm run cv:pdf
+```
+
+The PDFs land in `public/cv/` and must be committed.
+
+## Personal application links
+Open `/link.html` (unlisted, noindex). Parameters: `company`, `to`, `role`, `focus` (`security` | `architecture` | `innovation`). German keys `firma`, `an`, `rolle`, `fokus` still work.
+
+## Local development
+```bash
+npm install
+npm run dev
+```
