@@ -9,13 +9,14 @@ import Logo from "./components/Logo.jsx";
 import Icon from "./components/Icon.jsx";
 import NetworkCanvas from "./components/NetworkCanvas.jsx";
 import Footer from "./components/Footer.jsx";
+import SecurityToolbox from "./components/SecurityToolbox.jsx";
 import { person, logoStrip } from "./data/profile.js";
 import { areas as rawAreas, services as rawServices, process as rawProcess, industries, timing as rawTiming, formats as rawFormats, fl } from "./data/services.js";
 
 function ServiceCard({ s, open, onToggle, selected, onSelect, T }) {
   const reduce = useReducedMotion();
   return (
-    <motion.li layout={!reduce} className={`panel flex flex-col overflow-hidden transition-colors ${selected ? "border-signal/60" : ""}`}>
+    <motion.li layout={!reduce} id={`svc-${s.id}`} className={`panel flex scroll-mt-24 flex-col overflow-hidden transition-colors ${selected ? "border-signal/60" : ""}`}>
       <button type="button" onClick={onToggle} aria-expanded={open} className="flex w-full items-start gap-4 p-5 text-left">
         <span className="grid h-11 w-11 flex-none place-items-center rounded-xl bg-signal/10 text-signal"><Icon name={s.icon} size={20} /></span>
         <span className="min-w-0 flex-1">
@@ -35,6 +36,7 @@ function ServiceCard({ s, open, onToggle, selected, onSelect, T }) {
               <ul className="mt-2 space-y-1.5">{s.deliver.map(d => <li key={d} className="flex gap-2.5 text-sm text-snow/90"><Check size={15} className="mt-0.5 flex-none text-signal" />{d}</li>)}</ul>
               <p className="mt-4 text-sm text-mist"><span className="text-snow/80">{T.forWhom}:</span> {s.for}</p>
               <p className="mt-1 font-mono text-xs text-mist">{s.duration}</p>
+              {s.frameworks && <div className="mt-3 flex flex-wrap gap-1.5">{s.frameworks.map(f => <span key={f} className="rounded-md border border-white/10 px-2 py-0.5 font-mono text-[11px] text-snow/80">{f}</span>)}</div>}
             </div>
           </motion.div>
         )}
@@ -65,6 +67,11 @@ function Page() {
 
   useEffect(() => { document.title = T.title; document.querySelector('meta[name="description"]')?.setAttribute("content", T.desc); }, [T]);
   const shown = services.filter(s => area === "all" || s.area === area);
+  const openService = sid => {
+    setArea("all"); setOpen(sid);
+    setTimeout(() => document.getElementById(`svc-${sid}`)?.scrollIntoView({ behavior: "smooth", block: "start" }), 60);
+  };
+  useEffect(() => { const m = location.hash.match(/^#svc-(.+)$/); if (m && services.some(s => s.id === m[1])) openService(m[1]); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const toggle = id => setPicked(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
   const select = id => { if (!picked.includes(id)) setPicked(p => [...p, id]); document.getElementById("request")?.scrollIntoView({ behavior: "smooth", block: "start" }); };
 
@@ -129,9 +136,11 @@ function Page() {
           </div>
         </section>
 
+        <SecurityToolbox no="02" id="security" onService={openService} />
+
         <section className="section">
           <div className="wrap">
-            <SectionHead no="02" kicker={T.howKicker} title={T.howTitle} lead={T.howLead} />
+            <SectionHead no="03" kicker={T.howKicker} title={T.howTitle} lead={T.howLead} />
             <PathMap items={steps} mode="curve" active={step} setActive={setStep} label={T.howKicker}
               renderCard={(x, compact) => <div className={`panel ${compact ? "p-4" : "p-6"}`}><h3 className="text-lg font-semibold">{x.title}</h3><p className="mt-1 text-mist">{x.text}</p></div>} />
           </div>
@@ -139,7 +148,7 @@ function Page() {
 
         <section className="section">
           <div className="wrap">
-            <SectionHead no="03" kicker={T.expKicker} title={T.expTitle} />
+            <SectionHead no="04" kicker={T.expKicker} title={T.expTitle} />
             <ul className="flex flex-wrap gap-2">{L(industries).map(i => <li key={i} className="rounded-full border border-white/10 px-4 py-2 text-sm">{i}</li>)}</ul>
             <ul className="no-scrollbar -mx-5 mt-6 flex gap-3 overflow-x-auto px-5 pb-1 sm:mx-0 sm:grid sm:max-w-[620px] sm:grid-cols-5 sm:overflow-visible sm:px-0">
               {logoStrip.map(id => <li key={id}><Logo id={id} className="h-14 w-28 sm:w-full" pad="p-2" /></li>)}
@@ -149,7 +158,7 @@ function Page() {
 
         <section id="request" className="section scroll-mt-16">
           <div className="wrap">
-            <SectionHead no="04" kicker={T.cfgKicker} title={T.cfgTitle} lead={T.cfgLead} />
+            <SectionHead no="05" kicker={T.cfgKicker} title={T.cfgTitle} lead={T.cfgLead} />
             <div className="grid gap-6 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
               <div className="panel space-y-6 p-5 sm:p-7">
                 <fieldset>

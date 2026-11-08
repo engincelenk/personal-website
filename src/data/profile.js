@@ -99,7 +99,7 @@ export const education = [
 /* Competence model. */
 export const domains = [
   { id: "security", icon: "ShieldCheck", title: "Cyber Security",
-    keywords: ["Security Engineering", "TARA", "STRIDE", { en: "Risk Assessment", de: "Risikobewertung" }, "Governance"],
+    keywords: ["Security Engineering", "TARA", "STRIDE", { en: "Risk Assessment", de: "Risikobewertung" }, "Governance", "NIST CSF", "OWASP", "ISO 27001"],
     evidence: [{ en: "Cyber Security Engineer, Bosch Digital, since 2024", de: "Cyber Security Engineer, Bosch Digital, seit 2024" }] },
   { id: "architecture", icon: "Boxes", title: { en: "Architecture", de: "Architektur" },
     keywords: ["Solution Architecture", "System Design", "Integration", "Cloud & SaaS"],

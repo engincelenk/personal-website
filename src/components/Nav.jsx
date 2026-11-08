@@ -4,7 +4,7 @@ import { person } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 import LangSwitch from "./LangSwitch.jsx";
 
-const ids = ["home", "journey", "education", "expertise", "lab", "about", "contact"];
+const ids = ["home", "journey", "education", "expertise", "security", "lab", "about", "contact"];
 
 export default function Nav({ showFreelance = true }) {
   const { t, lang } = useLang();
