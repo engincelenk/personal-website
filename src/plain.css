@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base { :root{color-scheme:dark} body{@apply bg-ink text-snow font-sans antialiased} :focus-visible{outline:2px solid #E8650A;outline-offset:3px;border-radius:6px} }
+@layer components {
+  .wrap{@apply mx-auto w-full max-w-2xl;padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+  .label{@apply font-mono text-[11px] uppercase tracking-label text-mist}
+  .field{@apply mt-2 min-h-[48px] w-full rounded-xl border border-white/10 bg-deep px-4 text-[16px] text-snow placeholder:text-mist/50 focus:border-signal focus:outline-none}
+}

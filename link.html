@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Application Link · Engin Celenk</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<script type="module" src="/src/plain.js"></script>
+</head>
+<body>
+<main class="wrap py-16">
+  <p class="label text-signal">For me only</p>
+  <h1 class="mt-3 text-3xl font-semibold tracking-tight">Create an application link</h1>
+  <p class="mt-3 leading-relaxed text-mist">The link greets the company or contact person, names the role, sets the matching focus for the expertise model and the tailored CV, and prefills nothing else. This page is not linked anywhere and search engines ignore it.</p>
+  <form id="f" class="mt-8 space-y-5">
+    <label class="block"><span class="label">Company</span><input class="field" id="company" placeholder="e.g. Porsche AG"></label>
+    <label class="block"><span class="label">Contact person</span><input class="field" id="to" placeholder="e.g. Ms. Müller"></label>
+    <label class="block"><span class="label">Role</span><input class="field" id="role" placeholder="e.g. Senior Cyber Security Engineer"></label>
+    <label class="block"><span class="label">Focus</span>
+      <select class="field" id="focus"><option value="">None</option><option value="security">Cyber Security</option><option value="architecture">IT Architecture</option><option value="innovation">Technology & Innovation</option></select>
+    </label>
+  </form>
+  <div class="mt-8 rounded-2xl border border-white/10 bg-navy/30 p-5">
+    <p class="label">Your link</p>
+    <code id="url" class="mt-2 block select-all break-all font-mono text-sm text-snow"></code>
+    <div class="mt-4 flex flex-wrap gap-2">
+      <button id="copy" type="button" class="min-h-[44px] rounded-full bg-signal px-5 text-sm font-medium text-ink">Copy link</button>
+      <a id="open" href="/" target="_blank" rel="noopener" class="inline-flex min-h-[44px] items-center rounded-full border border-white/15 px-5 text-sm">Open preview</a>
+    </div>
+  </div>
+</main>
+<script type="module">
+  const ids = ["company", "to", "role", "focus"];
+  const build = () => {
+    const p = new URLSearchParams();
+    ids.forEach(id => { const v = document.getElementById(id).value.trim(); if (v) p.set(id, v); });
+    const url = location.origin + "/" + (p.toString() ? "?" + p : "");
+    document.getElementById("url").textContent = url; document.getElementById("open").href = url; return url;
+  };
+  ids.forEach(id => document.getElementById(id).addEventListener("input", build));
+  document.getElementById("f").addEventListener("submit", e => e.preventDefault());
+  document.getElementById("copy").addEventListener("click", async e => {
+    const b = e.currentTarget, url = build();
+    try { await navigator.clipboard.writeText(url); b.textContent = "Copied"; setTimeout(() => b.textContent = "Copy link", 1500); } catch {}
+  });
+  build();
+</script>
+</body>
+</html>

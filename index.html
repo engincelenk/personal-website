@@ -2,94 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Engin Celenk – IT projects, platforms, architecture and security</title>
-<meta name="description" content="Interactive CV of Engin Celenk. Switch lenses, test your job post against my skills, and ask questions.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Engin Celenk · Beyond the CV</title>
+<meta name="description" content="Engin Celenk connects technology, security and business. Cyber security engineer, IT architect and technology innovator. Explore the journey, expertise and case studies.">
+<meta name="theme-color" content="#101827">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Engin Celenk · Beyond the CV">
+<meta property="og:description" content="I connect technology, security & business. Turning complexity into clarity.">
+<meta property="og:image" content="https://ec.immofuchs.info/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
 </head>
-<body data-lens="all">
-<a class="skip" href="#skills">Skip to skills</a>
-
-<header class="top">
-  <span class="mark" id="brand">Engin Celenk</span>
-  <nav aria-label="Sections">
-    <a href="#skills">Skills</a>
-    <a href="#fit">Fit check</a>
-    <a href="#experience">Experience</a>
-    <a href="#projects">Projects</a>
-    <a href="#ask">Ask</a>
-    <a href="#contact">Contact</a>
-  </nav>
-</header>
-
-<main>
-  <section class="hero" aria-labelledby="headline">
-    <p class="hello">View my CV as a</p>
-    <div class="lenses" role="radiogroup" aria-label="Choose a lens" id="lenses"></div>
-    <h1 id="headline" aria-live="polite"></h1>
-    <p class="sub" id="sub"></p>
-    <p class="langs" id="langs"></p>
-  </section>
-
-  <section id="skills" class="block" aria-labelledby="h-skills">
-    <h2 id="h-skills">Skills</h2>
-    <p class="lead">Select a skill to see where it shows up. The dot count is my own honest rating from 1 (working knowledge) to 5 (deep expertise).</p>
-    <div id="skillgroups"></div>
-    <div class="evidence" id="evidence" aria-live="polite">Select any skill above.</div>
-  </section>
-
-  <section id="fit" class="block lab" aria-labelledby="h-fit">
-    <h2 id="h-fit">Fit check</h2>
-    <p class="lead">Paste a job post. The page highlights what matches, scores each discipline and tells you plainly what is not my strength. Nothing leaves your browser.</p>
-    <label for="jd" class="sr">Job description</label>
-    <textarea id="jd" rows="7" placeholder="Paste the job description here"></textarea>
-    <div class="row">
-      <button id="run" class="btn">Check fit</button>
-      <button id="sample" class="btn ghost" type="button">Try a sample post</button>
-    </div>
-    <div id="result" class="result" hidden aria-live="polite"></div>
-  </section>
-
-  <section id="experience" class="block" aria-labelledby="h-exp">
-    <h2 id="h-exp">Experience</h2>
-    <ol class="timeline" id="timeline"></ol>
-  </section>
-
-  <section id="projects" class="block" aria-labelledby="h-proj">
-    <h2 id="h-proj">Projects</h2>
-    <div class="projects" id="projectlist"></div>
-  </section>
-
-  <section id="certs" class="block" aria-labelledby="h-cert">
-    <h2 id="h-cert">Certificates</h2>
-    <ul class="certs" id="certlist"></ul>
-  </section>
-
-  <section id="ask" class="block" aria-labelledby="h-ask">
-    <h2 id="h-ask">Ask a question</h2>
-    <p class="lead">Answers come from the facts on this page, so they are consistent with my CV.</p>
-    <div class="chips" id="suggest"></div>
-    <form id="askform" class="askform">
-      <label for="q" class="sr">Your question</label>
-      <input id="q" type="text" autocomplete="off" placeholder="For example: Do you do hands-on security work?">
-      <button class="btn" type="submit">Ask</button>
-    </form>
-    <div id="answer" class="answer" aria-live="polite"></div>
-  </section>
-
-  <section id="contact" class="block contact" aria-labelledby="h-contact">
-    <h2 id="h-contact">Contact</h2>
-    <p class="lead">Open to conversations about IT project, platform, architecture and security roles.</p>
-    <div class="row" id="contactlinks"></div>
-  </section>
-</main>
-
-<footer><span id="year"></span> Engin Celenk. Built with plain HTML, CSS and JavaScript.</footer>
-
-<script src="data.js"></script>
-<script src="app.js"></script>
+<body class="bg-ink text-snow">
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
