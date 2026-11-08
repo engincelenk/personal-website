@@ -11,7 +11,7 @@ export default function AskPortfolio() {
   const [busy, setBusy] = useState(false);
   const box = useRef(null);
   useEffect(() => { box.current?.scrollTo({ top: box.current.scrollHeight, behavior: "smooth" }); }, [log]);
-  const suggestions = [2, 0, 6, 4, 7].map(i => facts[i].q[lang]);
+  const suggestions = [2, 0, 5, 7, 8].map(i => facts[i].q[lang]);
 
   const ask = async text => {
     text = text.trim(); if (!text || busy) return;
