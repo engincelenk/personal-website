@@ -63,6 +63,6 @@ export function answer(q) {
     if (sc > bestScore) { bestScore = sc; best = f; }
   });
   const gap = gaps.find(g => keyRx(g).test(qn));
-  if (gap && bestScore < 3) return `${gap[0].toUpperCase() + gap.slice(1)} is not one of Engin's focus areas, and this portfolio says so openly. He learns fast, as his path from office apprentice to cyber security engineer shows.`;
+  if (gap && bestScore < 3) return `${gap[0].toUpperCase() + gap.slice(1)} is not one of Engin's focus areas.`;
   return best && bestScore >= 2 ? best.a : null;
 }

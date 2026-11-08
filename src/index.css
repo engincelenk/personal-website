@@ -18,7 +18,7 @@
 @layer components {
   .wrap { @apply mx-auto w-full max-w-page; padding-left: max(20px, env(safe-area-inset-left)); padding-right: max(20px, env(safe-area-inset-right)); }
   .label { @apply font-mono text-[11px] uppercase tracking-label text-mist; }
-  .section { @apply relative py-24 md:py-32; }
+  .section { @apply relative py-16 md:py-24; }
   .h2 { @apply text-[2rem] leading-[1.05] font-semibold tracking-[-0.03em] md:text-5xl; }
   .lead { @apply max-w-2xl text-lg leading-relaxed text-mist; }
   .panel { @apply rounded-2xl border border-white/[0.07] bg-navy/25 backdrop-blur-sm; }
