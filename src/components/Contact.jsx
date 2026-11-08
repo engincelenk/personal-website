@@ -33,6 +33,7 @@ export default function Contact({ focus, setFocus }) {
               <div className="mt-5 flex flex-wrap gap-2">
                 <a className="btn-primary" href={`mailto:${person.email}`}>{t("writeEmail")}</a>
                 <button type="button" className="btn-ghost" onClick={() => copy("mail", person.email)}>{done === "mail" ? <Check size={16} /> : <Copy size={16} />}{done === "mail" ? t("copied") : t("copy")}</button>
+                {person.linkedin && <a className="btn-ghost" href={person.linkedin} target="_blank" rel="noopener"><Linkedin size={16} />LinkedIn</a>}
               </div>
             </div>
             <div className="panel p-6">
@@ -42,7 +43,6 @@ export default function Contact({ focus, setFocus }) {
                 {phoneShown ? <a className="btn-ghost" href={`tel:${person.phone.join("")}`}>{t("call")}</a>
                   : <button type="button" className="btn-ghost" onClick={() => setPhoneShown(true)}>{t("showNumber")}</button>}
                 <button type="button" className="btn-ghost" onClick={vcard}><Card size={16} />{t("saveContact")}</button>
-                {person.linkedin && <a className="btn-ghost" href={person.linkedin} target="_blank" rel="noopener"><Linkedin size={16} />LinkedIn</a>}
               </div>
             </div>
           </div>
