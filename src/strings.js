@@ -1,7 +1,7 @@
 /* Interface texts. Content texts live in data/profile.js and data/knowledge.js. */
 export const strings = {
   en: {
-    metaTitle: "Engin Celenk, M.Sc. · Beyond the CV",
+    metaTitle: "Engin Celenk, M.Sc.",
     metaDesc: "Engin Celenk connects technology, security and business. Cyber security engineer and IT architect, M.Sc. Computer Science.",
     skip: "Skip to content", openMenu: "Open menu", closeMenu: "Close menu", sections: "Sections", language: "Language",
     nav: { home: "Home", journey: "Career", education: "Education", expertise: "Expertise", security: "Security", lab: "Lab", about: "About", contact: "Contact" },
@@ -32,7 +32,7 @@ export const strings = {
     guestNoRole: hi => `${hi} — this portfolio was prepared for you.`
   },
   de: {
-    metaTitle: "Engin Celenk, M.Sc. · Beyond the CV",
+    metaTitle: "Engin Celenk, M.Sc.",
     metaDesc: "Engin Celenk verbindet Technologie, Security und Business. Cyber Security Engineer und IT-Architekt, M.Sc. Informatik.",
     skip: "Zum Inhalt springen", openMenu: "Menü öffnen", closeMenu: "Menü schließen", sections: "Bereiche", language: "Sprache",
     nav: { home: "Start", journey: "Karriere", education: "Bildung", expertise: "Expertise", security: "Security", lab: "Lab", about: "Über mich", contact: "Kontakt" },
