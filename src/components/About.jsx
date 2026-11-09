@@ -9,7 +9,7 @@ export default function About() {
   return (
     <section id="about" aria-labelledby="about-title" className="section">
       <div className="wrap">
-        <SectionHead no="06" kicker={t("aboutKicker")} id="about-title" title={t("aboutTitle")} />
+        <SectionHead no="05" kicker={t("aboutKicker")} id="about-title" title={t("aboutTitle")} />
         <div className="grid gap-5 lg:grid-cols-3">
           <div className="panel flex flex-col p-6 lg:row-span-2">
             <div className="flex items-center gap-4">
@@ -25,8 +25,8 @@ export default function About() {
           </div>
           <div className="panel p-6 lg:col-span-2">
             <p className="label">{t("certificates")}</p>
-            <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-5">
-              {certificates.map(c => (
+            <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {[...certificates, ...tr.map(x => ({ ...x, short: "DT" }))].map(c => (
                 <li key={c.name} className="flex flex-col items-center gap-2 rounded-xl border border-white/[0.07] p-3 text-center">
                   {c.badge ? <img src={c.badge} alt="" className="h-16 w-16 object-contain" />
                     : <span className="grid h-14 w-14 place-items-center rounded-full border-2 border-signal/60 font-mono text-xs font-semibold">{c.short}</span>}
@@ -35,10 +35,6 @@ export default function About() {
                 </li>
               ))}
             </ul>
-            <details className="mt-4 text-sm">
-              <summary className="cursor-pointer text-mist hover:text-snow">{t("moreTrainings", tr.length)}</summary>
-              <ul className="mt-3 flex flex-wrap gap-2">{tr.map(x => <li key={x.name} className="rounded-full bg-white/[0.05] px-3 py-1 text-xs text-mist"><span className="font-mono">{x.year}</span> · {x.name}</li>)}</ul>
-            </details>
           </div>
           <div className="panel p-6 lg:col-span-2">
             <p className="label">{t("languages")}</p>

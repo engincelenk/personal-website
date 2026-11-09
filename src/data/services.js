@@ -78,9 +78,9 @@ export const fl = {
     aiAcross: "across all areas", inArea: "in",
     howKicker: "How I work", howTitle: "Four steps, no surprises.", howLead: "Tap a step.",
     expKicker: "Experience from", expTitle: "Industries and companies",
-    cfgKicker: "Request", cfgTitle: "Put your request together.", cfgLead: "Choose areas, format and timing. You get a ready-made email.",
+    cfgKicker: "Request", cfgTitle: "Put your request together.", cfgLead: "Choose areas, format and timing. Your request is prepared, you only add your details.",
     cfgAreas: "Areas", cfgFormat: "Format", cfgTiming: "Timing", cfgCompany: "Company (optional)", cfgNote: "Short description (optional)",
-    cfgNotePh: "What do you want to achieve?", openMail: "Open email", copyText: "Copy text", copied: "Copied", preview: "Your email",
+    cfgNotePh: "What do you want to achieve?", openMail: "Open email", copyText: "Copy text", copied: "Copied", preview: "Your request",
     none: "Choose at least one area.", subject: n => `Project request: ${n}`,
     body: (s, f, t, c, n) => `Hello Engin,\n\nwe are interested in:\n${s}\n\nFormat: ${f}\nTiming: ${t}${c ? `\nCompany: ${c}` : ""}${n ? `\n\nAbout the project:\n${n}` : ""}\n\nPlease get in touch for an intro call.\n\nBest regards`,
     note: "Details and prices after the intro call. No newsletter, no tracking."
@@ -94,9 +94,9 @@ export const fl = {
     aiAcross: "quer über alle Bereiche", inArea: "in",
     howKicker: "Arbeitsweise", howTitle: "Vier Schritte, keine Überraschungen.", howLead: "Schritt antippen.",
     expKicker: "Erfahrung aus", expTitle: "Branchen und Unternehmen",
-    cfgKicker: "Anfrage", cfgTitle: "Stellen Sie Ihre Anfrage zusammen.", cfgLead: "Bereiche, Format und Zeitraum wählen. Sie erhalten eine fertige E-Mail.",
+    cfgKicker: "Anfrage", cfgTitle: "Stellen Sie Ihre Anfrage zusammen.", cfgLead: "Bereiche, Format und Zeitraum wählen. Ihre Anfrage wird vorbereitet, Sie ergänzen nur Ihre Daten.",
     cfgAreas: "Bereiche", cfgFormat: "Format", cfgTiming: "Zeitraum", cfgCompany: "Unternehmen (optional)", cfgNote: "Kurzbeschreibung (optional)",
-    cfgNotePh: "Was möchten Sie erreichen?", openMail: "E-Mail öffnen", copyText: "Text kopieren", copied: "Kopiert", preview: "Ihre E-Mail",
+    cfgNotePh: "Was möchten Sie erreichen?", openMail: "E-Mail öffnen", copyText: "Text kopieren", copied: "Kopiert", preview: "Ihre Anfrage",
     none: "Mindestens einen Bereich wählen.", subject: n => `Projektanfrage: ${n}`,
     body: (s, f, t, c, n) => `Hallo Engin,\n\nwir interessieren uns für:\n${s}\n\nFormat: ${f}\nZeitraum: ${t}${c ? `\nUnternehmen: ${c}` : ""}${n ? `\n\nZum Vorhaben:\n${n}` : ""}\n\nBitte melden Sie sich für ein Erstgespräch.\n\nViele Grüße`,
     note: "Details und Preise nach dem Erstgespräch. Kein Newsletter, kein Tracking."

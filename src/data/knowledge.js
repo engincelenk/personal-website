@@ -8,7 +8,7 @@ export const skills = [
     ev: { en: "Cyber security engineer at Bosch Digital since 01/2024.", de: "Cyber Security Engineer bei Bosch Digital seit 01/2024." } },
   { d: "security", l: 4, n: { en: "TARA & risk assessment", de: "TARA & Risikobewertung" },
     keys: ["tara", "threat analysis", "threat model", "threat modeling", "threat modelling", "risk assessment", "risk analysis", "iso 21434", "iso/sae 21434", "21434", "stride", "bedrohungsanalyse", "risikoanalyse", "risikobewertung"],
-    ev: { en: "TARA in projects at Bosch Digital.", de: "TARA in Projekten bei Bosch Digital." } },
+    ev: { en: "TARA for various projects and SAP within Bosch worldwide.", de: "TARA für verschiedene Projekte und SAP innerhalb von Bosch weltweit." } },
   { d: "security", l: 3, n: { en: "Security by design & governance", de: "Security by Design & Governance" },
     keys: ["security by design", "secure by design", "security architecture", "security requirements", "security governance", "governance", "security concept", "sicherheitsarchitektur", "sicherheitsanforderungen", "sicherheitskonzept"],
     ev: { en: "Brings architecture experience into security work.", de: "Bringt Architekturerfahrung in die Security-Arbeit ein." } },
@@ -25,8 +25,8 @@ export const skills = [
     keys: ["api", "apis", "integration", "interfaces", "soa", "middleware", "microservices", "schnittstelle", "schnittstellen"],
     ev: { en: "API training at Daimler, master's work and publication on SOA monitoring.", de: "API-Training bei Daimler, Masterarbeit und Publikation zu SOA-Monitoring." } },
   { d: "architecture", l: 3, n: { en: "Cloud & SaaS", de: "Cloud & SaaS" },
-    keys: ["cloud", "saas", "azure", "aws", "cloud computing"],
-    ev: { en: "Audit SaaS, MAM with Sharedien and eLAKE at Bosch Central IT.", de: "Audit SaaS, MAM mit Sharedien und eLAKE bei Bosch Central IT." } },
+    keys: ["cloud", "saas", "azure", "aws", "cloud computing", "microservices", "microservice", "micro services", "cloud-native", "cloud native"],
+    ev: { en: "Microservice, cloud and SaaS architectures for Bosch projects worldwide.", de: "Microservice-, Cloud- und SaaS-Architekturen für Bosch-Projekte weltweit." } },
   { d: "architecture", l: 2, n: { en: "Development (C#, Java, Objective-C)", de: "Entwicklung (C#, Java, Objective-C)" },
     keys: ["c#", "java", "objective-c", "ios", "software development", "softwareentwicklung"],
     ev: { en: "C# tools at Bosch, iOS app prototype in the master's thesis.", de: "C#-Tools bei Bosch, iOS-App-Prototyp in der Masterarbeit." } },
@@ -42,6 +42,12 @@ export const skills = [
   { d: "management", l: 4, n: { en: "Agile & Scrum", de: "Agilität & Scrum" },
     keys: ["agile", "agil", "scrum", "kanban", "scrum master", "safe", "jira", "sprint"],
     ev: { en: "Professional Scrum Master I and Product Owner I.", de: "Professional Scrum Master I und Product Owner I." } },
+  { d: "management", l: 4, n: { en: "Budget & project responsibility", de: "Budget- & Projektverantwortung" },
+    keys: ["budget", "budget responsibility", "single point of contact", "spoc", "contracting", "sourcing", "budgetverantwortung", "ansprechpartner", "beauftragung"],
+    ev: { en: "Single point of contact on the IT side with full budget and project responsibility, contracting further roles.", de: "Single Point of Contact auf IT-Seite mit voller Budget- und Projektverantwortung, Beauftragung weiterer Rollen." } },
+  { d: "security", l: 3, n: { en: "Security mentoring", de: "Security-Mentoring" },
+    keys: ["mentoring", "mentor", "coaching", "awareness", "enablement", "schulung"],
+    ev: { en: "Cyber security mentoring within the Bosch Group.", de: "Cyber-Security-Mentoring innerhalb der Bosch-Gruppe." } },
   { d: "management", l: 4, n: { en: "Stakeholder alignment", de: "Stakeholder-Management" },
     keys: ["stakeholder", "stakeholders", "communication", "negotiation", "change management", "workshops", "kommunikation", "verhandlung"],
     ev: { en: "Between business, IT and partners at Bosch, Daimler and TRUMPF.", de: "Zwischen Fachbereich, IT und Partnern bei Bosch, Daimler und TRUMPF." } },
@@ -73,7 +79,7 @@ export const gaps = ["python", "golang", "rust", "c++", "kotlin", "kubernetes", 
 
 export const facts = [
   { q: { en: "What is his experience in TARA?", de: "Welche Erfahrung hat er mit TARA?" }, k: ["tara", "threat", "risk", "stride", "21434", "assessment", "bedrohung", "risiko"],
-    a: { en: "Since 2024 he does TARA in digital business projects as cyber security engineer at Bosch Digital.", de: "Seit 2024 erstellt er als Cyber Security Engineer bei Bosch Digital TARAs in Digital-Business-Projekten." } },
+    a: { en: "Since 2024 he has carried out TARAs for various projects and SAP within Bosch worldwide, implements security concepts according to the cyber security policy and mentors colleagues in cyber security.", de: "Seit 2024 führt er TARAs für verschiedene Projekte und SAP innerhalb von Bosch weltweit durch, setzt Security-Konzepte gemäß Cyber Security Policy um und ist Cyber-Security-Mentor in der Bosch-Gruppe." } },
   { q: { en: "How does architecture help his security work?", de: "Wie hilft ihm die Architektur in der Security?" }, k: ["architecture", "architect", "background", "support", "help", "design", "architektur", "architekt", "hilft"],
     a: { en: "Years as lead and solution architect at Bosch, TRUMPF and Daimler: he knows how systems are built, so he sees where they can be attacked.", de: "Jahre als Lead und Solution Architect bei Bosch, TRUMPF und Daimler: Er weiß, wie Systeme gebaut sind, und sieht deshalb, wo sie angreifbar sind." } },
   { q: { en: "What makes his profile different?", de: "Was macht sein Profil besonders?" }, k: ["different", "unique", "special", "why", "stand", "difference", "hire", "besonders", "anders", "warum", "unterschied"],
@@ -97,7 +103,7 @@ export const facts = [
   { q: { en: "Where is he based?", de: "Wo wohnt er?" }, k: ["where", "based", "location", "remote", "relocate", "live", "wo", "wohnt", "standort", "umzug"],
     a: { en: "Stuttgart region, Germany.", de: "In der Region Stuttgart." } },
   { q: { en: "How to contact him?", de: "Wie erreiche ich ihn?" }, k: ["contact", "email", "reach", "call", "phone", "talk", "interview", "kontakt", "erreichen", "telefon", "anrufen", "gespräch"],
-    a: { en: "engincelenk@web.de, or the contact section below.", de: "engincelenk@web.de oder über den Kontaktbereich unten." } }
+    a: { en: "Via the contact form at the bottom of the page or on LinkedIn.", de: "Über das Kontaktformular unten auf der Seite oder auf LinkedIn." } }
 ];
 
 export const sampleRoles = {

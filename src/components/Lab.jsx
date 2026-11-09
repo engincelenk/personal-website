@@ -12,7 +12,7 @@ export default function Lab({ guest }) {
   return (
     <section id="lab" aria-labelledby="lab-title" className="section">
       <div className="wrap">
-        <SectionHead no="05" kicker={t("labKicker")} id="lab-title" title={t("labTitle")} lead={t("labLead")} />
+        <SectionHead no="04" kicker={t("labKicker")} id="lab-title" title={t("labTitle")} lead={t("labLead")} />
         <div className="panel overflow-hidden">
           <div role="tablist" aria-label={t("labTools")} className="flex border-b border-white/[0.06] p-2">
             {tabs.map(([id, label, I]) => (
