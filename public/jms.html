@@ -1,59 +1,74 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Concertino Programmheft</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&family=Titillium+Web:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap">
 
 <style>
 /* Layout: sidebar-free single-column app, card-based sections, modal overlays */
 :root {
-  --bg: #f7f5f2;
+  /* Look & Feel nach jms-mosaik.de: Petrol/Türkis, Orange-Akzent, eckig, hell */
+  --bg: #f2f0ec;
   --bg-card: #ffffff;
-  --fg: #1a1a1a;
-  --fg-muted: #6b6560;
-  --accent: #1a9e96;
-  --accent-light: #e0f5f3;
-  --accent-dark: #137a74;
-  --gold: #e6a817;
-  --gold-light: #fdf4dc;
+  --fg: #333333;
+  --fg-muted: #676767;
+  --accent: #008787;        /* Buttons/Text (kontraststark) */
+  --accent-bright: #00b2b6; /* Band, Überschriften wie auf der Website */
+  --accent-light: #e0f4f4;
+  --accent-dark: #006b6b;
+  --gold: #b8650a;          /* Orange als Text */
+  --gold-fill: #f38f1e;     /* Orange als Fläche */
+  --gold-light: #fff1df;
   --magenta: #c4265c;
   --magenta-light: #fce8ef;
-  --border: #e2ddd8;
-  --shadow: 0 1px 3px rgba(0,0,0,.06);
-  --radius: 8px;
-  --font-display: 'Crimson Pro', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
+  --link: #116fa2;
+  --border: #dcd8d2;
+  --shadow: 0 1px 2px rgba(0,0,0,.08);
+  --radius: 2px;
+  --font-display: 'Titillium Web', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Hind', system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #161413;
-    --bg-card: #221f1d;
-    --fg: #e8e4e0;
-    --fg-muted: #9a948e;
-    --accent: #2abcb3;
-    --accent-light: #1a2e2d;
-    --accent-dark: #5ed6ce;
-    --gold: #f0bc3a;
-    --gold-light: #2a2518;
+    --bg: #121515;
+    --bg-card: #1c2121;
+    --fg: #e6e6e6;
+    --fg-muted: #9aa3a3;
+    --accent: #2cc4c7;
+    --accent-bright: #2cc4c7;
+    --accent-light: #123536;
+    --accent-dark: #6fd9db;
+    --gold: #f5a54a;
+    --gold-fill: #f38f1e;
+    --gold-light: #33260f;
     --magenta: #e64d7a;
     --magenta-light: #2e1a20;
-    --border: #3a3532;
-    --shadow: 0 1px 3px rgba(0,0,0,.3);
+    --link: #6ab7e3;
+    --border: #2e3636;
+    --shadow: 0 1px 3px rgba(0,0,0,.4);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #161413;
-  --bg-card: #221f1d;
-  --fg: #e8e4e0;
-  --fg-muted: #9a948e;
-  --accent: #2abcb3;
-  --accent-light: #1a2e2d;
-  --accent-dark: #5ed6ce;
-  --gold: #f0bc3a;
-  --gold-light: #2a2518;
+  --bg: #121515;
+  --bg-card: #1c2121;
+  --fg: #e6e6e6;
+  --fg-muted: #9aa3a3;
+  --accent: #2cc4c7;
+  --accent-bright: #2cc4c7;
+  --accent-light: #123536;
+  --accent-dark: #6fd9db;
+  --gold: #f5a54a;
+  --gold-fill: #f38f1e;
+  --gold-light: #33260f;
   --magenta: #e64d7a;
   --magenta-light: #2e1a20;
-  --border: #3a3532;
-  --shadow: 0 1px 3px rgba(0,0,0,.3);
+  --link: #6ab7e3;
+  --border: #2e3636;
+  --shadow: 0 1px 3px rgba(0,0,0,.4);
   color-scheme: dark;
 }
 
@@ -62,8 +77,8 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-body);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 15px;
+  line-height: 1.55;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 0;
@@ -81,11 +96,12 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   top: env(safe-area-inset-top, 0px);
   z-index: 50;
   background: var(--bg-card);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 6px solid var(--accent-bright);
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 10px 16px;
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
 }
 body::before {
   content: "";
@@ -95,20 +111,22 @@ body::before {
   z-index: 51;
   background: var(--bg-card);
 }
-.app-header img { height: 36px; }
+.app-header img { height: 44px; }
 .app-header h1 {
   font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--accent);
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--accent-bright);
   flex: 1;
+  min-width: 0;
 }
+.app-header h1 small { display: block; font-size: 12px; font-style: italic; color: var(--gold); font-weight: 400; }
 .app-header .user-badge {
   font-size: 12px;
   color: var(--fg-muted);
   background: var(--accent-light);
   padding: 4px 10px;
-  border-radius: 20px;
+  border-radius: var(--radius);
   font-weight: 500;
 }
 .header-actions { display: flex; gap: 8px; align-items: center; }
@@ -117,7 +135,8 @@ body::before {
   padding: 8px 16px;
   border: none;
   border-radius: var(--radius);
-  font-size: 13px;
+  font-family: var(--font-display);
+  font-size: 14px;
   font-weight: 600;
   transition: all .15s;
 }
@@ -126,7 +145,7 @@ body::before {
 .btn-secondary { background: var(--bg); color: var(--fg); border: 1px solid var(--border); }
 .btn-secondary:hover { background: var(--border); }
 .btn-danger { background: var(--magenta); color: #fff; }
-.btn-gold { background: var(--gold); color: #1a1a1a; }
+.btn-gold { background: var(--gold-fill); color: #1a1a1a; }
 .btn-gold:hover { filter: brightness(1.1); }
 .btn-sm { padding: 5px 10px; font-size: 12px; }
 .btn-icon { padding: 6px; background: none; border: 1px solid var(--border); border-radius: var(--radius); color: var(--fg-muted); }
@@ -144,7 +163,8 @@ body::before {
 }
 .login-card {
   background: var(--bg-card);
-  border-radius: 16px;
+  border-radius: var(--radius);
+  border-top: 6px solid var(--accent-bright);
   padding: 40px 32px;
   box-shadow: var(--shadow);
   width: 100%;
@@ -156,9 +176,11 @@ body::before {
 .login-card img { height: 56px; align-self: center; }
 .login-card h2 {
   font-family: var(--font-display);
-  font-size: 24px;
-  color: var(--accent);
+  font-size: 26px;
+  font-weight: 300;
+  color: var(--accent-bright);
 }
+.login-tagline { margin-top: -14px; color: var(--gold); font-style: italic; font-family: var(--font-display); }
 .login-card input {
   width: 100%;
   padding: 10px 14px;
@@ -194,13 +216,14 @@ body::before {
   transition: all .15s;
 }
 .tab:hover { color: var(--fg); }
-.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.tab { font-family: var(--font-display); font-size: 15px; }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent-bright); }
 
 /* Status chips */
 .chip {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 3px 10px;
-  border-radius: 20px;
+  border-radius: var(--radius);
   font-size: 11px;
   font-weight: 600;
   letter-spacing: .02em;
@@ -219,7 +242,7 @@ body::before {
   margin-bottom: 20px;
   flex-wrap: wrap;
 }
-.event-title { font-family: var(--font-display); font-size: 26px; font-weight: 700; text-wrap: balance; }
+.event-title { font-family: var(--font-display); font-size: 28px; font-weight: 300; color: var(--accent-bright); text-wrap: balance; }
 .event-meta { color: var(--fg-muted); font-size: 13px; display: flex; gap: 16px; flex-wrap: wrap; margin-top: 4px; }
 .event-meta span { display: inline-flex; align-items: center; gap: 4px; }
 
@@ -396,7 +419,7 @@ body::before {
   align-items: flex-start;
   margin-bottom: 20px;
   padding-bottom: 16px;
-  border-bottom: 2px solid #1a9e96;
+  border-bottom: 2px solid #008787;
 }
 .pdf-header img { height: 40px; }
 .pdf-event-info { text-align: right; }
@@ -404,7 +427,7 @@ body::before {
   font-family: var(--font-display);
   font-size: 20px;
   font-weight: 700;
-  color: #1a9e96;
+  color: #008787;
 }
 .pdf-event-info .pdf-event-date { font-size: 12px; color: #6b6560; margin-top: 2px; }
 .pdf-program-title {
@@ -413,7 +436,7 @@ body::before {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .1em;
-  color: #1a9e96;
+  color: #008787;
   margin-bottom: 12px;
 }
 .pdf-item {
@@ -482,7 +505,11 @@ body::before {
 
 /* Responsive */
 @media (max-width: 600px) {
-  .app-header h1 { font-size: 16px; }
+  .app-header { gap: 8px; padding: 8px 12px; }
+  .app-header img { height: 34px; }
+  .app-header h1 { font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .app-header h1 small { display: none; }
+  .app-header .user-badge { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .event-title { font-size: 20px; }
   .stats-row { grid-template-columns: 1fr 1fr; }
   .teacher-grid { grid-template-columns: 1fr; }
@@ -491,8 +518,99 @@ body::before {
   .program-item .piece-teacher { position: static; margin-top: 4px; }
   .btn span.hide-mobile { display: none; }
 }
-</style>
 
+/* ---- JMS look: headings ---- */
+h2, h3 { font-weight: 400; }
+.main-content h2 { color: var(--accent-bright); font-weight: 300 !important; font-size: 26px !important; }
+.card-title { font-family: var(--font-display); font-size: 20px; font-weight: 600; }
+a { color: var(--link); }
+
+/* ---- Event cards with image ---- */
+.event-card { display: flex; gap: 16px; align-items: stretch; padding: 16px; }
+.event-card-body { flex: 1; min-width: 0; }
+.event-thumb { width: 96px; height: 96px; object-fit: cover; flex-shrink: 0; border-radius: var(--radius); background: var(--bg); }
+.event-thumb-empty { display: flex; align-items: center; justify-content: center; font-size: 32px; color: var(--accent-bright); }
+.entry-section:hover.event-card { box-shadow: 0 2px 10px rgba(0,0,0,.12); }
+@media (max-width: 500px) { .event-thumb { width: 64px; height: 64px; } }
+
+/* ---- Teacher subjects ---- */
+.teacher-row .name .faecher, .pt-sub { display: block; font-size: 11px; font-weight: 400; color: var(--fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.picker-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; max-height: 320px; overflow-y: auto; }
+.pick-teacher { flex-direction: column; align-items: flex-start !important; text-align: left; gap: 0 !important; min-width: 0; }
+.pick-teacher .pt-name { font-weight: 600; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-teacher .pt-sub { max-width: 100%; font-family: var(--font-body); }
+@media (max-width: 420px) { .picker-grid { grid-template-columns: 1fr; } }
+.check-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; max-height: 180px; overflow-y: auto; }
+.check-chip { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; background: var(--bg); padding: 4px 8px; border-radius: var(--radius); border: 1px solid var(--border); text-transform: none; letter-spacing: 0; font-weight: 400; color: var(--fg); }
+.link-btn { background: none; border: none; color: var(--link); font-size: 11px; text-transform: none; letter-spacing: 0; padding: 0 0 0 6px; text-decoration: underline; }
+
+/* ---- Form additions ---- */
+.form-hint { font-size: 12px; color: var(--fg-muted); }
+.form-hint.full { grid-column: 1 / -1; margin-top: -4px; }
+.form-group select { appearance: auto; min-width: 0; width: 100%; }
+.form-group input { width: 100%; }
+.performer-row { margin-bottom: 6px; }
+.performer-row .form-group { gap: 6px; }
+
+/* ---- Autocomplete ---- */
+.suggest-wrap { position: relative; }
+.suggest-list {
+  position: absolute; left: 0; right: 0; top: calc(100% + 2px); z-index: 60;
+  background: var(--bg-card); border: 1px solid var(--border); border-top: 3px solid var(--accent-bright);
+  box-shadow: 0 6px 20px rgba(0,0,0,.15); max-height: 300px; overflow-y: auto;
+}
+.suggest-item { padding: 8px 12px; cursor: pointer; display: flex; flex-direction: column; border-bottom: 1px solid var(--border); }
+.suggest-item:last-child { border-bottom: none; }
+.suggest-item:hover, .suggest-item.active { background: var(--accent-light); }
+.suggest-item .s-title { font-weight: 500; }
+.suggest-item .s-sub { font-size: 11px; color: var(--fg-muted); }
+
+/* ---- Image picker ---- */
+.img-picker { background: var(--bg-card); box-shadow: var(--shadow); padding: 16px; margin-bottom: 16px; border-radius: var(--radius); }
+.img-picker-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-bottom: 8px; }
+.img-picker-head h3 { font-family: var(--font-display); font-size: 18px; font-weight: 400; color: var(--accent-bright); }
+.img-group-label { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; color: var(--fg-muted); margin: 10px 0 6px; }
+.img-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; }
+.img-grid-sm { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; }
+.img-pick {
+  position: relative; display: flex; flex-direction: column; padding: 0; background: var(--bg);
+  border: 2px solid var(--border); border-radius: var(--radius); overflow: hidden; cursor: pointer; text-align: left; color: var(--fg);
+}
+.img-pick img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.img-pick .img-label { font-size: 11px; padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.img-pick.selected { border-color: var(--accent-bright); box-shadow: 0 0 0 2px var(--accent-bright); }
+.img-pick:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+.img-badge { position: absolute; top: 6px; left: 6px; background: var(--accent); color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; }
+.img-check input { position: absolute; top: 6px; right: 6px; width: 16px; height: 16px; }
+.img-upload {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  aspect-ratio: 1; border: 2px dashed var(--border); color: var(--accent); font-size: 28px; cursor: pointer; border-radius: var(--radius);
+}
+.img-upload span { font-size: 11px; }
+.img-upload:hover { border-color: var(--accent-bright); }
+
+/* ---- PDF images ---- */
+.pdf-cover { margin: -40px -40px 16px; height: 34%; overflow: hidden; border-bottom: 6px solid #00b2b6; flex-shrink: 0; }
+.pdf-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pdf-strip { display: flex; gap: 8px; justify-content: center; margin-top: 10px; }
+.pdf-strip img { height: 70px; width: auto; max-width: 30%; object-fit: cover; }
+.pdf-footer { text-align: center; font-size: 9px; color: #999; margin-top: auto; padding-top: 12px; border-top: 1px solid #e2ddd8; }
+.pdf-event-info .pdf-event-title { font-weight: 300 !important; color: #00b2b6 !important; font-size: 24px !important; }
+
+/* ---- Print: only the programme page ---- */
+@media print {
+  @page { size: A4; margin: 0; }
+  body { padding: 0 !important; background: #fff !important; }
+  body::before, .app-header, .tabs, .event-header, .img-picker, #backBtn, #generatePdfBtn, .toast { display: none !important; }
+  .main-content { padding: 0 !important; max-width: none !important; }
+  .main-content > div:has(> #backBtn) { display: none !important; }
+  .pdf-preview-container { background: none !important; padding: 0 !important; }
+  .pdf-page { box-shadow: none !important; max-width: none !important; width: 210mm; height: 297mm; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+</style>
+</head>
+<body>
 <div id="app"></div>
 <div class="toast" id="toast"></div>
 
@@ -503,10 +621,110 @@ const LOGO_SRC = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAT8AAACoCAIAAAAZ
 const PASSWORD = 'jms2026';
 
 // Demo data
-const TEACHERS = [
-  'Julia Weiler', 'Ivana Agius', 'Ursula Hörz-Gröner', 'Jens Müller',
-  'György Michelberger', 'Gabi Janke', 'Thomas Berger', 'Sabine Koch',
-  'Martin Fischer', 'Anna Schneider', 'Petra Wagner'
+// Lehrkräfte laut https://jms-mosaik.de/unsere-lehrkraefte (Stand 09.11.2026)
+const TEACHER_DATA = [
+  { name: 'Ivana Agius', faecher: 'Klavier' },
+  { name: 'Rahel Brooke', faecher: 'Violoncello' },
+  { name: 'Stefan Disselkamp', faecher: 'Klarinette, Saxophon' },
+  { name: 'Elazar Fayzulaev', faecher: 'Ballett' },
+  { name: 'Swetlana Fayzulaev', faecher: 'Tänzerische Früherziehung, Hip Hop' },
+  { name: 'Anna Fiveiska', faecher: 'Schlagzeug, Mallets' },
+  { name: 'Mara Gherasim', faecher: 'Klavier' },
+  { name: 'Sandra Hempel', faecher: 'Stimmbildung, Gesang' },
+  { name: 'Mirijam Höferlin', faecher: 'Stimmbildung' },
+  { name: 'Ursula Hörz-Gröner', faecher: 'Querflöte, Musik für die Jüngsten' },
+  { name: 'Gabriele Janke', faecher: 'Musik für die Jüngsten' },
+  { name: 'Barbara Körber', faecher: 'Blockflöte, Oboe' },
+  { name: 'Uwe Kohls', faecher: 'Orchesterleitung, Kinderchor' },
+  { name: 'Doina Ludwig', faecher: 'Klavier' },
+  { name: 'Moritz Metzler', faecher: 'Posaune, Euphonium' },
+  { name: 'György Michelberger', faecher: 'Gitarre, Gitarrenensemble' },
+  { name: 'Jens Müller', faecher: 'Trompete, Musikschulleiter' },
+  { name: 'Christoph Sauer', faecher: 'E-Bass, E-Gitarre, Bandcoaching' },
+  { name: 'Tanja Schäffer', faecher: 'Violine, Viola' },
+  { name: 'Frank Schilling', faecher: 'Gitarre, E-Gitarre, Gitarren-Ensemble' },
+  { name: 'Karen Selig-Deininger', faecher: 'Singen – Bewegen – Sprechen (SBS)' },
+  { name: 'Bernd Settelmeyer', faecher: 'Schlagzeug, Schlagzeug-Ensemble' },
+  { name: 'Julia Weiler', faecher: 'Violine, Viola, Streichhölzer' }
+];
+const TEACHERS = TEACHER_DATA.map(t => t.name);
+const FAECHER = Object.fromEntries(TEACHER_DATA.map(t => [t.name, t.faecher]));
+
+// Bildbibliothek – jede Veranstaltung hat eigene Bilder, alle sind für das PDF wählbar
+const IMAGES = [
+  { id: 'concertino', src: 'jms-assets/concertino.png', label: 'Concertino' },
+  { id: 'weihnachtliche-klaenge', src: 'jms-assets/weihnachtliche-klaenge.png', label: 'Weihnachtliche Klänge' },
+  { id: 'weihnachten-instrumente', src: 'jms-assets/weihnachten-instrumente.png', label: 'Weihnachtstisch mit Instrumenten' },
+  { id: 'frueherziehung-weihnachten', src: 'jms-assets/frueherziehung-weihnachten.png', label: 'Früherziehung feiert Weihnachten' },
+  { id: 'wappen', src: 'jms-assets/wappen.png', label: 'Wappen' }
+];
+function imgById(id) { return IMAGES.find(i => i.id === id); }
+
+// Instrumente (Dropdown); "Sonstiges…" erlaubt Freitext
+const INSTRUMENT_GROUPS = [
+  ['Tasteninstrumente', ['Klavier', 'Flügel', 'E-Piano', 'Keyboard', 'Akkordeon']],
+  ['Streichinstrumente', ['Violine', 'Viola', 'Violoncello', 'Kontrabass']],
+  ['Zupfinstrumente', ['Gitarre', 'E-Gitarre', 'E-Bass', 'Harfe']],
+  ['Holzblasinstrumente', ['Querflöte', 'Blockflöte', 'Piccoloflöte', 'Oboe', 'Klarinette', 'Saxophon']],
+  ['Blechblasinstrumente', ['Trompete', 'Kornett', 'Flügelhorn', 'Waldhorn', 'Althorn', 'Tenorhorn', 'Euphonium', 'Posaune', 'Tuba', 'Sousaphon']],
+  ['Schlaginstrumente', ['Drumset', 'Congas', 'Bongos', 'Xylophon', 'Vibraphon', 'Marimba', 'Lyra']],
+  ['Stimme', ['Gesang']]
+];
+const ALL_INSTRUMENTS = INSTRUMENT_GROUPS.flatMap(g => g[1]);
+
+// Start-Repertoire (typische Musikschul-Literatur). Wird automatisch um jede Eingabe ergänzt.
+// [Komponist (Lebensdaten), [Stücke], [typische Instrumente]]
+const SEED_REPERTOIRE = [
+  ['Johann Sebastian Bach (1685–1750)', ['Präludium C-Dur BWV 846', 'Musette D-Dur BWV Anh. 126', 'Invention Nr. 1 C-Dur BWV 772', 'Air aus der Orchestersuite Nr. 3', 'Bourrée e-Moll BWV 996'], []],
+  ['Christian Petzold (1677–1733)', ['Menuett G-Dur BWV Anh. 114', 'Menuett g-Moll BWV Anh. 115'], ['Klavier']],
+  ['Georg Friedrich Händel (1685–1759)', ['Largo (Ombra mai fu)', 'Sarabande', 'Bourrée', 'Halleluja'], []],
+  ['Johann Pachelbel (1653–1706)', ['Kanon D-Dur'], []],
+  ['Antonio Vivaldi (1678–1741)', ['Frühling (Die vier Jahreszeiten)', 'Winter (Die vier Jahreszeiten)', 'Concerto a-Moll RV 356'], ['Violine', 'Querflöte']],
+  ['Jean-Joseph Mouret (1682–1738)', ['Rondeau'], ['Trompete']],
+  ['Jeremiah Clarke (1674–1707)', ['Trumpet Voluntary'], ['Trompete']],
+  ['Marc-Antoine Charpentier (1643–1704)', ['Prélude aus dem Te Deum'], ['Trompete']],
+  ['Joseph Haydn (1732–1809)', ['Deutscher Tanz', 'Trompetenkonzert Es-Dur, 3. Satz'], []],
+  ['Wolfgang Amadeus Mozart (1756–1791)', ['Menuett F-Dur KV 2', 'Allegro B-Dur KV 3', 'Sonate C-Dur KV 545, 1. Satz', 'Rondo alla Turca KV 331', 'Eine kleine Nachtmusik KV 525'], []],
+  ['Muzio Clementi (1752–1832)', ['Sonatine C-Dur op. 36 Nr. 1'], ['Klavier']],
+  ['Ludwig van Beethoven (1770–1827)', ['Für Elise WoO 59', 'Sonatine G-Dur Anh. 5 Nr. 1', 'Sonatine F-Dur Anh. 5 Nr. 2', 'Ecossaise', 'Ode an die Freude'], []],
+  ['Franz Schubert (1797–1828)', ['Walzer', 'Ständchen', 'Ave Maria'], []],
+  ['Carl Czerny (1791–1857)', ['Etüde op. 599'], ['Klavier']],
+  ['Friedrich Burgmüller (1806–1874)', ['Arabeske op. 100 Nr. 2', 'Tarantella op. 100 Nr. 20', 'La Chevaleresque op. 100 Nr. 25', 'Ballade op. 100 Nr. 15'], ['Klavier']],
+  ['Jean-Baptiste Duvernoy (1802–1880)', ['Etüde op. 176'], ['Klavier']],
+  ['Robert Schumann (1810–1856)', ['Soldatenmarsch op. 68 Nr. 2', 'Fröhlicher Landmann op. 68 Nr. 10', 'Wilder Reiter op. 68 Nr. 8', 'Träumerei op. 15 Nr. 7'], ['Klavier']],
+  ['Frédéric Chopin (1810–1849)', ['Walzer a-Moll op. posth.', 'Prélude e-Moll op. 28 Nr. 4', 'Nocturne Es-Dur op. 9 Nr. 2'], ['Klavier']],
+  ['Cornelius Gurlitt (1820–1901)', ['Thema mit Variation', 'Album für die Jugend op. 140'], ['Klavier']],
+  ['Pjotr Iljitsch Tschaikowsky (1840–1893)', ['Album für die Jugend op. 39', 'Tanz der Zuckerfee'], []],
+  ['Edvard Grieg (1843–1907)', ['Morgenstimmung', 'In der Halle des Bergkönigs'], []],
+  ['Gabriel Fauré (1845–1924)', ['Pie Jesu', 'Sicilienne op. 78'], []],
+  ['Camille Saint-Saëns (1835–1921)', ['Der Schwan'], ['Violoncello']],
+  ['Erik Satie (1866–1925)', ['Gymnopédie Nr. 1'], ['Klavier']],
+  ['Scott Joplin (1868–1917)', ['The Entertainer', 'Maple Leaf Rag'], ['Klavier']],
+  ['Dmitri Kabalewski (1904–1987)', ['Kinderstücke op. 39'], ['Klavier']],
+  ['Jean-Baptiste Accolay (1833–1900)', ['Concerto Nr. 1 a-Moll'], ['Violine']],
+  ['Oskar Rieding (1840–1918)', ['Concerto h-Moll op. 35'], ['Violine']],
+  ['Friedrich Seitz (1848–1918)', ['Schülerkonzert Nr. 2 op. 13'], ['Violine']],
+  ['Francisco Tárrega (1852–1909)', ['Lágrima', 'Recuerdos de la Alhambra'], ['Gitarre']],
+  ['Fernando Sor (1778–1839)', ['Etüde op. 60'], ['Gitarre']],
+  ['Matteo Carcassi (1792–1853)', ['Etüde op. 60'], ['Gitarre']],
+  ['Ferdinando Carulli (1770–1841)', ['Andantino'], ['Gitarre']],
+  ['Claude Arrieu (1903–1990)', ['Sonatine'], ['Querflöte']],
+  ['William Gillock (1917–1993)', ['Argentina', 'Fountain in the Rain'], ['Klavier']],
+  ['Christopher Norton (1953–)', ['Microjazz', 'In Classical Style'], []],
+  ['Ludovico Einaudi (1955–)', ['Nuvole Bianche', 'Una Mattina'], ['Klavier']],
+  ['Yann Tiersen (1970–)', ["Comptine d'un autre été"], ['Klavier']],
+  ['John Williams (1932–)', ["Hedwig's Theme (Harry Potter)", 'Star Wars – Main Title'], []],
+  ['Klaus Badelt (1967–)', ["He's a Pirate (Fluch der Karibik)"], []],
+  ['Sidney Bechet (1897–1959)', ['Petite Fleur'], ['Klarinette', 'Saxophon']],
+  ['Franz Xaver Gruber (1787–1863)', ['Stille Nacht, heilige Nacht'], []],
+  ['James Lord Pierpont (1822–1893)', ['Jingle Bells'], []],
+  ['Eduard Ebel (1839–1905)', ['Leise rieselt der Schnee'], []],
+  ['Johnny Marks (1909–1985)', ['Rudolph the Red-Nosed Reindeer'], []],
+  ['Felix Bernard (1897–1944)', ['Winter Wonderland'], []],
+  ['Jule Styne (1905–1994)', ['Let It Snow!'], []],
+  ['José Feliciano (1945–)', ['Feliz Navidad'], []],
+  ['George Michael (1963–2016)', ['Last Christmas'], []],
+  ['Volkslied', ['Bruder Jakob', 'O Tannenbaum', 'Kling, Glöckchen, klingelingeling', 'Morgen kommt der Weihnachtsmann', 'O du fröhliche', 'Greensleeves', 'Scarborough Fair'], []]
 ];
 
 const EVENTS = [
@@ -518,6 +736,8 @@ const EVENTS = [
     time: '18:00 Uhr',
     location: 'Prisma, Freiberg a.N.',
     deadline: '03.11.2026',
+    images: ['concertino', 'wappen'],
+    pdfImages: ['concertino'],
     teachers: ['Julia Weiler', 'Ivana Agius', 'Ursula Hörz-Gröner', 'Jens Müller', 'György Michelberger'],
     entries: [
       {
@@ -642,9 +862,11 @@ const EVENTS = [
     time: '18:00 Uhr',
     location: 'Prisma, Freiberg a.N.',
     deadline: '28.11.2026',
-    teachers: ['Julia Weiler', 'Ivana Agius', 'Ursula Hörz-Gröner', 'Jens Müller', 'György Michelberger', 'Gabi Janke', 'Thomas Berger'],
+    images: ['weihnachtliche-klaenge', 'weihnachten-instrumente', 'frueherziehung-weihnachten', 'wappen'],
+    pdfImages: ['weihnachtliche-klaenge'],
+    teachers: [...TEACHERS],
     entries: [],
-    status: { 'Julia Weiler': 'pending', 'Ivana Agius': 'pending', 'Ursula Hörz-Gröner': 'pending', 'Jens Müller': 'pending', 'György Michelberger': 'pending', 'Gabi Janke': 'pending', 'Thomas Berger': 'pending' }
+    status: Object.fromEntries(TEACHERS.map(t => [t, 'pending']))
   }
 ];
 
@@ -667,6 +889,189 @@ function getInitials(name) {
   return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
 }
 
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+/* ---------- Repertoire: lernt aus jeder Eingabe ---------- */
+// Schlüssel: Komponist ohne Lebensdaten, klein geschrieben
+function composerKey(c) { return (c || '').replace(/\s*\([^)]*\)\s*$/, '').trim().toLowerCase(); }
+function splitComposer(c) { const m = (c || '').match(/^(.*?)\s*(\([^)]*\))?\s*$/); return { name: (m && m[1]) || c || '', dates: (m && m[2]) || '' }; }
+function norm(s) { return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+
+const REPERTOIRE_STORE = 'jms-repertoire-v1';
+let LEARNED = []; // [{composer, werk, instrument, teacher, count}]
+try { LEARNED = JSON.parse(localStorage.getItem(REPERTOIRE_STORE) || '[]'); } catch (e) { LEARNED = []; }
+function saveLearned() { try { localStorage.setItem(REPERTOIRE_STORE, JSON.stringify(LEARNED)); } catch (e) {} }
+
+function learn(entry, teacher) {
+  const instruments = entry.performers.map(p => p.instrument).filter(Boolean);
+  const hit = LEARNED.find(l => composerKey(l.composer) === composerKey(entry.composer) && norm(l.werk) === norm(entry.werk));
+  if (hit) { hit.count++; hit.composer = entry.composer || hit.composer; hit.teacher = teacher; hit.instrument = instruments[0] || hit.instrument; hit.ids = [...(hit.ids || []), entry.id]; }
+  else LEARNED.push({ composer: entry.composer, werk: entry.werk, instrument: instruments[0] || '', teacher, count: 1, ids: [entry.id] });
+  saveLearned();
+}
+
+// Gesamtes Repertoire: Start-Liste + bisherige Programme + Gelerntes
+function buildRepertoire() {
+  const map = new Map(); // composerKey -> {composer, count, instruments:Set, pieces: Map(normWerk -> {werk,count,instruments,teachers})}
+  const add = (composer, werk, instrument, teacher, weight) => {
+    const key = composerKey(composer) || 'ohne angabe';
+    if (!map.has(key)) map.set(key, { composer: composer || '', count: 0, instruments: new Set(), teachers: new Set(), pieces: new Map() });
+    const c = map.get(key);
+    if (composer && /\(/.test(composer)) c.composer = composer; // Variante mit Lebensdaten bevorzugen
+    c.count += weight;
+    if (instrument) c.instruments.add(instrument);
+    if (teacher) c.teachers.add(teacher);
+    if (werk) {
+      const wk = norm(werk);
+      if (!c.pieces.has(wk)) c.pieces.set(wk, { werk, count: 0, instruments: new Set(), teachers: new Set() });
+      const p = c.pieces.get(wk);
+      p.count += weight;
+      if (instrument) p.instruments.add(instrument);
+      if (teacher) p.teachers.add(teacher);
+    }
+  };
+  SEED_REPERTOIRE.forEach(([comp, pieces, instr]) => pieces.forEach(w => instr.length ? instr.forEach(i => add(comp, w, i, '', 0)) : add(comp, w, '', '', 0)));
+  const learnedIds = new Set(LEARNED.flatMap(l => l.ids || []));
+  EVENTS.forEach(ev => ev.entries.forEach(e => {
+    if (learnedIds.has(e.id)) return; // schon über LEARNED gezählt
+    const instr = (e.performers[0] && e.performers[0].instrument) || '';
+    add(e.composer, e.werk, instr, e.teacher, 1);
+  }));
+  LEARNED.forEach(l => add(l.composer, l.werk, l.instrument, l.teacher, l.count));
+  return map;
+}
+
+function scoreText(query, text) {
+  const q = norm(query).trim(); const t = norm(text);
+  if (!q) return 1;
+  if (t.startsWith(q)) return 3;
+  if (t.split(/[\s\-–(]+/).some(w => w.startsWith(q))) return 2.5; // Nachname / Wortanfang
+  if (t.includes(q)) return 1.5;
+  // alle Wörter der Suche irgendwo enthalten
+  return q.split(/\s+/).every(w => t.includes(w)) ? 1 : 0;
+}
+
+// Kontext: aktuelles Instrument im Formular + angemeldete Lehrkraft
+function formContext() {
+  const sel = document.querySelector('#performerRows .p-instrument');
+  const other = document.querySelector('#performerRows .p-instrument-other');
+  const instrument = sel ? (sel.value === '__other' ? (other && other.value.trim()) : sel.value) : '';
+  return { instrument, teacher: currentRole };
+}
+
+function suggestComposers(query) {
+  const rep = buildRepertoire(); const ctx = formContext(); const out = [];
+  rep.forEach(c => {
+    if (!c.composer) return;
+    const s = scoreText(query, c.composer);
+    if (!s) return;
+    let rank = s * 20 + Math.min(c.count, 10);
+    if (ctx.teacher && c.teachers.has(ctx.teacher)) rank += 8;
+    if (ctx.instrument && c.instruments.has(ctx.instrument)) rank += 5;
+    const meta = [];
+    if (c.count) meta.push(`${c.count}× im Programm`);
+    if (ctx.teacher && c.teachers.has(ctx.teacher)) meta.push('von Ihnen gespielt');
+    out.push({ rank, value: c.composer, title: splitComposer(c.composer).name, sub: [splitComposer(c.composer).dates, meta.join(' · ')].filter(Boolean).join('  ') });
+  });
+  return out.sort((a, b) => b.rank - a.rank).slice(0, 8);
+}
+
+function suggestPieces(query, composerValue) {
+  const rep = buildRepertoire(); const ctx = formContext(); const out = [];
+  const ck = composerKey(composerValue);
+  rep.forEach(c => {
+    const sameComposer = ck && composerKey(c.composer) === ck;
+    if (ck && !sameComposer && !query) return; // ohne Suche: nur Stücke des gewählten Komponisten
+    c.pieces.forEach(p => {
+      const s = scoreText(query, p.werk);
+      if (!s) return;
+      let rank = s * 20 + Math.min(p.count, 10);
+      if (sameComposer) rank += 30;
+      if (ctx.teacher && p.teachers.has(ctx.teacher)) rank += 8;
+      if (ctx.instrument && p.instruments.has(ctx.instrument)) rank += 5;
+      const meta = [];
+      if (p.count) meta.push(`${p.count}× gespielt`);
+      if (ctx.teacher && p.teachers.has(ctx.teacher)) meta.push('von Ihnen');
+      out.push({ rank, value: p.werk, composer: c.composer, title: p.werk, sub: [c.composer ? splitComposer(c.composer).name : '', meta.join(' · ')].filter(Boolean).join(' · ') });
+    });
+  });
+  return out.sort((a, b) => b.rank - a.rank).slice(0, 8);
+}
+
+// Bekannte Schüler/innen -> zuletzt verwendetes Instrument
+function knownPerformers() {
+  const m = new Map();
+  EVENTS.forEach(ev => ev.entries.forEach(e => e.performers.forEach(p => { if (p.name) m.set(p.name, p.instrument || m.get(p.name) || ''); })));
+  return m;
+}
+
+/* ---------- Autocomplete-Komponente ---------- */
+function attachSuggest(input, getItems, onPick) {
+  const wrap = input.parentElement; wrap.classList.add('suggest-wrap');
+  const list = document.createElement('div'); list.className = 'suggest-list'; list.setAttribute('role', 'listbox'); list.hidden = true;
+  wrap.appendChild(list);
+  input.setAttribute('autocomplete', 'off');
+  let items = [], active = -1;
+  const draw = () => {
+    items = getItems(input.value);
+    if (!items.length) { list.hidden = true; return; }
+    list.innerHTML = items.map((it, i) => `<div class="suggest-item${i === active ? ' active' : ''}" role="option" data-i="${i}"><span class="s-title">${esc(it.title)}</span>${it.sub ? `<span class="s-sub">${esc(it.sub)}</span>` : ''}</div>`).join('');
+    list.hidden = false;
+  };
+  const pick = i => { const it = items[i]; if (!it) return; input.value = it.value; list.hidden = true; active = -1; onPick && onPick(it); };
+  input.addEventListener('input', () => { active = -1; draw(); });
+  input.addEventListener('focus', () => { active = -1; draw(); });
+  input.addEventListener('blur', () => setTimeout(() => { list.hidden = true; }, 150));
+  input.addEventListener('keydown', e => {
+    if (list.hidden) return;
+    if (e.key === 'ArrowDown') { active = Math.min(active + 1, items.length - 1); draw(); e.preventDefault(); }
+    else if (e.key === 'ArrowUp') { active = Math.max(active - 1, 0); draw(); e.preventDefault(); }
+    else if (e.key === 'Enter' && active >= 0) { pick(active); e.preventDefault(); }
+    else if (e.key === 'Escape') { list.hidden = true; }
+  });
+  list.addEventListener('mousedown', e => { const el = e.target.closest('.suggest-item'); if (el) { e.preventDefault(); pick(+el.dataset.i); } });
+}
+
+/* ---------- Instrument-Auswahl ---------- */
+function instrumentSelectHtml(value) {
+  const isOther = value && !ALL_INSTRUMENTS.includes(value);
+  return `<select class="p-instrument" aria-label="Instrument">
+      <option value="">Instrument wählen…</option>
+      ${INSTRUMENT_GROUPS.map(([g, list]) => `<optgroup label="${g}">${list.map(i => `<option${i === value ? ' selected' : ''}>${i}</option>`).join('')}</optgroup>`).join('')}
+      <option value="__other"${isOther ? ' selected' : ''}>Sonstiges…</option>
+    </select>
+    <input type="text" class="p-instrument-other" placeholder="Instrument eingeben" value="${isOther ? esc(value) : ''}"${isOther ? '' : ' hidden'}>`;
+}
+function performerRowHtml() {
+  return `
+    <div class="performer-row">
+      <div class="form-group" style="flex:2"><input type="text" class="p-name" placeholder="Name" list="knownPerformers"></div>
+      <div class="form-group" style="flex:1.4">${instrumentSelectHtml('')}</div>
+      <button class="btn btn-icon btn-sm remove-perf" title="Entfernen" aria-label="Mitwirkende/n entfernen">✕</button>
+    </div>`;
+}
+function bindPerformerRow(row) {
+  const sel = row.querySelector('.p-instrument');
+  const other = row.querySelector('.p-instrument-other');
+  sel.addEventListener('change', () => { other.hidden = sel.value !== '__other'; if (!other.hidden) other.focus(); });
+  const nameInput = row.querySelector('.p-name');
+  nameInput.addEventListener('change', () => {
+    const instr = knownPerformers().get(nameInput.value.trim());
+    if (instr && !sel.value) {
+      if (ALL_INSTRUMENTS.includes(instr)) sel.value = instr; else { sel.value = '__other'; other.value = instr; other.hidden = false; }
+    }
+  });
+  const rm = row.querySelector('.remove-perf');
+  rm.addEventListener('click', () => {
+    const rows = document.getElementById('performerRows');
+    if (rows && rows.children.length > 1) row.remove();
+  });
+}
+function readInstrument(row) {
+  const v = row.querySelector('.p-instrument').value;
+  return v === '__other' ? row.querySelector('.p-instrument-other').value.trim() : v;
+}
+
 function render() {
   const app = document.getElementById('app');
   if (currentView === 'login') {
@@ -685,6 +1090,7 @@ function renderLogin() {
       <div class="login-card">
         <img src="${LOGO_SRC}" alt="JugendMusikSchule">
         <h2>Programmheft-Tool</h2>
+        <p class="login-tagline">Mehr Freude durch Musik</p>
         <p style="font-size:13px;color:var(--fg-muted)">Bitte melden Sie sich an, um Ihre Programmbeiträge zu verwalten.</p>
         <div>
           <input type="password" id="loginPw" placeholder="Passwort eingeben" autocomplete="off">
@@ -700,12 +1106,17 @@ function renderAdminHeader() {
   return `
     <header class="app-header">
       <img src="${LOGO_SRC}" alt="Logo">
-      <h1>Programmheft-Tool</h1>
+      <h1>Programmheft-Tool<small>Mehr Freude durch Musik</small></h1>
       <div class="header-actions">
         <span class="user-badge">👤 Admin</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
       </div>
     </header>`;
+}
+
+function eventThumb(ev) {
+  const img = imgById((ev.pdfImages && ev.pdfImages[0]) || (ev.images && ev.images[0]));
+  return img ? `<img class="event-thumb" src="${img.src}" alt="">` : `<div class="event-thumb event-thumb-empty">♪</div>`;
 }
 
 function renderAdminContent() {
@@ -730,10 +1141,12 @@ function renderEventList() {
     const chipLabel = pct === 100 ? 'Vollständig' : `${done}/${total} Lehrkräfte`;
 
     html += `
-      <div class="entry-section" style="cursor:pointer" data-event-id="${ev.id}">
+      <div class="entry-section event-card" style="cursor:pointer" data-event-id="${ev.id}">
+        ${eventThumb(ev)}
+        <div class="event-card-body">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
           <div>
-            <div style="font-family:var(--font-display);font-size:20px;font-weight:700">${ev.title}</div>
+            <div class="card-title">${ev.title}</div>
             ${ev.subtitle ? `<div style="font-size:12px;color:var(--fg-muted);font-style:italic">${ev.subtitle}</div>` : ''}
           </div>
           <span class="chip ${chipClass}">${chipLabel}</span>
@@ -746,6 +1159,7 @@ function renderEventList() {
         </div>
         <div style="margin-top:12px;background:var(--bg);border-radius:20px;height:6px;overflow:hidden">
           <div style="height:100%;width:${pct}%;background:var(--accent);border-radius:20px;transition:width .3s"></div>
+        </div>
         </div>
       </div>`;
   });
@@ -826,7 +1240,7 @@ function renderOverviewTab(ev, total, done, pending) {
     html += `
       <div class="teacher-row">
         <div class="teacher-avatar">${getInitials(t)}</div>
-        <div class="name">${t}</div>
+        <div class="name">${t}<span class="faecher">${esc(FAECHER[t] || '')}</span></div>
         ${count ? `<span style="font-size:11px;color:var(--fg-muted)">${count}×</span>` : ''}
         <span class="chip ${isDone ? 'chip-success' : 'chip-danger'}">${isDone ? '✓' : '⏳'}</span>
       </div>`;
@@ -906,12 +1320,41 @@ function renderPreviewTab(ev) {
       </div>`;
   });
 
+  ev.images = ev.images || [];
+  ev.pdfImages = ev.pdfImages || [];
+  const own = ev.images.map(imgById).filter(Boolean);
+  const others = IMAGES.filter(i => !ev.images.includes(i.id));
+  const thumb = img => {
+    const pos = ev.pdfImages.indexOf(img.id);
+    const badge = pos === 0 ? 'Titelbild' : pos > 0 ? `Bild ${pos + 1}` : '';
+    return `<button type="button" class="img-pick${pos >= 0 ? ' selected' : ''}" data-img="${img.id}" aria-pressed="${pos >= 0}" title="${esc(img.label)}">
+        <img src="${img.src}" alt="${esc(img.label)}">
+        ${badge ? `<span class="img-badge">${badge}</span>` : ''}
+        <span class="img-label">${esc(img.label)}</span>
+      </button>`;
+  };
+  const sel = ev.pdfImages.map(imgById).filter(Boolean);
+  const cover = sel[0];
+  const strip = sel.slice(1);
+
   return `
+    <div class="img-picker">
+      <div class="img-picker-head">
+        <h3>Bilder für das PDF</h3>
+        <span class="form-hint">Anklicken zum Auswählen. Das erste gewählte Bild wird Titelbild, weitere erscheinen unten.</span>
+      </div>
+      <div class="img-group-label">Bilder dieser Veranstaltung</div>
+      <div class="img-grid">${own.map(thumb).join('') || '<span class="form-hint">Noch keine eigenen Bilder.</span>'}
+        <label class="img-upload" title="Eigenes Bild hochladen">＋<span>Bild hochladen</span><input type="file" accept="image/*" id="imgUpload" hidden></label>
+      </div>
+      ${others.length ? `<div class="img-group-label">Weitere Bilder</div><div class="img-grid">${others.map(thumb).join('')}</div>` : ''}
+    </div>
     <div style="display:flex;justify-content:flex-end;margin-bottom:12px;gap:8px">
-      <button class="btn btn-primary" id="generatePdfBtn">📄 PDF erzeugen</button>
+      <button class="btn btn-primary" id="generatePdfBtn">📄 PDF erzeugen / drucken</button>
     </div>
     <div class="pdf-preview-container">
       <div class="pdf-page">
+        ${cover ? `<div class="pdf-cover"><img src="${cover.src}" alt="${esc(cover.label)}"></div>` : ''}
         <div class="pdf-header">
           <img src="${LOGO_SRC}" alt="Logo">
           <div class="pdf-event-info">
@@ -921,7 +1364,8 @@ function renderPreviewTab(ev) {
         </div>
         <div class="pdf-program-title">Programm</div>
         <div style="flex:1;overflow:hidden">${items || '<p style="color:#999;text-align:center;margin-top:40px">Noch keine Beiträge vorhanden.</p>'}</div>
-        <div style="text-align:center;font-size:9px;color:#999;margin-top:auto;padding-top:12px;border-top:1px solid #e2ddd8">
+        ${strip.length ? `<div class="pdf-strip">${strip.map(i => `<img src="${i.src}" alt="${esc(i.label)}">`).join('')}</div>` : ''}
+        <div class="pdf-footer">
           JugendMusikSchule Freiberg a.N. · Pleidelsheim e.V.
         </div>
       </div>
@@ -933,7 +1377,7 @@ function renderTeacherHeader() {
   return `
     <header class="app-header">
       <img src="${LOGO_SRC}" alt="Logo">
-      <h1>Programmheft-Tool</h1>
+      <h1>Programmheft-Tool<small>Mehr Freude durch Musik</small></h1>
       <div class="header-actions">
         <span class="user-badge">🎵 ${currentRole}</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
@@ -951,16 +1395,19 @@ function renderTeacherContent() {
       const myStatus = ev.status[currentRole];
       const myEntries = ev.entries.filter(e => e.teacher === currentRole);
       html += `
-        <div class="entry-section" style="cursor:pointer" data-event-id="${ev.id}">
+        <div class="entry-section event-card" style="cursor:pointer" data-event-id="${ev.id}">
+          ${eventThumb(ev)}
+          <div class="event-card-body">
           <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
             <div>
-              <div style="font-family:var(--font-display);font-size:18px;font-weight:700">${ev.title}</div>
+              <div class="card-title">${ev.title}</div>
               <div style="font-size:13px;color:var(--fg-muted)">${ev.date} · ${ev.time}</div>
             </div>
             <span class="chip ${myStatus === 'done' ? 'chip-success' : 'chip-warning'}">${myStatus === 'done' ? '✓ Abgeschlossen' : 'Offen'}</span>
           </div>
           ${myEntries.length ? `<div style="font-size:12px;color:var(--fg-muted);margin-top:8px">${myEntries.length} Beitrag/Beiträge eingetragen</div>` : ''}
           <div style="font-size:12px;color:var(--gold);margin-top:4px">⏰ Abgabe bis ${ev.deadline}</div>
+          </div>
         </div>`;
     });
     return html;
@@ -1006,22 +1453,18 @@ function renderTeacherContent() {
       <h3>Neuen Beitrag hinzufügen</h3>
       <div class="form-grid" id="entryForm">
         <div class="form-group">
-          <label>Komponist</label>
-          <input type="text" id="fComposer" placeholder="z.B. Ludwig van Beethoven (1770–1827)">
+          <label for="fComposer">Komponist</label>
+          <div><input type="text" id="fComposer" placeholder="Name tippen, z.B. Beeth…"></div>
         </div>
         <div class="form-group">
-          <label>Stück / Werk</label>
-          <input type="text" id="fWerk" placeholder="z.B. Für Elise">
+          <label for="fWerk">Stück / Werk</label>
+          <div><input type="text" id="fWerk" placeholder="Titel tippen, z.B. Für Elise"></div>
         </div>
+        <p class="form-hint full">💡 Vorschläge kommen aus dem Repertoire aller bisherigen Programme und lernen mit jeder Eingabe dazu. Neue Komponisten oder Stücke einfach frei eintippen.</p>
         <div class="form-group full">
           <label>Mitwirkende</label>
-          <div id="performerRows">
-            <div class="performer-row" style="margin-bottom:6px">
-              <div class="form-group" style="flex:2"><input type="text" class="p-name" placeholder="Name"></div>
-              <div class="form-group" style="flex:1"><input type="text" class="p-instrument" placeholder="Instrument"></div>
-              <button class="btn btn-icon btn-sm remove-perf" title="Entfernen">✕</button>
-            </div>
-          </div>
+          <div id="performerRows">${performerRowHtml()}</div>
+          <datalist id="knownPerformers">${[...knownPerformers().keys()].map(n => `<option value="${esc(n)}">`).join('')}</datalist>
           <button class="btn btn-secondary btn-sm" id="addPerfBtn" style="margin-top:4px">+ Mitwirkende/r</button>
         </div>
         <div class="form-group full">
@@ -1101,22 +1544,24 @@ function bindEvents() {
   const addPerfBtn = document.getElementById('addPerfBtn');
   if (addPerfBtn) addPerfBtn.addEventListener('click', () => {
     const container = document.getElementById('performerRows');
-    const row = document.createElement('div');
-    row.className = 'performer-row';
-    row.style.marginBottom = '6px';
-    row.innerHTML = `
-      <div class="form-group" style="flex:2"><input type="text" class="p-name" placeholder="Name"></div>
-      <div class="form-group" style="flex:1"><input type="text" class="p-instrument" placeholder="Instrument"></div>
-      <button class="btn btn-icon btn-sm remove-perf" title="Entfernen">✕</button>`;
+    const tmp = document.createElement('div');
+    tmp.innerHTML = performerRowHtml();
+    const row = tmp.firstElementChild;
     container.appendChild(row);
-    row.querySelector('.remove-perf').addEventListener('click', () => row.remove());
+    bindPerformerRow(row);
+    row.querySelector('.p-name').focus();
   });
 
-  // Remove performer
-  $$('.remove-perf').forEach(btn => btn.addEventListener('click', () => {
-    const rows = document.getElementById('performerRows');
-    if (rows && rows.children.length > 1) btn.closest('.performer-row').remove();
-  }));
+  // Performer rows (Instrument-Dropdown, Entfernen, bekannte Schüler)
+  $$('#performerRows .performer-row').forEach(bindPerformerRow);
+
+  // Vorschläge Komponist / Stück
+  const fComposer = document.getElementById('fComposer');
+  const fWerk = document.getElementById('fWerk');
+  if (fComposer && fWerk) {
+    attachSuggest(fComposer, q => suggestComposers(q), () => fWerk.focus());
+    attachSuggest(fWerk, q => suggestPieces(q, fComposer.value), it => { if (!fComposer.value.trim() && it.composer) fComposer.value = it.composer; });
+  }
 
   // Save entry
   const saveEntryBtn = document.getElementById('saveEntryBtn');
@@ -1129,17 +1574,15 @@ function bindEvents() {
     const performers = [];
     $$('#performerRows .performer-row').forEach(row => {
       const name = row.querySelector('.p-name').value.trim();
-      const instrument = row.querySelector('.p-instrument').value.trim();
+      const instrument = readInstrument(row);
       if (name) performers.push({ name, instrument });
     });
     if (!performers.length) { toast('Mindestens ein/e Mitwirkende/r angeben.'); return; }
 
     const ev = EVENTS.find(e => e.id === selectedEvent);
-    ev.entries.push({
-      id: Date.now(),
-      teacher: currentRole,
-      composer, werk, performers, note
-    });
+    const entry = { id: Date.now(), teacher: currentRole, composer, werk, performers, note };
+    ev.entries.push(entry);
+    learn(entry, currentRole);
     toast('Beitrag gespeichert!');
     render();
   });
@@ -1184,7 +1627,35 @@ function bindEvents() {
   // Generate PDF
   const genPdfBtn = document.getElementById('generatePdfBtn');
   if (genPdfBtn) genPdfBtn.addEventListener('click', () => {
-    toast('PDF wird erzeugt… (in der echten App)');
+    toast('Druckdialog: „Als PDF speichern“ wählen');
+    setTimeout(() => window.print(), 300);
+  });
+
+  // Bildauswahl für PDF (Reihenfolge = Klick-Reihenfolge)
+  $$('.img-pick').forEach(btn => btn.addEventListener('click', () => {
+    const ev = EVENTS.find(e => e.id === selectedEvent);
+    const id = btn.dataset.img;
+    ev.pdfImages = ev.pdfImages.includes(id) ? ev.pdfImages.filter(x => x !== id) : [...ev.pdfImages, id];
+    render();
+  }));
+
+  // Eigenes Bild hochladen
+  const imgUpload = document.getElementById('imgUpload');
+  if (imgUpload) imgUpload.addEventListener('change', () => {
+    const file = imgUpload.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) { toast('Bild ist größer als 5 MB.'); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const ev = EVENTS.find(e => e.id === selectedEvent);
+      const id = 'upload-' + Date.now();
+      IMAGES.push({ id, src: reader.result, label: file.name.replace(/\.[^.]+$/, '') });
+      ev.images = [...(ev.images || []), id];
+      ev.pdfImages = [...(ev.pdfImages || []), id];
+      toast('Bild hinzugefügt');
+      render();
+    };
+    reader.readAsDataURL(file);
   });
 
   // New event
@@ -1204,8 +1675,8 @@ function showRolePicker() {
         <span style="background:var(--bg-card);padding:0 12px;position:relative;z-index:1">oder als Lehrkraft</span>
         <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;max-height:240px;overflow-y:auto">
-        ${TEACHERS.map(t => `<button class="btn btn-secondary btn-sm pick-teacher" data-name="${t}" style="justify-content:center">${t}</button>`).join('')}
+      <div class="picker-grid">
+        ${TEACHER_DATA.map(t => `<button class="btn btn-secondary btn-sm pick-teacher" data-name="${esc(t.name)}"><span class="pt-name">${esc(t.name)}</span><span class="pt-sub">${esc(t.faecher)}</span></button>`).join('')}
       </div>
       <div class="modal-actions">
         <button class="btn btn-secondary" id="closePickerBtn">Abbrechen</button>
@@ -1241,9 +1712,15 @@ function showNewEventModal() {
         <div class="form-group full"><label>Ort</label><input type="text" id="neLocation" placeholder="z.B. Prisma, Freiberg a.N."></div>
         <div class="form-group"><label>Abgabefrist</label><input type="date" id="neDeadline"></div>
         <div class="form-group full">
-          <label>Lehrkräfte</label>
-          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
-            ${TEACHERS.map(t => `<label style="display:inline-flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;background:var(--bg);padding:4px 8px;border-radius:var(--radius);border:1px solid var(--border)"><input type="checkbox" class="ne-teacher" value="${t}" checked> ${t}</label>`).join('')}
+          <label>Lehrkräfte <button type="button" class="link-btn" id="neToggleAll">alle ab-/anwählen</button></label>
+          <div class="check-chips">
+            ${TEACHER_DATA.map(t => `<label class="check-chip" title="${esc(t.faecher)}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}" checked> ${esc(t.name)}</label>`).join('')}
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>Bilder der Veranstaltung</label>
+          <div class="img-grid img-grid-sm">
+            ${IMAGES.map(i => `<label class="img-pick img-check" title="${esc(i.label)}"><input type="checkbox" class="ne-image" value="${i.id}"><img src="${i.src}" alt="${esc(i.label)}"><span class="img-label">${esc(i.label)}</span></label>`).join('')}
           </div>
         </div>
       </div>
@@ -1263,6 +1740,7 @@ function showNewEventModal() {
     const dl = modal.querySelector('#neDeadline').value;
     const deadline = dl ? dl.split('-').reverse().join('.') : '';
     const teachers = [...modal.querySelectorAll('.ne-teacher:checked')].map(cb => cb.value);
+    const images = [...modal.querySelectorAll('.ne-image:checked')].map(cb => cb.value);
     const status = {};
     teachers.forEach(t => status[t] = 'pending');
     EVENTS.push({
@@ -1272,12 +1750,19 @@ function showNewEventModal() {
       date, time,
       location: modal.querySelector('#neLocation').value.trim(),
       deadline,
+      images, pdfImages: images.slice(0, 1),
       teachers, entries: [], status
     });
     modal.remove();
     toast('Veranstaltung angelegt!');
     render();
   });
+  modal.querySelector('#neToggleAll').addEventListener('click', () => {
+    const boxes = [...modal.querySelectorAll('.ne-teacher')];
+    const allOn = boxes.every(b => b.checked);
+    boxes.forEach(b => { b.checked = !allOn; });
+  });
+  modal.querySelectorAll('.img-check input').forEach(cb => cb.addEventListener('change', () => cb.parentElement.classList.toggle('selected', cb.checked)));
   modal.querySelector('#closeNewEventBtn').addEventListener('click', () => modal.remove());
   modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
 }
@@ -1285,3 +1770,5 @@ function showNewEventModal() {
 // Initial render
 render();
 </script>
+</body>
+</html>
