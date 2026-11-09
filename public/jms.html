@@ -1,6 +1,7 @@
 <!doctype html>
-<html lang="de">
+<html lang="de" data-theme="light">
 <head>
+<script>try { document.documentElement.dataset.theme = localStorage.getItem('jms-theme') === 'dark' ? 'dark' : 'light'; } catch (e) {}</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Concertino Programmheft</title>
@@ -52,6 +53,7 @@
     color-scheme: dark;
   }
 }
+:root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"] {
   --bg: #121515;
   --bg-card: #1c2121;
@@ -795,10 +797,32 @@ a.btn { text-decoration: none; }
 @media (max-width: 600px) { .save-state[data-state="ok"], .save-state[data-state="saving"] { display: none; } }
 .login-card .form-group input { width: 100%; padding: 10px 14px; }
 
+
+/* ---- Theme-Schalter ---- */
+.theme-btn { padding: 5px 9px; font-size: 14px; line-height: 1; }
+.theme-corner { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 12px); right: 12px; z-index: 20; }
+
+/* ---- Programm: Admin-Aktionen ---- */
+.program-item { cursor: default; grid-template-columns: 2.2em 1fr auto; }
+.program-item .pi-num { grid-row: 1 / 3; color: var(--fg-muted); font-family: var(--font-display); font-weight: 600; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+.program-item .piece-detail { grid-column: 2; }
+.program-item .pi-actions { grid-column: 3; grid-row: 1 / 3; display: flex; gap: 4px; align-items: center; }
+.program-item .piece-teacher { position: static; grid-column: 2; font-size: 11px; color: var(--fg-muted); font-weight: 500; }
+.program-item .pi-teacher { color: var(--fg-muted); font-style: italic; }
+.pi-actions .btn-icon { min-width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; padding: 0 6px; }
+.pi-actions .btn-icon:disabled { opacity: .3; cursor: default; }
+@media (max-width: 600px) {
+  .program-item { grid-template-columns: 1.6em 1fr; }
+  .program-item .pi-actions { grid-column: 2; grid-row: auto; justify-content: flex-end; }
+  .program-item .pi-num { grid-row: 1 / 4; }
+}
+button.chip { border: none; cursor: pointer; font-family: inherit; }
+button.chip:hover { filter: brightness(.95); }
+
 /* ---- Print: only the programme page ---- */
 @media print {
   body { padding: 0 !important; background: #fff !important; }
-  body::before, .app-header, .tabs, .event-header, .img-picker, .admin-nav, .print-bar, .sheet-label, #backBtn, .toast { display: none !important; }
+  body::before, .app-header, .theme-corner, .tabs, .event-header, .img-picker, .admin-nav, .print-bar, .sheet-label, #backBtn, .toast { display: none !important; }
   .main-content { padding: 0 !important; max-width: none !important; }
   .main-content > div:has(> #backBtn) { display: none !important; }
   .sheet-stage { background: none !important; padding: 0 !important; display: block !important; }
@@ -1134,10 +1158,15 @@ const EVENT_FIELDS = ['title', 'subtitle', 'date', 'time', 'location', 'deadline
 function eventBody(ev) { const o = { id: ev.id }; EVENT_FIELDS.forEach(k => { o[k] = ev[k]; }); return o; }
 function eventMeta(ev) { return JSON.stringify(EVENT_FIELDS.map(k => ev[k] === undefined ? null : ev[k])); }
 const teacherSig = t => JSON.stringify([t.name, t.faecher, t.email]);
+const entrySig = e => JSON.stringify([e.teacher, e.composer, e.werk, e.performers, e.note]);
+function snapshotEvent(ev) {
+  return { meta: eventMeta(ev), status: JSON.stringify(ev.status || {}), entries: new Set(ev.entries.map(e => e.id)),
+    sigs: new Map(ev.entries.map(e => [e.id, entrySig(e)])), order: ev.entries.map(e => e.id) };
+}
 function snapshot() {
   return {
     teachers: new Map(TEACHER_LIST.filter(t => t.id).map(t => [t.id, teacherSig(t)])),
-    events: new Map(EVENTS.map(ev => [ev.id, { meta: eventMeta(ev), status: JSON.stringify(ev.status || {}), entries: new Set(ev.entries.map(e => e.id)) }])),
+    events: new Map(EVENTS.map(ev => [ev.id, snapshotEvent(ev)])),
   };
 }
 function setSaveState(s) {
@@ -1177,16 +1206,32 @@ async function doSync() {
     }
     for (const ev of EVENTS) {
       const o = old.events.get(ev.id);
-      if (!isAdmin && o && o.status !== JSON.stringify(ev.status || {})) {
-        await call(`/api/events/${ev.id}/status`, { method: 'PUT', body: { status: ev.status[AUTH.me] } });
+      if (o && o.status !== JSON.stringify(ev.status || {})) {
+        if (isAdmin) {
+          const was = JSON.parse(o.status || '{}');
+          for (const n of ev.teachers) if ((ev.status || {})[n] !== was[n] && was[n] !== undefined) await call(`/api/events/${ev.id}/status`, { method: 'PUT', body: { teacher: n, status: ev.status[n] } });
+        } else {
+          await call(`/api/events/${ev.id}/status`, { method: 'PUT', body: { status: ev.status[AUTH.me] } });
+        }
       }
       const before = o ? o.entries : new Set();
-      for (const e of ev.entries) {
-        if (before.has(e.id)) continue;
-        const r = await call(`/api/events/${ev.id}/entries`, { method: 'POST', body: e });
-        if (r.id !== e.id) { target.events.get(ev.id).entries.delete(e.id); e.id = r.id; target.events.get(ev.id).entries.add(r.id); }
-      }
       for (const id of before) if (!ev.entries.some(e => e.id === id)) await call('/api/entries/' + id, { method: 'DELETE' });
+      for (const e of ev.entries) {
+        if (before.has(e.id)) {
+          if (o.sigs.get(e.id) !== entrySig(e)) await call('/api/entries/' + e.id, { method: 'PUT', body: e });
+          continue;
+        }
+        const r = await call(`/api/events/${ev.id}/entries`, { method: 'POST', body: e });
+        if (r.id !== e.id) e.id = r.id;
+      }
+      if (isAdmin && o) {
+        const cur = ev.entries.map(e => e.id);
+        const curSet = new Set(cur);
+        const oldKept = o.order.filter(id => curSet.has(id));
+        const curKnown = cur.filter(id => o.entries.has(id));
+        if (JSON.stringify(oldKept) !== JSON.stringify(curKnown)) await call(`/api/events/${ev.id}/order`, { method: 'PUT', body: { ids: cur } });
+      }
+      target.events.set(ev.id, snapshotEvent(ev));
     }
     SYNCED = target;
     if (changed) setSaveState('ok');
@@ -1203,7 +1248,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /* ---------- Ansicht-Zustand (kommt aus der URL) ---------- */
 let currentView = 'login';   // login | role | admin | teacher
 let currentRole = null;      // 'admin' oder Name der Lehrkraft
-let adminPage = 'events';    // events | event | newEvent | teachers | settings | reminder
+let adminPage = 'events';    // events | event | newEvent | editEvent | entry | teachers | settings | reminder
+let editEntryId = null;      // Beitrag, der gerade bearbeitet wird (null = neuer Beitrag)
 let selectedEvent = null;
 let activeTab = 'uebersicht';
 
@@ -1373,11 +1419,12 @@ function instrumentSelectHtml(value) {
     </select>
     <input type="text" class="p-instrument-other" placeholder="Instrument eingeben" value="${isOther ? esc(value) : ''}"${isOther ? '' : ' hidden'}>`;
 }
-function performerRowHtml() {
+function performerRowHtml(p) {
+  p = p || {};
   return `
     <div class="performer-row">
-      <div class="form-group" style="flex:2"><input type="text" class="p-name" placeholder="Name" list="knownPerformers"></div>
-      <div class="form-group" style="flex:1.4">${instrumentSelectHtml('')}</div>
+      <div class="form-group" style="flex:2"><input type="text" class="p-name" placeholder="Name" list="knownPerformers" value="${esc(p.name || '')}"></div>
+      <div class="form-group" style="flex:1.4">${instrumentSelectHtml(p.instrument || '')}</div>
       <button class="btn btn-icon btn-sm remove-perf" title="Entfernen" aria-label="Mitwirkende/n entfernen">✕</button>
     </div>`;
 }
@@ -1422,7 +1469,7 @@ function teacherPath(name, id) { return `/l/${encodeURIComponent(name)}${id ? '/
 function handleRoute() {
   const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(x => { try { return decodeURIComponent(x); } catch (e) { return x; } });
   const top = p[0] || 'login';
-  selectedEvent = null; activeTab = 'uebersicht'; adminPage = 'events';
+  selectedEvent = null; activeTab = 'uebersicht'; adminPage = 'events'; editEntryId = null;
 
   if (top === 'login') {
     if (AUTH.role === 'admin' || AUTH.role === 'teacher' || isAuthed()) return go(homePath(), true);
@@ -1449,6 +1496,14 @@ function handleRoute() {
       if (!ev) return go('/admin', true);
       selectedEvent = ev.id;
       if (p[3] === 'erinnerung') adminPage = 'reminder';
+      else if (p[3] === 'bearbeiten') adminPage = 'editEvent';
+      else if (p[3] === 'beitrag') {
+        adminPage = 'entry';
+        if (p[4] && p[4] !== 'neu') {
+          if (!ev.entries.some(e => String(e.id) === p[4])) return go(eventPath(ev.id, 'programm'), true);
+          editEntryId = p[4];
+        }
+      }
       else { adminPage = 'event'; activeTab = ['programm', 'vorschau'].includes(p[3]) ? p[3] : 'uebersicht'; }
     }
   } else if (top === 'l') {
@@ -1467,8 +1522,32 @@ function handleRoute() {
   window.scrollTo(0, 0);
 }
 
+
+/* ---------- Hell-/Dunkelmodus (Standard: hell) ---------- */
+function themeNow() { return document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'; }
+function paintThemeButtons() {
+  const dark = themeNow() === 'dark';
+  $$('[data-theme-toggle]').forEach(b => {
+    b.textContent = dark ? '☀️' : '🌙';
+    b.title = dark ? 'Zum hellen Modus wechseln' : 'Zum dunklen Modus wechseln';
+    b.setAttribute('aria-label', b.title);
+  });
+}
+function bindTheme() {
+  paintThemeButtons();
+  $$('[data-theme-toggle]').forEach(b => b.addEventListener('click', () => {
+    const next = themeNow() === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('jms-theme', next); } catch (e) {}
+    paintThemeButtons();
+  }));
+}
+
 function parentPath() {
-  if (currentView === 'admin') return adminPage === 'reminder' ? eventPath(selectedEvent) : '/admin';
+  if (currentView === 'admin') {
+    if (adminPage === 'entry') return eventPath(selectedEvent, 'programm');
+    return ['reminder', 'editEvent'].includes(adminPage) ? eventPath(selectedEvent) : '/admin';
+  }
   if (currentView === 'teacher') return teacherPath(currentRole);
   return '/rolle';
 }
@@ -1494,6 +1573,7 @@ function renderOnly() {
 function renderLogin() {
   return `
     <div class="login-screen">
+      <button class="btn btn-secondary btn-sm theme-btn theme-corner" data-theme-toggle type="button"></button>
       <div class="login-card">
         <img src="${LOGO_SRC}" alt="JugendMusikSchule">
         <h2><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a></h2>
@@ -1513,6 +1593,7 @@ function renderLogin() {
 function renderAdminLogin() {
   return `
     <div class="login-screen">
+      <button class="btn btn-secondary btn-sm theme-btn theme-corner" data-theme-toggle type="button"></button>
       <div class="login-card">
         <img src="${LOGO_SRC}" alt="JugendMusikSchule">
         <h2>Admin-Anmeldung</h2>
@@ -1534,12 +1615,13 @@ function renderAdminHeader() {
       <h1><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a><small>Mehr Freude durch Musik</small></h1>
       <div class="header-actions">
         <span id="saveState" class="save-state" aria-live="polite"></span>
+        <button class="btn btn-secondary btn-sm theme-btn" data-theme-toggle type="button"></button>
         <span class="user-badge">👤 Admin</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
       </div>
     </header>
     <nav class="admin-nav" aria-label="Adminbereich">
-      <a href="#/admin" class="${['events', 'event', 'newEvent', 'reminder'].includes(adminPage) ? 'active' : ''}">Veranstaltungen</a>
+      <a href="#/admin" class="${['events', 'event', 'newEvent', 'editEvent', 'entry', 'reminder'].includes(adminPage) ? 'active' : ''}">Veranstaltungen</a>
       <a href="#/admin/lehrkraefte" class="${adminPage === 'teachers' ? 'active' : ''}">Lehrkräfte</a>
       <a href="#/admin/einstellungen" class="${adminPage === 'settings' ? 'active' : ''}">Einstellungen</a>
     </nav>`;
@@ -1553,6 +1635,8 @@ function eventThumb(ev) {
 function renderAdminContent() {
   switch (adminPage) {
     case 'newEvent': return renderNewEventPage();
+    case 'editEvent': return renderEditEventPage();
+    case 'entry': return renderEntryPage();
     case 'teachers': return renderTeachersPage();
     case 'settings': return renderSettingsPage();
     case 'reminder': return renderReminderPage();
@@ -1641,6 +1725,7 @@ function renderEventDetail() {
         </div>
       </div>
       <div class="header-actions">
+        <a class="btn btn-secondary btn-sm" href="#${eventPath(ev.id, 'bearbeiten')}">✎ <span class="hide-mobile">Bearbeiten</span></a>
         <a class="btn btn-gold btn-sm" href="#${eventPath(ev.id, 'erinnerung')}">📧 <span class="hide-mobile">Erinnerung senden</span></a>
       </div>
     </div>
@@ -1678,7 +1763,7 @@ function renderOverviewTab(ev, total, done, pending) {
         <div class="teacher-avatar">${getInitials(t)}</div>
         <div class="name">${t}<span class="faecher">${esc(faecherOf(t))}</span></div>
         ${count ? `<span style="font-size:11px;color:var(--fg-muted)">${count}×</span>` : ''}
-        <span class="chip ${isDone ? 'chip-success' : 'chip-danger'}">${isDone ? '✓' : '⏳'}</span>
+        <button type="button" class="chip toggle-status ${isDone ? 'chip-success' : 'chip-danger'}" data-teacher="${esc(t)}" title="${isDone ? 'Als offen markieren' : 'Als fertig markieren'}" aria-label="Status von ${esc(t)} ändern">${isDone ? '✓' : '⏳'}</button>
       </div>`;
   });
 
@@ -1687,12 +1772,14 @@ function renderOverviewTab(ev, total, done, pending) {
 }
 
 function renderProgramTab(ev) {
+  const addBtn = `<a class="btn btn-primary btn-sm" href="#${eventPath(ev.id, 'beitrag/neu')}">＋ Beitrag hinzufügen</a>`;
   if (ev.entries.length === 0) {
     return `
+      <div style="margin-bottom:12px">${addBtn}</div>
       <div class="empty-state">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2z"/></svg>
         <p style="font-size:15px;font-weight:500;margin-bottom:4px">Noch keine Beiträge</p>
-        <p>Sobald die Lehrkräfte ihre Stücke eintragen, erscheinen sie hier.</p>
+        <p>Sobald die Lehrkräfte ihre Stücke eintragen, erscheinen sie hier. Du kannst auch selbst Beiträge hinzufügen.</p>
       </div>`;
   }
 
@@ -1703,25 +1790,23 @@ function renderProgramTab(ev) {
     byTeacher[e.teacher].push(e);
   });
 
-  let html = '<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">';
+  let html = '<div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">';
   html += `<button class="btn btn-secondary btn-sm group-toggle active" data-group="sequence">Reihenfolge</button>`;
   html += `<button class="btn btn-secondary btn-sm group-toggle" data-group="teacher">Nach Lehrkraft</button>`;
+  html += `<span style="margin-left:auto">${addBtn}</span>`;
   html += '</div>';
+  html += '<p class="form-hint" style="margin-bottom:10px">Mit ▲ ▼ änderst du die Reihenfolge im Programmheft, mit ✎ bearbeitest du einen Beitrag.</p>';
 
   // Sequence view (default)
   html += '<div id="view-sequence">';
-  ev.entries.forEach((e, i) => {
-    html += renderProgramItem(e, i + 1);
-  });
+  ev.entries.forEach((e, i) => { html += renderProgramItem(e, i + 1, i, ev.entries.length); });
   html += '</div>';
 
   // Teacher view
   html += '<div id="view-teacher" hidden>';
   Object.keys(byTeacher).forEach(teacher => {
-    html += `<div class="program-section"><h3>${teacher}</h3>`;
-    byTeacher[teacher].forEach((e, i) => {
-      html += renderProgramItem(e, null);
-    });
+    html += `<div class="program-section"><h3>${esc(teacher)}</h3>`;
+    byTeacher[teacher].forEach(e => { html += renderProgramItem(e, null); });
     html += '</div>';
   });
   html += '</div>';
@@ -1729,20 +1814,57 @@ function renderProgramTab(ev) {
   return html;
 }
 
-function renderProgramItem(e, num) {
+function renderProgramItem(e, num, idx, total) {
   const composerDisplay = e.composer || 'Trad.';
   const perfStr = e.performers.map(p => `${p.name}${p.instrument ? ', ' + p.instrument : ''}`).join(' · ');
+  const ev = EVENTS.find(x => x.id === selectedEvent);
+  const sequence = num !== null;
   return `
     <div class="program-item" data-entry-id="${e.id}">
-      <div class="drag-handle">⠿</div>
+      <div class="pi-num">${sequence ? num : ''}</div>
       <div>
-        <span class="piece-title">${composerDisplay}</span>
-        <span style="color:var(--fg-muted);font-size:14px;font-style:italic"> — ${e.werk}</span>
+        <span class="piece-title">${esc(composerDisplay)}</span>
+        <span style="color:var(--fg-muted);font-size:14px;font-style:italic"> — ${esc(e.werk)}</span>
       </div>
-      <div class="piece-detail">${perfStr}</div>
-      ${num !== null ? '' : `<span class="piece-teacher">${e.teacher}</span>`}
-      ${e.note ? `<div style="grid-column:2;font-size:11px;color:var(--gold);margin-top:2px">📝 ${e.note}</div>` : ''}
+      <div class="piece-detail">${esc(perfStr)}${sequence ? ` · <span class="pi-teacher">${esc(klasse(e.teacher))}</span>` : ''}</div>
+      ${sequence ? '' : `<span class="piece-teacher">${esc(e.teacher)}</span>`}
+      ${e.note ? `<div style="grid-column:2;font-size:11px;color:var(--gold);margin-top:2px">📝 ${esc(e.note)}</div>` : ''}
+      <div class="pi-actions">
+        ${sequence ? `<button class="btn btn-icon btn-sm move-entry" data-id="${e.id}" data-dir="-1" title="Nach oben" aria-label="Nach oben"${idx === 0 ? ' disabled' : ''}>▲</button>
+        <button class="btn btn-icon btn-sm move-entry" data-id="${e.id}" data-dir="1" title="Nach unten" aria-label="Nach unten"${idx === total - 1 ? ' disabled' : ''}>▼</button>` : ''}
+        <a class="btn btn-icon btn-sm" href="#${eventPath(ev.id, 'beitrag/' + e.id)}" title="Bearbeiten" aria-label="Beitrag bearbeiten">✎</a>
+        <button class="btn btn-icon btn-sm admin-del-entry" data-id="${e.id}" title="Löschen" aria-label="Beitrag löschen">🗑</button>
+      </div>
     </div>`;
+}
+
+function bindProgramAdmin() {
+  if (currentView !== 'admin') return;
+  const cur = () => EVENTS.find(e => e.id === selectedEvent);
+  if (!cur()) return;
+  $$('.move-entry').forEach(b => b.addEventListener('click', () => {
+    const ev = cur(); if (!ev) return;
+    const i = ev.entries.findIndex(e => String(e.id) === b.dataset.id);
+    const j = i + Number(b.dataset.dir);
+    if (i < 0 || j < 0 || j >= ev.entries.length) return;
+    [ev.entries[i], ev.entries[j]] = [ev.entries[j], ev.entries[i]];
+    render();
+  }));
+  $$('.admin-del-entry').forEach(b => b.addEventListener('click', () => {
+    const ev = cur(); if (!ev) return;
+    const e = ev.entries.find(x => String(x.id) === b.dataset.id);
+    if (!e || !confirm(`„${e.werk}“ (${e.teacher}) wirklich löschen?`)) return;
+    ev.entries = ev.entries.filter(x => x !== e);
+    toast('Beitrag gelöscht');
+    render();
+  }));
+  // Status einer Lehrkraft umschalten (Übersicht)
+  $$('.toggle-status').forEach(b => b.addEventListener('click', () => {
+    const ev = cur(); if (!ev) return;
+    const n = b.dataset.teacher;
+    ev.status[n] = ev.status[n] === 'done' ? 'pending' : 'done';
+    render();
+  }));
 }
 
 /* ---------- Programmheft: zwei Druckvarianten ---------- */
@@ -2008,6 +2130,7 @@ function renderTeacherHeader() {
       <h1><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a><small>Mehr Freude durch Musik</small></h1>
       <div class="header-actions">
         <span id="saveState" class="save-state" aria-live="polite"></span>
+        <button class="btn btn-secondary btn-sm theme-btn" data-theme-toggle type="button"></button>
         <span class="user-badge">🎵 ${esc(currentRole)}</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
       </div>
@@ -2081,25 +2204,7 @@ function renderTeacherContent() {
     <div class="entry-section" style="margin-top:16px">
       <h3>Neuen Beitrag hinzufügen</h3>
       <div class="form-grid" id="entryForm">
-        <div class="form-group">
-          <label for="fComposer">Komponist</label>
-          <div><input type="text" id="fComposer" placeholder="Name tippen, z.B. Beeth…"></div>
-        </div>
-        <div class="form-group">
-          <label for="fWerk">Stück / Werk</label>
-          <div><input type="text" id="fWerk" placeholder="Titel tippen, z.B. Für Elise"></div>
-        </div>
-        <p class="form-hint full">💡 Vorschläge kommen aus dem Repertoire aller bisherigen Programme und lernen mit jeder Eingabe dazu. Neue Komponisten oder Stücke einfach frei eintippen.</p>
-        <div class="form-group full">
-          <label>Mitwirkende</label>
-          <div id="performerRows">${performerRowHtml()}</div>
-          <datalist id="knownPerformers">${[...knownPerformers().keys()].map(n => `<option value="${esc(n)}">`).join('')}</datalist>
-          <button class="btn btn-secondary btn-sm" id="addPerfBtn" style="margin-top:4px">+ Mitwirkende/r</button>
-        </div>
-        <div class="form-group full">
-          <label>Hinweis (optional)</label>
-          <input type="text" id="fNote" placeholder="z.B. direkt nach dem vorherigen Stück">
-        </div>
+        ${entryFieldsHtml(null)}
       </div>
       <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
         <button class="btn btn-primary" id="saveEntryBtn">Beitrag speichern</button>
@@ -2212,19 +2317,8 @@ function bindEvents() {
   // Save entry
   const saveEntryBtn = document.getElementById('saveEntryBtn');
   if (saveEntryBtn) saveEntryBtn.addEventListener('click', () => {
-    const composer = document.getElementById('fComposer').value.trim();
-    const werk = document.getElementById('fWerk').value.trim();
-    const note = document.getElementById('fNote').value.trim();
-    if (!werk) { toast('Bitte mindestens das Stück angeben.'); return; }
-
-    const performers = [];
-    $$('#performerRows .performer-row').forEach(row => {
-      const name = row.querySelector('.p-name').value.trim();
-      const instrument = readInstrument(row);
-      if (name) performers.push({ name, instrument });
-    });
-    if (!performers.length) { toast('Mindestens ein/e Mitwirkende/r angeben.'); return; }
-
+    const v = readEntryForm(); if (!v) return;
+    const { composer, werk, performers, note } = v;
     const ev = EVENTS.find(e => e.id === selectedEvent);
     const entry = { id: Date.now(), teacher: currentRole, composer, werk, performers, note };
     ev.entries.push(entry);
@@ -2304,9 +2398,13 @@ function bindEvents() {
   const newEventBtn = document.getElementById('newEventBtn');
   if (newEventBtn) newEventBtn.addEventListener('click', () => go('/admin/neu'));
 
+  bindTheme();
   bindPreviewOptions();
   bindRolePage();
   bindNewEventPage();
+  bindEditEventPage();
+  bindEntryPage();
+  bindProgramAdmin();
   bindTeachersPage();
   bindSettingsPage();
   bindReminderPage();
@@ -2364,19 +2462,7 @@ function renderNewEventPage() {
         <div class="form-group"><label for="neTime">Uhrzeit</label><input type="time" id="neTime" value="18:00"></div>
         <div class="form-group full"><label for="neLocation">Ort</label><input type="text" id="neLocation" placeholder="z.B. Prisma, Freiberg a.N."></div>
         <div class="form-group"><label for="neDeadline">Abgabefrist</label><input type="date" id="neDeadline"></div>
-        <div class="tp">
-          <div class="tp-head"><span class="tp-title">Lehrkräfte</span><span class="tp-count" id="tpCount" aria-live="polite"></span></div>
-          <div class="tp-tools">
-            <input type="search" class="tp-search" id="tpSearch" placeholder="Name oder Fach suchen …" aria-label="Lehrkraft suchen">
-            <button type="button" class="btn btn-secondary btn-sm" id="tpAll">Alle</button>
-            <button type="button" class="btn btn-secondary btn-sm" id="tpNone">Keine</button>
-            ${EVENTS.length ? `<select class="tp-copy" id="tpCopy" aria-label="Auswahl von früherer Veranstaltung übernehmen"><option value="">Wie bei …</option>${EVENTS.map(e => `<option value="${e.id}">${esc(e.title)} (${e.teachers.length})</option>`).join('')}</select>` : ''}
-          </div>
-          <div class="tp-list" role="group" aria-label="Lehrkräfte">
-            ${TEACHER_LIST.map(t => `<label class="tp-item" data-search="${esc(norm(t.name + ' ' + t.faecher))}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}" checked><span class="tp-name">${esc(t.name)}</span><span class="tp-sub">${esc(t.faecher)}</span></label>`).join('')}
-          </div>
-          <p class="form-hint" id="tpEmpty" hidden>Keine Lehrkraft gefunden.</p>
-        </div>
+        ${teacherPickerHtml(null)}
         <p class="form-hint" style="grid-column:1/-1">Die Bilder für das PDF wählst du später in der PDF-Vorschau.</p>
       </div>
       <div class="page-actions">
@@ -2390,9 +2476,146 @@ function bindNewEventPage() {
   if (!create) return;
   const toDe = v => v ? v.split('-').reverse().join('.') : '';
   document.getElementById('cancelNewEventBtn').addEventListener('click', () => go('/admin'));
-  // Lehrkräfte-Auswahl: Suche, Alle/Keine (gilt für die sichtbaren), Auswahl von früherer Veranstaltung
+  bindTeacherPicker();
+  create.addEventListener('click', () => {
+    const title = document.getElementById('neTitle').value.trim();
+    if (!title) { toast('Bitte Titel eingeben.'); document.getElementById('neTitle').focus(); return; }
+    const teachers = $$('.ne-teacher:checked').map(cb => cb.value);
+    if (!teachers.length) { toast('Bitte mindestens eine Lehrkraft auswählen.'); return; }
+    const t = document.getElementById('neTime').value;
+    const id = Date.now();
+    EVENTS.push({
+      id, title,
+      subtitle: document.getElementById('neSubtitle').value.trim(),
+      date: toDe(document.getElementById('neDate').value),
+      time: t ? t + ' Uhr' : '',
+      location: document.getElementById('neLocation').value.trim(),
+      deadline: toDe(document.getElementById('neDeadline').value),
+      images: [], pdfImages: [],
+      teachers, entries: [], status: Object.fromEntries(teachers.map(n => [n, 'pending'])),
+      reminders: []
+    });
+    persist();
+    toast('Veranstaltung angelegt!');
+    go(eventPath(id), true); // ersetzt "neu" im Verlauf, damit Zurück nicht wieder das leere Formular zeigt
+  });
+}
+
+
+/* ---------- Beitrags-Formular (Lehrkraft und Admin) ---------- */
+function entryFieldsHtml(e) {
+  e = e || {};
+  const perf = e.performers && e.performers.length ? e.performers : [{}];
+  return `
+        <div class="form-group">
+          <label for="fComposer">Komponist</label>
+          <div><input type="text" id="fComposer" placeholder="Name tippen, z.B. Beeth…" value="${esc(e.composer || '')}"></div>
+        </div>
+        <div class="form-group">
+          <label for="fWerk">Stück / Werk</label>
+          <div><input type="text" id="fWerk" placeholder="Titel tippen, z.B. Für Elise" value="${esc(e.werk || '')}"></div>
+        </div>
+        <p class="form-hint full">💡 Vorschläge kommen aus dem Repertoire aller bisherigen Programme und lernen mit jeder Eingabe dazu. Neue Komponisten oder Stücke einfach frei eintippen.</p>
+        <div class="form-group full">
+          <label>Mitwirkende</label>
+          <div id="performerRows">${perf.map(performerRowHtml).join('')}</div>
+          <datalist id="knownPerformers">${[...knownPerformers().keys()].map(n => `<option value="${esc(n)}">`).join('')}</datalist>
+          <button class="btn btn-secondary btn-sm" id="addPerfBtn" style="margin-top:4px" type="button">+ Mitwirkende/r</button>
+        </div>
+        <div class="form-group full">
+          <label for="fNote">Hinweis (optional)</label>
+          <input type="text" id="fNote" placeholder="z.B. direkt nach dem vorherigen Stück" value="${esc(e.note || '')}">
+        </div>`;
+}
+function readEntryForm() {
+  const composer = document.getElementById('fComposer').value.trim();
+  const werk = document.getElementById('fWerk').value.trim();
+  const note = document.getElementById('fNote').value.trim();
+  if (!werk) { toast('Bitte mindestens das Stück angeben.'); return null; }
+  const performers = [];
+  $$('#performerRows .performer-row').forEach(row => {
+    const name = row.querySelector('.p-name').value.trim();
+    const instrument = readInstrument(row);
+    if (name) performers.push({ name, instrument });
+  });
+  if (!performers.length) { toast('Mindestens ein/e Mitwirkende/r angeben.'); return null; }
+  return { composer, werk, performers, note };
+}
+
+/* ---------- Admin: Beitrag anlegen / bearbeiten ---------- */
+function renderEntryPage() {
+  const ev = EVENTS.find(e => e.id === selectedEvent);
+  const e = editEntryId ? ev.entries.find(x => String(x.id) === editEntryId) : null;
+  const names = [...new Set([...ev.teachers, ...(e ? [e.teacher] : [])])];
+  const sorted = names.map(n => teacherByName(n) || { name: n }).sort(byLastName).map(t => t.name);
+  return `
+    ${pageHead(e ? 'Beitrag bearbeiten' : 'Beitrag hinzufügen', esc(ev.title))}
+    <div class="entry-section">
+      <div class="form-grid" id="entryForm">
+        <div class="form-group full">
+          <label for="fTeacher">Lehrkraft / Klasse</label>
+          <select id="fTeacher">${sorted.map(n => `<option value="${esc(n)}"${e && e.teacher === n ? ' selected' : ''}>${esc(n)}</option>`).join('')}</select>
+        </div>
+        ${entryFieldsHtml(e)}
+      </div>
+      <div class="page-actions">
+        ${e ? `<button class="btn btn-danger" id="adminDeleteEntryBtn" type="button" style="margin-right:auto">Beitrag löschen</button>` : ''}
+        <button class="btn btn-secondary" id="adminCancelEntryBtn" type="button">Abbrechen</button>
+        <button class="btn btn-primary" id="adminSaveEntryBtn" type="button">${e ? 'Änderungen speichern' : 'Beitrag hinzufügen'}</button>
+      </div>
+    </div>`;
+}
+function bindEntryPage() {
+  const save = document.getElementById('adminSaveEntryBtn');
+  if (!save) return;
+  const back = () => go(eventPath(selectedEvent, 'programm'), true);
+  document.getElementById('adminCancelEntryBtn').addEventListener('click', () => go(parentPath()));
+  save.addEventListener('click', () => {
+    const ev = EVENTS.find(e => e.id === selectedEvent); if (!ev) return;
+    const v = readEntryForm(); if (!v) return;
+    const teacher = document.getElementById('fTeacher').value;
+    if (editEntryId) {
+      Object.assign(ev.entries.find(x => String(x.id) === editEntryId), v, { teacher });
+      toast('Beitrag gespeichert');
+    } else {
+      ev.entries.push({ id: Date.now(), teacher, ...v });
+      toast('Beitrag hinzugefügt');
+    }
+    back();
+  });
+  const del = document.getElementById('adminDeleteEntryBtn');
+  if (del) del.addEventListener('click', () => {
+    const ev = EVENTS.find(x => x.id === selectedEvent); if (!ev) return;
+    const e = ev.entries.find(x => String(x.id) === editEntryId);
+    if (!confirm(`„${e.werk}“ wirklich löschen?`)) return;
+    ev.entries = ev.entries.filter(x => x !== e);
+    toast('Beitrag gelöscht');
+    back();
+  });
+}
+
+/* ---------- Lehrkräfte-Auswahl (Neue Veranstaltung / Veranstaltung bearbeiten) ---------- */
+function teacherPickerHtml(selected, excludeEventId) {
+  const others = EVENTS.filter(e => e.id !== excludeEventId);
+  return `
+        <div class="tp">
+          <div class="tp-head"><span class="tp-title">Lehrkräfte</span><span class="tp-count" id="tpCount" aria-live="polite"></span></div>
+          <div class="tp-tools">
+            <input type="search" class="tp-search" id="tpSearch" placeholder="Name oder Fach suchen …" aria-label="Lehrkraft suchen">
+            <button type="button" class="btn btn-secondary btn-sm" id="tpAll">Alle</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="tpNone">Keine</button>
+            ${others.length ? `<select class="tp-copy" id="tpCopy" aria-label="Auswahl von früherer Veranstaltung übernehmen"><option value="">Wie bei …</option>${others.map(e => `<option value="${e.id}">${esc(e.title)} (${e.teachers.length})</option>`).join('')}</select>` : ''}
+          </div>
+          <div class="tp-list" role="group" aria-label="Lehrkräfte">
+            ${TEACHER_LIST.map(t => `<label class="tp-item" data-search="${esc(norm(t.name + ' ' + t.faecher))}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}"${!selected || selected.has(t.name) ? ' checked' : ''}><span class="tp-name">${esc(t.name)}</span><span class="tp-sub">${esc(t.faecher)}</span></label>`).join('')}
+          </div>
+          <p class="form-hint" id="tpEmpty" hidden>Keine Lehrkraft gefunden.</p>
+        </div>`;
+}
+function bindTeacherPicker() {
   const items = $$('.tp-item'), boxes = () => $$('.ne-teacher');
   const search = document.getElementById('tpSearch'), btnAll = document.getElementById('tpAll'), btnNone = document.getElementById('tpNone');
+  if (!search) return;
   const visible = () => items.filter(i => !i.hidden);
   const updateCount = () => { document.getElementById('tpCount').textContent = `${boxes().filter(b => b.checked).length} von ${boxes().length} ausgewählt`; };
   const applyFilter = () => {
@@ -2415,27 +2638,66 @@ function bindNewEventPage() {
     updateCount();
   });
   updateCount();
-  create.addEventListener('click', () => {
+}
+
+/* ---------- Admin: Veranstaltung bearbeiten / löschen ---------- */
+const isoFromDe = d => { const m = (d || '').match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); return m ? `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}` : ''; };
+const deFromIso = v => v ? v.split('-').reverse().join('.') : '';
+function renderEditEventPage() {
+  const ev = EVENTS.find(e => e.id === selectedEvent);
+  return `
+    ${pageHead('Veranstaltung bearbeiten', esc(ev.title))}
+    <div class="entry-section">
+      <div class="form-grid">
+        <div class="form-group full"><label for="neTitle">Titel *</label><input type="text" id="neTitle" value="${esc(ev.title)}"></div>
+        <div class="form-group full"><label for="neSubtitle">Untertitel (optional)</label><input type="text" id="neSubtitle" value="${esc(ev.subtitle || '')}"></div>
+        <div class="form-group"><label for="neDate">Datum</label><input type="date" id="neDate" value="${isoFromDe(ev.date)}"></div>
+        <div class="form-group"><label for="neTime">Uhrzeit</label><input type="time" id="neTime" value="${esc((ev.time || '').replace(/\s*Uhr\s*$/, ''))}"></div>
+        <div class="form-group full"><label for="neLocation">Ort</label><input type="text" id="neLocation" value="${esc(ev.location || '')}"></div>
+        <div class="form-group"><label for="neDeadline">Abgabefrist</label><input type="date" id="neDeadline" value="${isoFromDe(ev.deadline)}"></div>
+        ${teacherPickerHtml(new Set(ev.teachers), ev.id)}
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-danger" id="deleteEventBtn" type="button" style="margin-right:auto">Veranstaltung löschen</button>
+        <button class="btn btn-secondary" id="cancelEditEventBtn" type="button">Abbrechen</button>
+        <button class="btn btn-primary" id="saveEventBtn" type="button">Änderungen speichern</button>
+      </div>
+    </div>`;
+}
+function bindEditEventPage() {
+  const save = document.getElementById('saveEventBtn');
+  if (!save) return;
+  bindTeacherPicker();
+  document.getElementById('cancelEditEventBtn').addEventListener('click', () => go(parentPath()));
+  save.addEventListener('click', () => {
+    const ev = EVENTS.find(e => e.id === selectedEvent); if (!ev) return;
     const title = document.getElementById('neTitle').value.trim();
-    if (!title) { toast('Bitte Titel eingeben.'); document.getElementById('neTitle').focus(); return; }
+    if (!title) { toast('Bitte Titel eingeben.'); return; }
     const teachers = $$('.ne-teacher:checked').map(cb => cb.value);
     if (!teachers.length) { toast('Bitte mindestens eine Lehrkraft auswählen.'); return; }
+    const removed = ev.teachers.filter(n => !teachers.includes(n));
+    const withEntries = removed.filter(n => ev.entries.some(e => e.teacher === n));
+    if (withEntries.length && !confirm(`${withEntries.join(', ')} ${withEntries.length > 1 ? 'haben' : 'hat'} schon Beiträge in dieser Veranstaltung. Die Beiträge bleiben im Programm, die Lehrkraft kann sie aber nicht mehr sehen. Trotzdem entfernen?`)) return;
     const t = document.getElementById('neTime').value;
-    const id = Date.now();
-    EVENTS.push({
-      id, title,
-      subtitle: document.getElementById('neSubtitle').value.trim(),
-      date: toDe(document.getElementById('neDate').value),
-      time: t ? t + ' Uhr' : '',
-      location: document.getElementById('neLocation').value.trim(),
-      deadline: toDe(document.getElementById('neDeadline').value),
-      images: [], pdfImages: [],
-      teachers, entries: [], status: Object.fromEntries(teachers.map(n => [n, 'pending'])),
-      reminders: []
-    });
-    persist();
-    toast('Veranstaltung angelegt!');
-    go(eventPath(id), true); // ersetzt "neu" im Verlauf, damit Zurück nicht wieder das leere Formular zeigt
+    ev.title = title;
+    ev.subtitle = document.getElementById('neSubtitle').value.trim();
+    ev.date = deFromIso(document.getElementById('neDate').value);
+    ev.time = t ? t + ' Uhr' : '';
+    ev.location = document.getElementById('neLocation').value.trim();
+    ev.deadline = deFromIso(document.getElementById('neDeadline').value);
+    const status = {};
+    teachers.forEach(n => { status[n] = ev.status[n] || 'pending'; });
+    ev.teachers = teachers; ev.status = status;
+    toast('Veranstaltung gespeichert');
+    go(eventPath(ev.id), true);
+  });
+  document.getElementById('deleteEventBtn').addEventListener('click', () => {
+    const ev = EVENTS.find(e => e.id === selectedEvent); if (!ev) return;
+    const n = ev.entries.length;
+    if (!confirm(`„${ev.title}“ wirklich löschen?` + (n ? `\n\nDabei werden auch alle ${n} Beiträge gelöscht. Das kann nicht rückgängig gemacht werden.` : ''))) return;
+    EVENTS.splice(EVENTS.indexOf(ev), 1);
+    toast('Veranstaltung gelöscht');
+    go('/admin', true);
   });
 }
 
