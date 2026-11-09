@@ -706,50 +706,87 @@ a.btn { text-decoration: none; }
 .sheet .pg-strip img { height: 26mm; width: auto; max-width: 45%; object-fit: cover; }
 
 /* A4 hoch */
+.sheet { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+.sheet-wrap { flex-shrink: 0; }
+.sheet-wrap > .sheet { transform-origin: 0 0; }
 .pg-head { display: flex; align-items: center; gap: 6mm; padding-bottom: 4mm; border-bottom: 1.2mm solid #00b2b6; }
 .pg-title { flex: 1; text-align: center; }
 .pg-ev { font-family: 'Titillium Web', sans-serif; font-size: 26pt; font-weight: 300; color: #00a3a7; line-height: 1.1; }
 .pg-sub { font-style: italic; color: #555; }
 .pg-date { font-weight: 600; margin-top: 1.5mm; }
 .pg-cover { height: 30mm; width: 30mm; object-fit: cover; }
-.pg-list { flex: 1; min-height: 0; }
-.pg-row { display: grid; grid-template-columns: 38% 24% 38%; gap: 3mm; padding: 1.6mm 0; border-bottom: 0.2mm solid #e3e3e3; break-inside: avoid; }
+.pg-list { flex: 1; min-height: 0; overflow: hidden; }
+.pg-table, .bk-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.pg-table th, .bk-table th {
+  text-align: left; font-family: 'Titillium Web', sans-serif; font-weight: 600; font-size: 7.5pt; letter-spacing: .09em;
+  text-transform: uppercase; color: #00a3a7; padding: 0 3mm 1.5mm 0; border-bottom: 0.5mm solid #00b2b6;
+}
+.pg-table td, .bk-table td { vertical-align: top; padding: 1.8mm 3mm 1.8mm 0; border-bottom: 0.2mm solid #e3e3e3; overflow-wrap: anywhere; }
+.pg-table tr, .bk-table tr { break-inside: avoid; }
+.pg-table { font-size: 10.5pt; }
+.pg-table .c-werk { width: 37%; } .pg-table .c-comp { width: 22%; } .pg-table .c-perf { width: 41%; }
 .pg-werk { font-weight: 600; }
 .pg-perf em { display: block; font-size: .9em; color: #555; }
 .pg-instr { color: #666; font-size: .9em; }
 .pg-note { text-align: center; margin: 3mm 0 2mm; font-style: italic; }
-.sheet-portrait.dense-1 { font-size: 9pt; }
-.sheet-portrait.dense-1 .pg-row { padding: 1mm 0; }
-.sheet-portrait.dense-2 { font-size: 8pt; }
-.sheet-portrait.dense-2 .pg-row { padding: .6mm 0; }
+.sheet-portrait.dense-1 .pg-table { font-size: 9pt; }
+.sheet-portrait.dense-1 .pg-table td { padding-top: 1.1mm; padding-bottom: 1.1mm; }
+.sheet-portrait.dense-2 .pg-table { font-size: 8pt; }
+.sheet-portrait.dense-2 .pg-table td { padding-top: .6mm; padding-bottom: .6mm; }
 
 /* A4 quer, 4-seitig */
-.bk-cover { align-items: center; text-align: center; }
+.half { position: relative; }
+.sheet-landscape { position: relative; }
+.sheet-landscape::after { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; border-left: 0.3mm dashed rgba(0,0,0,.25); pointer-events: none; }
+.pg-tag { position: absolute; top: 3.5mm; left: 5mm; font-family: 'Titillium Web', sans-serif; font-weight: 600; font-size: 7pt; letter-spacing: .08em; text-transform: uppercase; color: #9aa5a5; }
+.bk-cover { align-items: center; text-align: center; padding-top: 11mm; }
 .bk-cover .pg-logo { height: 22mm; }
-.bk-cover-img { width: 100%; max-height: 100mm; object-fit: cover; margin-top: 6mm; }
+.bk-cover-img { max-width: 100%; max-height: 105mm; width: auto; height: auto; object-fit: contain; margin-top: 5mm; }
 .bk-cover-title { font-family: 'Titillium Web', sans-serif; font-size: 34pt; font-weight: 300; color: #00a3a7; margin-top: 20mm; }
-.bk-cover .pg-prog { font-size: 26pt; margin: 6mm 0 3mm; }
+.bk-cover .pg-prog { font-size: 26pt; margin: 5mm 0 2mm; }
 .bk-when { font-weight: 700; font-size: 16pt; line-height: 1.3; }
-.bk-back { font-size: 11pt; }
-.bk-intro { margin-top: 8mm; }
-.bk-teachers { font-weight: 600; margin-top: 2mm; }
+.bk-back { font-size: 11pt; padding-top: 14mm; }
+.bk-intro { margin-top: 4mm; }
+.bk-teachers { font-weight: 600; margin-top: 2mm; line-height: 1.45; }
 .bk-foerder { margin-top: auto; display: flex; gap: 5mm; align-items: center; padding: 4mm; background: #f2f9f9; border-left: 1.2mm solid #00b2b6; margin-bottom: 4mm; }
 .bk-back .pg-foot { margin-top: 0; }
 .bk-foerder img { width: 32mm; height: auto; flex-shrink: 0; }
 .bk-foerder p { font-size: 10pt; }
-.bk-inner { padding-top: 10mm; }
-.bk-table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
-.bk-table td { vertical-align: top; padding: 2mm 2mm 2mm 0; border-bottom: 0.2mm solid #e3e3e3; }
-.bk-table tr { break-inside: avoid; }
-.bk-comp { width: 34%; }
-.bk-comp span { font-size: .88em; color: #666; }
-.bk-werk { width: 32%; }
-.bk-perf span { color: #666; font-size: .9em; }
+.bk-inner { padding-top: 11mm; }
+.bk-head { min-height: 20mm; border-bottom: 1.2mm solid #00b2b6; margin-bottom: 3mm; }
+.bk-head .pg-prog { margin: 0 0 1mm; font-size: 22pt; }
+.bk-when-sm { font-weight: 600; font-size: 11pt; }
+.bk-head-r { text-align: right; }
+.bk-head-r .bk-evt { font-family: 'Titillium Web', sans-serif; font-size: 20pt; font-weight: 300; color: #00a3a7; line-height: 1.15; }
+.bk-head-r .bk-when-sm { font-weight: 400; color: #555; font-size: 10pt; }
+.bk-tablewrap { flex: 1; min-height: 0; overflow: hidden; }
+.bk-table { font-size: 9.5pt; }
+.bk-comp { width: 33%; } .bk-werk { width: 31%; } .bk-perf { width: 36%; }
+.bk-comp span, .bk-perf span { color: #666; font-size: .88em; }
 .bk-table.dense-1 { font-size: 8.5pt; }
-.bk-table.dense-1 td { padding: 1.2mm 1.5mm 1.2mm 0; }
+.bk-table.dense-1 td { padding-top: 1.1mm; padding-bottom: 1.1mm; }
 .bk-table.dense-2 { font-size: 7.5pt; }
-.bk-table.dense-2 td { padding: .8mm 1mm .8mm 0; }
+.bk-table.dense-2 td { padding-top: .7mm; padding-bottom: .7mm; }
+.bk-pn { text-align: center; font-size: 9pt; color: #9aa5a5; padding-top: 3mm; }
 
+/* ---- Lehrkräfte-Auswahl ---- */
+.tp { grid-column: 1 / -1; }
+.tp-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.tp-title { font-size: 12px; font-weight: 600; color: var(--fg-muted); text-transform: uppercase; letter-spacing: .04em; }
+.tp-count { font-size: 13px; color: var(--accent); font-weight: 600; }
+.tp-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.tp-search, .tp-copy { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--fg); font: inherit; min-width: 0; }
+.tp-search { flex: 1 1 180px; }
+.tp-copy { flex: 0 1 190px; }
+.tp-search:focus, .tp-copy:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+.tp-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px; max-height: 380px; overflow-y: auto; padding: 2px; }
+.tp-item { display: grid; grid-template-columns: auto 1fr; grid-template-areas: "cb name" "cb sub"; column-gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg-card); cursor: pointer; }
+.tp-item[hidden] { display: none; }
+.tp-item input { grid-area: cb; width: 20px; height: 20px; margin: 0; padding: 0; accent-color: var(--accent); }
+.tp-name { grid-area: name; font-weight: 600; font-size: 14px; color: var(--fg); }
+.tp-sub { grid-area: sub; font-size: 12px; color: var(--fg-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tp-item:has(input:checked) { border-color: var(--accent-bright); background: var(--accent-light); }
+.tp-item:has(input:focus-visible) { outline: 2px solid var(--link); outline-offset: 2px; }
 
 /* ---- Speicherstatus ---- */
 .save-state { font-size: 12px; color: var(--fg-muted); white-space: nowrap; }
@@ -765,8 +802,12 @@ a.btn { text-decoration: none; }
   .main-content { padding: 0 !important; max-width: none !important; }
   .main-content > div:has(> #backBtn) { display: none !important; }
   .sheet-stage { background: none !important; padding: 0 !important; display: block !important; }
-  .sheet { box-shadow: none !important; margin: 0 !important; zoom: 1 !important; break-after: page; }
-  .sheet:last-child { break-after: auto; }
+  .sheet-wrap { width: auto !important; height: auto !important; break-after: page; }
+  .sheet-wrap:last-of-type { break-after: auto; }
+  .sheet { box-shadow: none !important; margin: 0 !important; transform: none !important; }
+  .sheet-portrait { height: 296.5mm !important; }
+  .sheet-landscape { height: 209.5mm !important; }
+  .pg-tag, .sheet-landscape::after { display: none !important; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
@@ -1068,9 +1109,11 @@ async function api(path, opts = {}) {
   }
   return data;
 }
+const lastNameOf = n => (n || '').trim().split(/\s+/).slice(-1)[0];
+const byLastName = (a, b) => lastNameOf(a.name).localeCompare(lastNameOf(b.name), 'de') || a.name.localeCompare(b.name, 'de');
 function imageUrl(id) { return API_URL + '/api/images/' + id; }
 function applyState(s) {
-  TEACHER_LIST = s.teachers.map(t => ({ email: '', ...t }));
+  TEACHER_LIST = s.teachers.map(t => ({ email: '', ...t })).sort(byLastName);
   SETTINGS.passwordEnabled = s.settings.passwordEnabled;
   EVENTS.splice(0, EVENTS.length, ...s.events.map(ev => {
     const e = { ...ev };
@@ -1391,7 +1434,7 @@ function handleRoute() {
     if (!isAuthed()) return go('/login', true);
     currentView = 'role'; currentRole = null;
     if (!PUBLIC_TEACHERS) {
-      api('/api/teachers-public').then(r => { PUBLIC_TEACHERS = r.teachers; if (currentView === 'role') renderOnly(); })
+      api('/api/teachers-public').then(r => { PUBLIC_TEACHERS = r.teachers.slice().sort(byLastName); if (currentView === 'role') renderOnly(); })
         .catch(e => toast(e.message));
     }
   } else if (top === 'admin') {
@@ -1734,14 +1777,17 @@ function densityClass(weight, capacity) {
 
 function sheetA4(ev, cover, strip) {
   const weight = ev.entries.reduce((a, e) => a + entryWeight(e), 0);
-  const rows = ev.entries.map(e => `
-      <div class="pg-row">
-        <div class="pg-werk">${esc(e.werk)}</div>
-        <div class="pg-comp">${esc(shortComposer(e.composer) || 'Trad.')}</div>
-        <div class="pg-perf">${e.performers.map(p => esc(p.name)).join(', ')}${e.performers.some(p => p.instrument) ? `<span class="pg-instr"> (${esc([...new Set(e.performers.map(p => p.instrument).filter(Boolean))].join(', '))})</span>` : ''}<em>${esc(klasse(e.teacher))}</em></div>
-      </div>`).join('');
+  const rows = ev.entries.map(e => {
+    const instr = [...new Set(e.performers.map(p => p.instrument).filter(Boolean))].join(', ');
+    return `
+      <tr>
+        <td class="pg-werk">${esc(e.werk)}</td>
+        <td>${esc(shortComposer(e.composer) || 'Trad.')}</td>
+        <td class="pg-perf">${e.performers.map(p => esc(p.name)).join(', ')}${instr ? `<span class="pg-instr"> (${esc(instr)})</span>` : ''}<em>${esc(klasse(e.teacher))}</em></td>
+      </tr>`;
+  }).join('');
   return `
-    <div class="sheet sheet-portrait${densityClass(weight, 46)}">
+    <div class="sheet-wrap"><div class="sheet sheet-portrait${densityClass(weight, 46)}">
       <header class="pg-head">
         <img class="pg-logo" src="${LOGO_SRC}" alt="JugendMusikSchule Freiberg a.N. · Pleidelsheim e.V.">
         <div class="pg-title">
@@ -1753,21 +1799,25 @@ function sheetA4(ev, cover, strip) {
         ${cover ? `<img class="pg-cover" src="${cover.src}" alt="${esc(cover.label)}">` : ''}
       </header>
       <h2 class="pg-prog">Programm</h2>
-      <div class="pg-list">${rows || '<p class="pg-empty">Noch keine Beiträge vorhanden.</p>'}</div>
+      <div class="pg-list">${rows
+        ? `<table class="pg-table"><colgroup><col class="c-werk"><col class="c-comp"><col class="c-perf"></colgroup>
+            <thead><tr><th>Werk</th><th>Komponist</th><th>Mitwirkende</th></tr></thead><tbody>${rows}</tbody></table>`
+        : '<p class="pg-empty">Noch keine Beiträge vorhanden.</p>'}</div>
       ${strip.length ? `<div class="pg-strip">${strip.map(i => `<img src="${i.src}" alt="${esc(i.label)}">`).join('')}</div>` : ''}
       ${ev.pdfFooter ? `<div class="pg-note">${esc(ev.pdfFooter)}</div>` : ''}
       <div class="pg-foot">JugendMusikSchule Freiberg a.N. · Pleidelsheim e.V.</div>
-    </div>`;
+    </div></div>`;
 }
 
 function bookletTable(entries, dense) {
   if (!entries.length) return '<p class="pg-empty">—</p>';
-  return `<table class="bk-table${dense}"><tbody>${entries.map(e => {
+  return `<table class="bk-table${dense}"><colgroup><col class="bk-comp"><col class="bk-werk"><col class="bk-perf"></colgroup>
+    <thead><tr><th>Komponist</th><th>Werk</th><th>Mitwirkende</th></tr></thead><tbody>${entries.map(e => {
     const c = splitComposer(e.composer);
     return `<tr>
-      <td class="bk-comp"><strong>${esc(c.name || 'Trad.')}</strong>${c.dates ? `<br><span>${esc(c.dates)}</span>` : ''}</td>
-      <td class="bk-werk">${esc(e.werk)}</td>
-      <td class="bk-perf">${e.performers.map(p => `${esc(p.name)}${p.instrument ? ` <span>(${esc(p.instrument)})</span>` : ''}`).join('<br>')}</td>
+      <td><strong>${esc(c.name || 'Trad.')}</strong>${c.dates ? `<br><span>${esc(c.dates)}</span>` : ''}</td>
+      <td>${esc(e.werk)}</td>
+      <td>${e.performers.map(p => `${esc(p.name)}${p.instrument ? ` <span>(${esc(p.instrument)})</span>` : ''}`).join('<br>')}</td>
     </tr>`;
   }).join('')}</tbody></table>`;
 }
@@ -1779,12 +1829,13 @@ function sheetsBooklet(ev, cover, strip) {
   let acc = 0, cut = ev.entries.length;
   for (let i = 0; i < weights.length; i++) { if (acc + weights[i] / 2 > total / 2) { cut = i; break; } acc += weights[i]; }
   const p2 = ev.entries.slice(0, cut), p3 = ev.entries.slice(cut);
-  const dense = densityClass(Math.max(acc, total - acc), 30);
   const teachers = [...new Set(ev.entries.map(e => e.teacher))];
+  const when = [weekdayDate(ev.date), ev.time].filter(Boolean).join(' · ');
   return `
-    <div class="sheet-label">Blatt 1 – Außenseite: Seite 4 (Rückseite) | Seite 1 (Titel)</div>
-    <div class="sheet sheet-landscape">
+    <p class="sheet-label">Blatt 1 – Außenseite (Seite 4 | Seite 1)</p>
+    <div class="sheet-wrap"><div class="sheet sheet-landscape">
       <section class="half bk-back">
+        <span class="pg-tag">Seite 4 · Rückseite</span>
         <p class="bk-intro">Es musizieren Schülerinnen und Schüler der Instrumentalklassen von:</p>
         <p class="bk-teachers">${esc(andJoin(teachers)) || '—'}</p>
         ${strip.length ? `<div class="pg-strip">${strip.map(i => `<img src="${i.src}" alt="${esc(i.label)}">`).join('')}</div>` : ''}
@@ -1795,26 +1846,35 @@ function sheetsBooklet(ev, cover, strip) {
         <div class="pg-foot">JugendMusikSchule Freiberg a.N. · Pleidelsheim e.V.</div>
       </section>
       <section class="half bk-cover">
+        <span class="pg-tag">Seite 1 · Titel</span>
         <img class="pg-logo" src="${LOGO_SRC}" alt="JugendMusikSchule">
         ${cover ? `<img class="bk-cover-img" src="${cover.src}" alt="${esc(cover.label)}">` : `<div class="bk-cover-title">${esc(ev.title)}</div>`}
         <h2 class="pg-prog">Programm</h2>
         <div class="bk-when">${esc(weekdayDate(ev.date))}<br>${esc(ev.time)}</div>
         ${ev.location ? `<div class="pg-loc">${esc(ev.location)}</div>` : ''}
       </section>
-    </div>
-    <div class="sheet-label">Blatt 2 – Innenseite: Seite 2 | Seite 3</div>
-    <div class="sheet sheet-landscape">
-      <section class="half bk-inner">${bookletTable(p2, dense)}</section>
-      <section class="half bk-inner">${bookletTable(p3, dense)}</section>
-    </div>`;
+    </div></div>
+    <p class="sheet-label">Blatt 2 – Innenseite (Seite 2 | Seite 3)</p>
+    <div class="sheet-wrap"><div class="sheet sheet-landscape">
+      <section class="half bk-inner">
+        <span class="pg-tag">Seite 2</span>
+        <div class="bk-head"><h2 class="pg-prog">Programm</h2><div class="bk-when-sm">${esc(when)}</div></div>
+        <div class="bk-tablewrap">${bookletTable(p2, '')}</div>
+        <div class="bk-pn">2</div>
+      </section>
+      <section class="half bk-inner">
+        <span class="pg-tag">Seite 3</span>
+        <div class="bk-head bk-head-r"><div class="bk-evt">${esc(ev.title)}</div><div class="bk-when-sm">${esc(ev.location || '')}</div></div>
+        <div class="bk-tablewrap">${bookletTable(p3, '')}</div>
+        <div class="bk-pn">3</div>
+      </section>
+    </div></div>`;
 }
 
 function renderPreviewTab(ev) {
   ev.images = ev.images || [];
   ev.pdfImages = ev.pdfImages || [];
   if (!ev.pdfLayout) ev.pdfLayout = suggestedLayout(ev);
-  const own = ev.images.map(imgById).filter(Boolean);
-  const others = IMAGES.filter(i => !ev.images.includes(i.id));
   const thumb = img => {
     const pos = ev.pdfImages.indexOf(img.id);
     const badge = pos === 0 ? 'Titelbild' : pos > 0 ? `Bild ${pos + 1}` : '';
@@ -1852,11 +1912,9 @@ function renderPreviewTab(ev) {
         <h3>Bilder für das PDF</h3>
         <span class="form-hint">Anklicken zum Auswählen. Das erste gewählte Bild wird Titelbild, weitere erscheinen ${isBooklet ? 'auf der Rückseite' : 'unten'}.</span>
       </div>
-      <div class="img-group-label">Bilder dieser Veranstaltung</div>
-      <div class="img-grid">${own.map(thumb).join('') || '<span class="form-hint">Noch keine eigenen Bilder.</span>'}
+      <div class="img-grid">${IMAGES.map(thumb).join('')}
         <label class="img-upload" title="Eigenes Bild hochladen">＋<span>Bild hochladen</span><input type="file" accept="image/*" id="imgUpload" hidden></label>
       </div>
-      ${others.length ? `<div class="img-group-label">Weitere Bilder</div><div class="img-grid">${others.map(thumb).join('')}</div>` : ''}
     </div>
     <div class="print-bar">
       <span class="print-hints">
@@ -1880,40 +1938,46 @@ function fitsAt(el, box, level) {
 function autoDensity() {
   const stage = document.querySelector('.sheet-stage');
   if (!stage) return;
-  stage.querySelectorAll('.sheet').forEach(s => { s.style.zoom = 1; });
   let overflow = false;
-  stage.querySelectorAll('.sheet-portrait').forEach(s => {
-    const list = s.querySelector('.pg-list');
-    let lv = 0; while (lv < DENSITY.length && !fitsAt(s, list, lv)) lv++;
-    if (lv >= DENSITY.length) { fitsAt(s, list, DENSITY.length - 1); overflow = true; s.classList.add('overflowing'); }
-    else s.classList.remove('overflowing');
+  stage.querySelectorAll('.sheet-portrait').forEach(sh => {
+    const list = sh.querySelector('.pg-list');
+    let lv = 0; while (lv < DENSITY.length && !fitsAt(sh, list, lv)) lv++;
+    if (lv >= DENSITY.length) { fitsAt(sh, list, DENSITY.length - 1); overflow = true; sh.classList.add('overflowing'); }
+    else sh.classList.remove('overflowing');
   });
   // Heft: beide Innenseiten bekommen dieselbe (kleinste nötige) Schriftstufe
-  const halves = [...stage.querySelectorAll('.bk-inner')].filter(h => h.querySelector('.bk-table'));
-  if (halves.length) {
+  const wraps = [...stage.querySelectorAll('.bk-tablewrap')].filter(w => w.querySelector('.bk-table'));
+  if (wraps.length) {
     let lv = 0;
-    while (lv < DENSITY.length && !halves.every(h => fitsAt(h.querySelector('.bk-table'), h, lv))) lv++;
+    while (lv < DENSITY.length && !wraps.every(w => fitsAt(w.querySelector('.bk-table'), w, lv))) lv++;
     const ok = lv < DENSITY.length;
-    halves.forEach(h => { fitsAt(h.querySelector('.bk-table'), h, ok ? lv : DENSITY.length - 1); h.classList.toggle('overflowing', !ok && h.scrollHeight > h.clientHeight + 1); });
+    wraps.forEach(w => { fitsAt(w.querySelector('.bk-table'), w, ok ? lv : DENSITY.length - 1); w.parentElement.classList.toggle('overflowing', !ok && w.scrollHeight > w.clientHeight + 1); });
     if (!ok) overflow = true;
   }
+  // Titel-/Rückseite: passt alles hinein?
+  stage.querySelectorAll('.bk-back, .bk-cover').forEach(h => { if (h.scrollHeight > h.clientHeight + 1) { overflow = true; h.classList.add('overflowing'); } else h.classList.remove('overflowing'); });
   const warn = document.getElementById('fitWarn');
   if (warn) warn.hidden = !overflow;
 }
 
-// Vorschau auf Bildschirmbreite skalieren (Druck immer 1:1)
+// Vorschau auf Bildschirmbreite verkleinern (transform, damit iOS die Schrift nicht aufbläht); Druck immer 1:1
 function fitSheets() {
   const stage = document.querySelector('.sheet-stage');
   if (!stage) return;
   const avail = stage.clientWidth - 24;
-  stage.querySelectorAll('.sheet').forEach(s => {
-    s.style.zoom = 1;
-    const z = Math.min(1, avail / s.offsetWidth);
-    s.style.zoom = z;
+  stage.querySelectorAll('.sheet-wrap').forEach(w => {
+    const sh = w.firstElementChild;
+    const z = Math.min(1, avail / sh.offsetWidth);
+    sh.style.transform = z < 1 ? `scale(${z})` : '';
+    w.style.width = Math.round(sh.offsetWidth * z) + 'px';
+    w.style.height = Math.round(sh.offsetHeight * z) + 'px';
   });
 }
+function unfitSheets() {
+  document.querySelectorAll('.sheet-wrap').forEach(w => { w.style.width = ''; w.style.height = ''; w.firstElementChild.style.transform = ''; });
+}
 window.addEventListener('resize', fitSheets);
-window.addEventListener('beforeprint', () => document.querySelectorAll('.sheet').forEach(s => { s.style.zoom = 1; }));
+window.addEventListener('beforeprint', unfitSheets);
 window.addEventListener('afterprint', fitSheets);
 function setPrintPageSize(landscape) {
   let st = document.getElementById('printPageSize');
@@ -2203,7 +2267,7 @@ function bindEvents() {
   if (genPdfBtn) genPdfBtn.addEventListener('click', () => {
     const ev = EVENTS.find(e => e.id === selectedEvent);
     setPrintPageSize(ev && ev.pdfLayout === 'booklet');
-    document.querySelectorAll('.sheet').forEach(s => { s.style.zoom = 1; });
+    unfitSheets();
     toast('Druckdialog: „Als PDF speichern“ wählen');
     setTimeout(() => window.print(), 300);
   });
@@ -2300,19 +2364,20 @@ function renderNewEventPage() {
         <div class="form-group"><label for="neTime">Uhrzeit</label><input type="time" id="neTime" value="18:00"></div>
         <div class="form-group full"><label for="neLocation">Ort</label><input type="text" id="neLocation" placeholder="z.B. Prisma, Freiberg a.N."></div>
         <div class="form-group"><label for="neDeadline">Abgabefrist</label><input type="date" id="neDeadline"></div>
-        <div class="form-group full">
-          <label>Lehrkräfte <button type="button" class="link-btn" id="neToggleAll">alle ab-/anwählen</button></label>
-          <div class="check-chips">
-            ${TEACHER_LIST.map(t => `<label class="check-chip" title="${esc(t.faecher)}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}" checked> ${esc(t.name)}</label>`).join('')}
+        <div class="tp">
+          <div class="tp-head"><span class="tp-title">Lehrkräfte</span><span class="tp-count" id="tpCount" aria-live="polite"></span></div>
+          <div class="tp-tools">
+            <input type="search" class="tp-search" id="tpSearch" placeholder="Name oder Fach suchen …" aria-label="Lehrkraft suchen">
+            <button type="button" class="btn btn-secondary btn-sm" id="tpAll">Alle</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="tpNone">Keine</button>
+            ${EVENTS.length ? `<select class="tp-copy" id="tpCopy" aria-label="Auswahl von früherer Veranstaltung übernehmen"><option value="">Wie bei …</option>${EVENTS.map(e => `<option value="${e.id}">${esc(e.title)} (${e.teachers.length})</option>`).join('')}</select>` : ''}
           </div>
-        </div>
-        <div class="form-group full">
-          <label>Bilder der Veranstaltung</label>
-          <div class="img-grid img-grid-sm">
-            ${IMAGES.map(i => `<label class="img-pick img-check" title="${esc(i.label)}"><input type="checkbox" class="ne-image" value="${i.id}"><img src="${i.src}" alt="${esc(i.label)}"><span class="img-label">${esc(i.label)}</span></label>`).join('')}
+          <div class="tp-list" role="group" aria-label="Lehrkräfte">
+            ${TEACHER_LIST.map(t => `<label class="tp-item" data-search="${esc(norm(t.name + ' ' + t.faecher))}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}" checked><span class="tp-name">${esc(t.name)}</span><span class="tp-sub">${esc(t.faecher)}</span></label>`).join('')}
           </div>
-          <span class="form-hint">Das erste gewählte Bild wird das Titelbild im PDF. Weitere Bilder können später in der PDF-Vorschau hochgeladen werden.</span>
+          <p class="form-hint" id="tpEmpty" hidden>Keine Lehrkraft gefunden.</p>
         </div>
+        <p class="form-hint" style="grid-column:1/-1">Die Bilder für das PDF wählst du später in der PDF-Vorschau.</p>
       </div>
       <div class="page-actions">
         <button class="btn btn-secondary" id="cancelNewEventBtn">Abbrechen</button>
@@ -2325,16 +2390,36 @@ function bindNewEventPage() {
   if (!create) return;
   const toDe = v => v ? v.split('-').reverse().join('.') : '';
   document.getElementById('cancelNewEventBtn').addEventListener('click', () => go('/admin'));
-  document.getElementById('neToggleAll').addEventListener('click', () => {
-    const boxes = $$('.ne-teacher'); const allOn = boxes.every(b => b.checked);
-    boxes.forEach(b => { b.checked = !allOn; });
+  // Lehrkräfte-Auswahl: Suche, Alle/Keine (gilt für die sichtbaren), Auswahl von früherer Veranstaltung
+  const items = $$('.tp-item'), boxes = () => $$('.ne-teacher');
+  const search = document.getElementById('tpSearch'), btnAll = document.getElementById('tpAll'), btnNone = document.getElementById('tpNone');
+  const visible = () => items.filter(i => !i.hidden);
+  const updateCount = () => { document.getElementById('tpCount').textContent = `${boxes().filter(b => b.checked).length} von ${boxes().length} ausgewählt`; };
+  const applyFilter = () => {
+    const q = norm(search.value).trim();
+    items.forEach(i => { i.hidden = !!q && !q.split(/\s+/).every(w => i.dataset.search.includes(w)); });
+    document.getElementById('tpEmpty').hidden = visible().length > 0;
+    btnAll.textContent = q ? 'Gefundene wählen' : 'Alle';
+    btnNone.textContent = q ? 'Gefundene abwählen' : 'Keine';
+  };
+  search.addEventListener('input', applyFilter);
+  btnAll.addEventListener('click', () => { visible().forEach(i => { i.querySelector('input').checked = true; }); updateCount(); });
+  btnNone.addEventListener('click', () => { visible().forEach(i => { i.querySelector('input').checked = false; }); updateCount(); });
+  boxes().forEach(b => b.addEventListener('change', updateCount));
+  const copy = document.getElementById('tpCopy');
+  if (copy) copy.addEventListener('change', () => {
+    const ev = EVENTS.find(e => String(e.id) === copy.value);
+    if (!ev) return;
+    search.value = ''; applyFilter();
+    boxes().forEach(b => { b.checked = ev.teachers.includes(b.value); });
+    updateCount();
   });
-  $$('.img-check input').forEach(cb => cb.addEventListener('change', () => cb.parentElement.classList.toggle('selected', cb.checked)));
+  updateCount();
   create.addEventListener('click', () => {
     const title = document.getElementById('neTitle').value.trim();
     if (!title) { toast('Bitte Titel eingeben.'); document.getElementById('neTitle').focus(); return; }
     const teachers = $$('.ne-teacher:checked').map(cb => cb.value);
-    const images = $$('.ne-image:checked').map(cb => cb.value);
+    if (!teachers.length) { toast('Bitte mindestens eine Lehrkraft auswählen.'); return; }
     const t = document.getElementById('neTime').value;
     const id = Date.now();
     EVENTS.push({
@@ -2344,7 +2429,7 @@ function bindNewEventPage() {
       time: t ? t + ' Uhr' : '',
       location: document.getElementById('neLocation').value.trim(),
       deadline: toDe(document.getElementById('neDeadline').value),
-      images, pdfImages: images.slice(0, 1),
+      images: [], pdfImages: [],
       teachers, entries: [], status: Object.fromEntries(teachers.map(n => [n, 'pending'])),
       reminders: []
     });
