@@ -10,15 +10,12 @@ const PORT = 4179, base = `http://localhost:${PORT}`;
 const server = spawn("npx", ["vite", "preview", "--port", String(PORT), "--strictPort"], { stdio: "ignore" });
 await new Promise(r => setTimeout(r, 2500));
 mkdirSync("public/cv", { recursive: true });
-const files = [
-  ["security", "en", "Engin-Celenk-CV-Cyber-Security.pdf"], ["architecture", "en", "Engin-Celenk-CV-IT-Architecture.pdf"], ["innovation", "en", "Engin-Celenk-CV-Technology-Innovation.pdf"],
-  ["security", "de", "Engin-Celenk-Lebenslauf-Cyber-Security.pdf"], ["architecture", "de", "Engin-Celenk-Lebenslauf-IT-Architektur.pdf"], ["innovation", "de", "Engin-Celenk-Lebenslauf-Technologie-Innovation.pdf"]
-];
+const files = [["en", "Engin-Celenk-CV.pdf"], ["de", "Engin-Celenk-Lebenslauf.pdf"]];
 const browser = await chromium.launch();
 try {
   const page = await browser.newPage();
-  for (const [focus, lang, file] of files) {
-    await page.goto(`${base}/cv.html?focus=${focus}&lang=${lang}`, { waitUntil: "networkidle" });
+  for (const [lang, file] of files) {
+    await page.goto(`${base}/cv.html?lang=${lang}`, { waitUntil: "networkidle" });
     await page.evaluate(() => document.fonts.ready);
     await page.emulateMedia({ media: "print" });
     await page.pdf({ path: `public/cv/${file}`, format: "A4", printBackground: true, preferCSSPageSize: true });

@@ -11,8 +11,7 @@ import Footer from "./components/Footer.jsx";
 import { LangProvider, useLang } from "./i18n.jsx";
 
 /* Personal application links: ?company=…&to=…&role=…&focus=security|architecture|innovation&lang=de|en (German keys also work). */
-const FOCUS = { sec: "security", security: "security", arch: "architecture", architecture: "architecture", e2e: "architecture", pm: "architecture", ai: "innovation", innovation: "innovation" };
-const DOMAIN = { security: "security", architecture: "architecture", innovation: "ai" };
+const FOCUS = { sec: "security", security: "security", arch: "architecture", architecture: "architecture", e2e: "management", pm: "management", management: "management", ai: "ai", innovation: "ai" };
 const clean = s => (s || "").replace(/[<>]/g, "").trim().slice(0, 80);
 
 function Page() {
@@ -27,21 +26,20 @@ function Page() {
   const msg = guest.company || guest.contact || guest.role
     ? (guest.role ? t("guestRole", t("guestHello", guest.contact, guest.company), guest.role, guest.company) : t("guestNoRole", t("guestHello", guest.contact, guest.company)))
     : null;
-  const [domain, setDomain] = useState(guest.focus ? DOMAIN[guest.focus] : "security");
-  const [focus, setFocus] = useState(guest.focus || "security");
+  const [domain, setDomain] = useState(guest.focus || "architecture");
 
   return (
     <>
       <a href="#journey" className="sr-only z-[60] rounded bg-signal px-3 py-2 text-ink focus:not-sr-only focus:fixed focus:left-3 focus:top-3">{t("skip")}</a>
       <Nav showFreelance={!msg} />
       <main>
-        <Hero guest={msg} focus={focus} />
+        <Hero guest={msg} />
         <Career />
         <Education />
         <Expertise domain={domain} setDomain={setDomain} />
         <Lab guest={guest} />
         <About />
-        <Contact focus={focus} setFocus={setFocus} />
+        <Contact />
       </main>
       <Footer />
     </>

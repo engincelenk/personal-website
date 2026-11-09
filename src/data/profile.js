@@ -7,7 +7,7 @@ export const person = {
   name: "Engin Celenk",
   degree: "M.Sc.",
   initials: "EC",
-  roles: [{ en: "M.Sc. Computer Science", de: "M.Sc. Informatik" }, "Cyber Security Engineer", "IT Architect"],
+  roles: [{ en: "M.Sc. Computer Science", de: "M.Sc. Informatik" }, "Cyber Security Engineer", "IT Architect", "IT Management"],
   location: { en: "Stuttgart region, Germany", de: "Region Stuttgart" },
   // Contact form target (FormSubmit). After activation, put the random alias from FormSubmit into `alias` to hide the address completely.
   linkedin: "https://de.linkedin.com/in/engin-celenk",
@@ -87,7 +87,6 @@ export const career = [
 /* Education staircase, bottom step first. */
 export const education = [
   { id: "arrival", year: "1994", icon: "MapPin", short: { en: "Arrival in Germany", de: "Ankunft in Deutschland" }, title: { en: "Arrival in Germany", de: "Ankunft in Deutschland" }, text: { en: "The first step.", de: "Die erste Stufe." } },
-  { id: "grund", year: "", icon: "School", short: { en: "Primary school", de: "Grundschule" }, title: { en: "Primary school", de: "Grundschule" }, text: { en: "Grundschule", de: "Die Grundlage." } },
   { id: "haupt", year: "", icon: "School", short: { en: "Lower secondary", de: "Hauptschule" }, title: { en: "Lower secondary school", de: "Hauptschule" }, text: { en: "Hauptschule", de: "Nächste Stufe." } },
   { id: "werkreal", year: "", icon: "School", short: { en: "Vocational secondary", de: "Werkrealschule" }, title: { en: "Vocational secondary school", de: "Werkrealschule" }, text: { en: "Werkrealschule", de: "Nächste Stufe." } },
   { id: "wg", year: "", icon: "School", short: { en: "Business high school", de: "Wirtschafts­gymnasium" }, title: { en: "Business high school", de: "Wirtschaftsgymnasium" }, text: { en: "Wirtschaftsgymnasium", de: "Schwerpunkt Wirtschaft." } },
@@ -96,13 +95,13 @@ export const education = [
     extra: { logo: "bosch", text: { en: "Internship Bosch Gasoline Systems: two C# tools for LabCar test systems", de: "Praktikum Bosch Gasoline Systems: zwei C#-Tools für LabCar-Testsysteme" } } },
   { id: "bsc", year: "2009", logo: "reutlingen", short: { en: "B.Sc.", de: "B.Sc." }, title: { en: "B.Sc. Computer Science", de: "B.Sc. Informatik" }, text: { en: "Reutlingen University · 2008–2009 · Wirtschaftsinformatik · focus SAP SRM & BI", de: "Hochschule Reutlingen · 2008–2009 · Wirtschaftsinformatik · Schwerpunkt SAP SRM & BI" },
     extra: { logo: "apsolut", text: { en: "Thesis at apsolut: procurement KPIs in SAP NetWeaver BI 7.0", de: "Abschlussarbeit bei apsolut: Einkaufskennzahlen in SAP NetWeaver BI 7.0" } } },
-  { id: "msc", year: "2012", logo: "reutlingen", short: { en: "M.Sc. · 1.7", de: "M.Sc. · 1,7" }, title: { en: "M.Sc. Computer Science · grade 1.7", de: "M.Sc. Informatik · Note 1,7" }, text: { en: "Reutlingen University · 2010–2012 · Wirtschaftsinformatik · faculty award · publication on SOA monitoring", de: "Hochschule Reutlingen · 2010–2012 · Wirtschaftsinformatik · Fakultätspreis · Publikation zu SOA-Monitoring" },
+  { id: "msc", year: "2012", logo: "reutlingen", short: { en: "M.Sc.", de: "M.Sc." }, title: { en: "M.Sc. Computer Science", de: "M.Sc. Informatik" }, grade: { en: "grade 1.7", de: "Note 1,7" }, text: { en: "Reutlingen University · 2010–2012 · Wirtschaftsinformatik · faculty award · publication on SOA monitoring", de: "Hochschule Reutlingen · 2010–2012 · Wirtschaftsinformatik · Fakultätspreis · Publikation zu SOA-Monitoring" },
     extra: { logo: "tss", text: { en: "Thesis at Daimler TSS: iOS app on Sybase Unwired Platform", de: "Masterarbeit bei Daimler TSS: iOS-App auf Sybase Unwired Platform" } } }
 ];
 
 /* Competence model. `evidence` = concrete, CV-backed highlights shown when a domain is opened. */
 export const domains = [
-  { id: "architecture", icon: "Boxes", title: { en: "Architecture", de: "Architektur" },
+  { id: "architecture", icon: "Boxes", title: { en: "IT Architecture", de: "IT-Architektur" },
     keywords: ["Solution Architecture", { en: "Microservices", de: "Microservices" }, "Cloud & SaaS", "Integration & APIs", "System Design"],
     evidence: [
       { en: "Architect for multiple Bosch projects worldwide, across different technologies", de: "Als Architekt für mehrere Bosch-Projekte weltweit beauftragt, über verschiedene Technologien hinweg" },
@@ -118,7 +117,7 @@ export const domains = [
       { en: "Implementing cyber security concepts in line with the corporate cyber security policy", de: "Umsetzung von Cyber-Security-Konzepten gemäß Cyber Security Policy" },
       { en: "Threat analysis and risk assessment (TARA) for various projects and SAP", de: "Bedrohungs- und Risikoanalysen (TARA) für verschiedene Projekte und SAP" },
       { en: "Cyber security mentoring within the Bosch Group", de: "Cyber-Security-Mentoring innerhalb der Bosch-Gruppe" }] },
-  { id: "management", icon: "Workflow", title: { en: "Management & Logistics", de: "Management & Logistik" },
+  { id: "management", icon: "Workflow", title: "IT Management", subtitle: { en: "Project, program & solution management", de: "Projekt-, Programm- & Solution Management" },
     keywords: ["Solution Management", { en: "Project Management", de: "Projektmanagement" }, { en: "Budget Responsibility", de: "Budgetverantwortung" }, "Stakeholder", { en: "Logistics Solutions", de: "Logistiklösungen" }],
     evidence: [
       { en: "Single point of contact on the IT side", de: "Single Point of Contact auf IT-Seite" },
@@ -128,10 +127,20 @@ export const domains = [
       { en: "Stakeholder management from team to executive level", de: "Stakeholder-Management vom Team bis zur Führungsebene" },
       { en: "Overall responsibility for Bosch's worldwide transport management (NGTM)", de: "Gesamtverantwortung für das weltweite Transportmanagement von Bosch (NGTM)" },
       "IPMA D · PSM I · PSPO I · ITIL"] },
-  { id: "ai", icon: "Sparkles", title: { en: "AI & Innovation", de: "KI & Innovation" },
+  { id: "ai", icon: "Sparkles", title: { en: "AI & Agentic", de: "KI & Agentic" },
     keywords: [{ en: "Agentic Architectures", de: "Agentische Architekturen" }, { en: "AI Applications", de: "KI-Anwendungen" }, { en: "AI-assisted Security", de: "KI-gestützte Security" }, { en: "Product Development", de: "Produktentwicklung" }],
     evidence: [{ en: "Familiar with agentic AI architectures", de: "Vertraut mit agentischen KI-Architekturen" }, { en: "Built ImmoFuchs", de: "ImmoFuchs entwickelt" }, { en: "Built this portfolio with AI", de: "Dieses Portfolio mit KI gebaut" }] }
 ];
+
+/* AI as the vertical across the three pillars. Same wording on CV page, PDF and freelance page. */
+export const aiVertical = {
+  claim: { en: "The vertical across all three pillars: AI as part of architecture, security and delivery.", de: "Die Vertikale über alle drei Säulen: KI als Teil von Architektur, Security und Umsetzung." },
+  aspects: {
+    architecture: { en: "AI & agentic architecture", de: "KI- & Agentic-Architektur" },
+    security: { en: "AI security", de: "KI-Security" },
+    management: { en: "AI adoption & AI-assisted delivery", de: "KI-Einführung & KI-gestützte Umsetzung" }
+  }
+};
 
 export const values = [
   { en: "Analytical thinking", de: "Analytisches Denken" }, { en: "Ownership & reliability", de: "Verantwortung & Verlässlichkeit" },
@@ -154,21 +163,12 @@ export const trainings = [
 
 export const sideProject = { name: "ImmoFuchs", link: "https://immofuchs.info", text: { en: "Real estate analysis product, built independently with AI.", de: "Immobilien-Analyseprodukt, eigenständig mit KI entwickelt." } };
 
-/* Tailored CV focuses. PDFs live in /public/cv (…-CV-… English, …-Lebenslauf-… German). */
-export const focuses = [
-  { id: "security", label: "Cyber Security", file: { en: "/cv/Engin-Celenk-CV-Cyber-Security.pdf", de: "/cv/Engin-Celenk-Lebenslauf-Cyber-Security.pdf" },
-    headline: { en: "Cyber Security Engineer with an architecture and delivery background", de: "Cyber Security Engineer mit Architektur- und Projekterfahrung" },
-    profile: { en: "Cyber security engineer at Bosch Digital (TARA, security engineering). Over a decade of solution architecture and solution management in corporate IT at Bosch, TRUMPF and Daimler, including overall responsibility for Bosch's worldwide transport management (NGTM).",
-      de: "Cyber Security Engineer bei Bosch Digital (TARA, Security Engineering). Über zehn Jahre Solution-Architektur und Solution Management in der Konzern-IT von Bosch, TRUMPF und Daimler, unter anderem mit Gesamtverantwortung für das weltweite Transportmanagement von Bosch (NGTM)." },
-    domains: ["security", "architecture", "management"] },
-  { id: "architecture", label: { en: "IT Architecture", de: "IT-Architektur" }, file: { en: "/cv/Engin-Celenk-CV-IT-Architecture.pdf", de: "/cv/Engin-Celenk-Lebenslauf-IT-Architektur.pdf" },
-    headline: { en: "IT Solution Architect for secure digital platforms", de: "IT Solution Architect für sichere digitale Plattformen" },
-    profile: { en: "Solution architect for digital business and customer experience platforms at Bosch, TRUMPF and Daimler, now in cyber security. Integrations that teams can operate and that are secure by design.",
-      de: "Solution Architect für Digital-Business- und Customer-Experience-Plattformen bei Bosch, TRUMPF und Daimler, heute in der Cyber Security. Integrationen, die Teams betreiben können und die sicher by Design sind." },
-    domains: ["architecture", "security", "management"] },
-  { id: "innovation", label: { en: "Technology & Innovation", de: "Technologie & Innovation" }, file: { en: "/cv/Engin-Celenk-CV-Technology-Innovation.pdf", de: "/cv/Engin-Celenk-Lebenslauf-Technologie-Innovation.pdf" },
-    headline: { en: "IT professional connecting security, architecture and AI", de: "Informatiker an der Schnittstelle von Security, Architektur und KI" },
-    profile: { en: "Cyber security engineer at Bosch Digital with a background in architecture and solution management. Familiar with agentic AI architectures; builds digital products with AI, such as ImmoFuchs.",
-      de: "Cyber Security Engineer bei Bosch Digital mit Hintergrund in Architektur und Solution Management. Vertraut mit agentischen KI-Architekturen; entwickelt digitale Produkte mit KI, zum Beispiel ImmoFuchs." },
-    domains: ["ai", "architecture", "security"] }
-];
+/* One CV per language. */
+export const cv = {
+  file: { en: "/cv/Engin-Celenk-CV.pdf", de: "/cv/Engin-Celenk-Lebenslauf.pdf" },
+  headline: { en: "IT Architecture · Cyber Security · IT Management, with AI as the vertical", de: "IT-Architektur · Cyber Security · IT Management, mit KI als Vertikale" },
+  profile: {
+    en: "Computer scientist (M.Sc.) with many years of project experience in large corporations such as Bosch, Daimler and TRUMPF. My profile rests on three equal pillars: IT architecture, cyber security and IT management (project, program and solution management). AI and agentic architectures connect all three as a vertical. I bring this combination into demanding, international projects.",
+    de: "Informatiker (M.Sc.) mit langjähriger Projekterfahrung in Großunternehmen wie Bosch, Daimler und TRUMPF. Mein Profil ruht auf drei gleichwertigen Säulen: IT-Architektur, Cyber Security und IT Management (Projekt-, Programm- und Solution Management). KI und agentische Architekturen verbinden alle drei als Vertikale. Diese Kombination bringe ich in anspruchsvolle, internationale Projekte ein."
+  }
+};
