@@ -2736,7 +2736,7 @@ function teacherPickerHtml(selected, excludeEventId) {
             ${others.length ? `<select class="tp-copy" id="tpCopy" aria-label="Auswahl von früherer Veranstaltung übernehmen"><option value="">Wie bei …</option>${others.map(e => `<option value="${e.id}">${esc(e.title)} (${e.teachers.length})</option>`).join('')}</select>` : ''}
           </div>
           <div class="tp-list" role="group" aria-label="Lehrkräfte">
-            ${TEACHER_LIST.map(t => `<label class="tp-item" data-search="${esc(norm(t.name + ' ' + t.faecher))}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}"${!selected || selected.has(t.name) ? ' checked' : ''}><span class="tp-name">${esc(t.name)}</span><span class="tp-sub">${esc(t.faecher)}</span></label>`).join('')}
+            ${TEACHER_LIST.map(t => `<label class="tp-item" data-search="${esc(norm(t.name + ' ' + t.faecher))}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}"${selected && selected.has(t.name) ? ' checked' : ''}><span class="tp-name">${esc(t.name)}</span><span class="tp-sub">${esc(t.faecher)}</span></label>`).join('')}
           </div>
           <p class="form-hint" id="tpEmpty" hidden>Keine Lehrkraft gefunden.</p>
         </div>`;
