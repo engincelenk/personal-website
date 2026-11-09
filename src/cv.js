@@ -58,16 +58,13 @@ document.getElementById("cv").innerHTML = `
             <ul>${c.points.map(r => `<li>${esc(r)}</li>`).join("")}${c.projects ? `<li>${T.projects}: ${esc(c.projects.join(", "))}</li>` : ""}</ul>
           </div>
         </div>`).join("")}
-      <h2>${T.edu}</h2>
-      ${studies.map(e => `
-        <div class="job ${e.id === "msc" ? "key" : ""}">${logo(e.logo)}
-          <div><h3>${esc(e.title)}${e.grade ? ` · ${esc(e.grade)}` : ""}</h3><p class="org">${esc(e.text)}</p>${e.extra ? `<ul><li>${esc(e.extra.text)}</li></ul>` : ""}</div>
-        </div>`).join("")}
-      <div class="school"><p class="when">${T.school}</p><p>${schools.map(s => `${s.year ? `<b>${esc(s.year)}</b> ` : ""}${esc(s.title)}`).join(' <span class="arr">→</span> ')}</p></div>
     </div>
     <aside class="side">
       <h2>${T.certs}</h2>
       <ul class="plain">${[...certificates, ...trainings].map(c => `<li>${c.year ? `<b>${c.year}</b> ` : ""}${esc(c.name)}</li>`).join("")}</ul>
+      <h2>${T.edu}</h2>
+      ${studies.map(e => `<div class="edu ${e.id === "msc" ? "key" : ""}"><h3>${esc(e.title)}${e.grade ? ` · ${esc(e.grade)}` : ""}</h3><p>${esc(e.text)}</p>${e.extra && !["bsc", "msc"].includes(e.id) ? `<p>${esc(e.extra.text)}</p>` : ""}</div>`).join("")}
+      <div class="edu"><h3>${T.school}</h3><p>${schools.map(s => `${s.year ? `${esc(s.year)} ` : ""}${esc(s.title)}`).join(" → ")}</p></div>
       <h2>${T.langs}</h2>
       <ul class="plain">${person.languages.map(l => `<li>${esc(l.name)} · ${esc(l.level)}</li>`).join("")}</ul>
       <h2>${T.kw}</h2>

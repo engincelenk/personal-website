@@ -44,6 +44,22 @@ export const logoStrip = ["bosch", "daimler", "trumpf", "protics", "tss", "apsol
 
 /* Career path, oldest first. */
 export const career = [
+  { id: "akzo-hr", from: "2005-08", to: "2005-09", logo: "akzonobel", place: "Ludwigsburg",
+    short: { en: "HR Administrator", de: "Sachbearbeiter HR" },
+    role: { en: "HR Administrator", de: "Sachbearbeiter HR" }, org: "Akzo Nobel AG · Human Resources",
+    points: [{ en: "Various tasks in human resources", de: "Verschiedene Aufgaben im Personalwesen" }], domains: ["management"] },
+  { id: "apsolut-thesis", from: "2008-03", to: "2009-08", logo: "apsolut", place: "Stuttgart",
+    short: { en: "Bachelor's thesis", de: "Bachelorarbeit" },
+    role: { en: "Bachelor's thesis", de: "Bachelorarbeit" }, org: "apsolut GmbH · SAP Consulting",
+    points: [
+      { en: "Requirements analysis of metrics for optimised procurement controlling", de: "Anforderungsanalyse von Kennzahlen für ein optimiertes Beschaffungscontrolling" },
+      { en: "Implementation of indicators and reports in SAP NetWeaver Business Intelligence 7.0", de: "Umsetzung von Kennzahlen und Berichten in SAP NetWeaver Business Intelligence 7.0" }],
+    domains: ["management"] },
+  { id: "tss-thesis", from: "2011-09", to: "2012-02", logo: "tss", place: "Stuttgart",
+    short: { en: "Master's thesis", de: "Masterarbeit" },
+    role: { en: "Master's thesis", de: "Masterarbeit" }, org: "Daimler TSS GmbH · SAP Solutions",
+    points: [{ en: "Evaluation and prototype of an iOS app based on the Sybase Unwired Platform for distributing Daimler AG company data internally", de: "Evaluierung und prototypische Umsetzung einer iOS-App auf Basis der Sybase Unwired Platform zur internen Verteilung von Unternehmensdaten der Daimler AG" }],
+    domains: ["architecture"] },
   { id: "protics", from: "2012-03", to: "2014-09", logo: "protics", place: "Stuttgart",
     short: { en: "IT Consultant", de: "IT-Consultant" },
     role: { en: "IT Consultant / IT Project Manager", de: "IT-Consultant / IT-Projektmanager" }, org: "Daimler Protics GmbH",
