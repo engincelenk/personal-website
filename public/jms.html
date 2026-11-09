@@ -2048,7 +2048,10 @@ function renderPreviewTab(ev) {
         ${isBooklet ? `<span class="form-hint">Drucken: beidseitig, <strong>an der kurzen Kante spiegeln</strong>, dann in der Mitte falten.</span>` : ''}
         <span id="fitWarn" class="warn-inline" hidden>⚠️ Das Programm passt nicht vollständig auf ${isBooklet ? 'die Innenseiten' : 'eine Seite'}${isBooklet ? '' : ' – bitte „A4 Querformat, 4-seitig“ wählen'}.</span>
       </span>
-      <button class="btn btn-primary" id="generatePdfBtn">📄 PDF erzeugen / drucken</button>
+      <span style="display:flex;gap:8px;flex-wrap:wrap">
+        ${IS_MOBILE ? '' : '<button class="btn btn-secondary" id="downloadPdfBtn" type="button">⬇ PDF-Datei</button>'}
+        <button class="btn btn-primary" id="generatePdfBtn" type="button">${IS_MOBILE ? '📄 PDF herunterladen' : '📄 PDF erzeugen / drucken'}</button>
+      </span>
     </div>
     <div class="sheet-stage" data-layout="${isBooklet ? 'landscape' : 'portrait'}">
       ${isBooklet ? sheetsBooklet(ev, cover, strip) : sheetA4(ev, cover, strip)}
@@ -2106,6 +2109,72 @@ function unfitSheets() {
 window.addEventListener('resize', fitSheets);
 window.addEventListener('beforeprint', unfitSheets);
 window.addEventListener('afterprint', fitSheets);
+/* ---------- PDF als Datei (funktioniert auch auf Handy/Tablet, wo window.print() kein PDF liefert) ---------- */
+const IS_MOBILE = (() => { try { return matchMedia('(pointer: coarse)').matches || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent); } catch (e) { return false; } })();
+const _libs = {};
+function loadScript(src) {
+  return _libs[src] || (_libs[src] = new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => { delete _libs[src]; rej(new Error('Bibliothek konnte nicht geladen werden (Internet?)')); };
+    document.head.appendChild(s);
+  }));
+}
+async function toDataUrl(src) {
+  const r = await fetch(src, { cache: 'reload' });
+  if (!r.ok) throw new Error('Bild nicht ladbar');
+  const b = await r.blob();
+  return new Promise((res, rej) => { const f = new FileReader(); f.onload = () => res(f.result); f.onerror = rej; f.readAsDataURL(b); });
+}
+async function exportPdfFile(ev, btn) {
+  if (!ev) return;
+  const label = btn.textContent; btn.disabled = true;
+  const stage = document.createElement('div');
+  try {
+    btn.textContent = '⏳ Wird erstellt…';
+    await Promise.all([
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
+      loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'),
+      document.fonts && document.fonts.ready
+    ]);
+    const landscape = ev.pdfLayout === 'booklet';
+    // Unskalierte Kopien der Bögen außerhalb des Sichtbereichs rendern
+    stage.style.cssText = 'position:fixed;left:0;top:0;z-index:-1;pointer-events:none';
+    document.querySelectorAll('.sheet-stage .sheet').forEach(sh => {
+      const c = sh.cloneNode(true); c.style.transform = ''; c.style.boxShadow = 'none'; stage.appendChild(c);
+    });
+    document.body.appendChild(stage);
+    for (const img of stage.querySelectorAll('img')) {
+      const src = img.getAttribute('src') || '';
+      if (src.startsWith(API_URL)) { try { img.src = await toDataUrl(src); } catch (e) { /* Bild fehlt im PDF statt Abbruch */ } }
+    }
+    await Promise.all([...stage.querySelectorAll('img')].map(i => i.complete ? 0 : new Promise(r => { i.onload = i.onerror = r; })));
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: landscape ? 'landscape' : 'portrait', unit: 'mm', format: 'a4', compress: true });
+    const W = landscape ? 297 : 210, H = landscape ? 210 : 297;
+    const sheets = [...stage.querySelectorAll('.sheet')];
+    for (let i = 0; i < sheets.length; i++) {
+      btn.textContent = `⏳ Seite ${i + 1}/${sheets.length}…`;
+      const cv = await html2canvas(sheets[i], { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+      if (i) pdf.addPage('a4', landscape ? 'landscape' : 'portrait');
+      pdf.addImage(cv.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, W, H, undefined, 'FAST');
+      cv.width = cv.height = 0;
+    }
+    const name = 'Programmheft-' + (ev.title || 'Veranstaltung').replace(/[^\wäöüÄÖÜß-]+/g, '_') + '.pdf';
+    const blob = pdf.output('blob');
+    const file = new File([blob], name, { type: 'application/pdf' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: ev.title }); toast('PDF geteilt/gespeichert'); return; }
+      catch (e) { if (e && e.name === 'AbortError') return; }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    toast('PDF heruntergeladen');
+  } catch (e) {
+    toast('PDF fehlgeschlagen: ' + (e && e.message ? e.message : e));
+  } finally {
+    stage.remove(); btn.disabled = false; btn.textContent = label;
+  }
+}
 function setPrintPageSize(landscape) {
   let st = document.getElementById('printPageSize');
   if (!st) { st = document.createElement('style'); st.id = 'printPageSize'; document.head.appendChild(st); }
@@ -2369,11 +2438,14 @@ function bindEvents() {
   const genPdfBtn = document.getElementById('generatePdfBtn');
   if (genPdfBtn) genPdfBtn.addEventListener('click', () => {
     const ev = EVENTS.find(e => e.id === selectedEvent);
+    if (IS_MOBILE) return exportPdfFile(ev, genPdfBtn);
     setPrintPageSize(ev && ev.pdfLayout === 'booklet');
     unfitSheets();
     toast('Druckdialog: „Als PDF speichern“ wählen');
     setTimeout(() => window.print(), 300);
   });
+  const dlPdfBtn = document.getElementById('downloadPdfBtn');
+  if (dlPdfBtn) dlPdfBtn.addEventListener('click', () => exportPdfFile(EVENTS.find(e => e.id === selectedEvent), dlPdfBtn));
 
   // Bildauswahl für PDF (Reihenfolge = Klick-Reihenfolge)
   $$('.img-pick').forEach(btn => btn.addEventListener('click', () => {
