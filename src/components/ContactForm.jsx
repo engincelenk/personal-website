@@ -10,10 +10,12 @@ const endpoint = () => `https://formsubmit.co/ajax/${contactForm.alias || [conta
 const T = {
   en: { name: "Name", email: "Your email", company: "Company (optional)", message: "Message", send: "Send message", sending: "Sending…",
     ok: "Thank you. Your message has been sent, I will get back to you soon.", err: "Sending failed. Please try again later or write via LinkedIn.",
+    activate: "The contact form is being set up right now. Please try again in a few hours or write via LinkedIn.",
     consent: "I agree that my details are used to answer my request.", privacy: "Privacy", required: "Please fill in name, email and message and confirm the consent.",
     subject: "New message via ec.immofuchs.info" },
   de: { name: "Name", email: "Ihre E-Mail", company: "Unternehmen (optional)", message: "Nachricht", send: "Nachricht senden", sending: "Wird gesendet…",
     ok: "Vielen Dank. Ihre Nachricht ist angekommen, ich melde mich zeitnah.", err: "Senden fehlgeschlagen. Bitte später erneut versuchen oder über LinkedIn schreiben.",
+    activate: "Das Kontaktformular wird gerade eingerichtet. Bitte in einigen Stunden erneut versuchen oder über LinkedIn schreiben.",
     consent: "Ich bin einverstanden, dass meine Angaben zur Beantwortung meiner Anfrage verwendet werden.", privacy: "Datenschutz", required: "Bitte Name, E-Mail und Nachricht ausfüllen und die Einwilligung bestätigen.",
     subject: "Neue Nachricht über ec.immofuchs.info" }
 };
@@ -38,9 +40,10 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
         body: JSON.stringify({ name: f.name, email: f.email, company: f.company, message: f.message, source, _subject: subject || t.subject, _template: "table", _captcha: "false", _replyto: f.email })
       });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok || String(j.success) !== "true") throw new Error(j.message || r.status);
-      setState("ok"); setF(x => ({ ...x, message: "", consent: false }));
-    } catch { setState("err"); }
+      if (r.ok && String(j.success) === "true") { setState("ok"); setF(x => ({ ...x, message: "", consent: false })); return; }
+      console.warn("Contact form:", r.status, j.message);
+      setState(/activat/i.test(j.message || "") ? "activate" : "err");
+    } catch (err) { console.warn("Contact form:", err); setState("err"); }
   };
 
   const field = "mt-2 min-h-[48px] w-full rounded-xl border border-white/10 bg-ink px-4 text-[16px] text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none";
@@ -61,6 +64,7 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
       </label>
       {hint && <p className="text-sm text-signal" role="alert">{hint}</p>}
       {state === "err" && <p className="text-sm text-signal" role="alert">{t.err}</p>}
+      {state === "activate" && <p className="text-sm text-signal" role="alert">{t.activate}</p>}
       <button type="submit" disabled={state === "sending"} className="btn-primary disabled:opacity-60">
         {state === "sending" ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}{state === "sending" ? t.sending : t.send}
       </button>
