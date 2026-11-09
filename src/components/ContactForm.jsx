@@ -5,7 +5,7 @@ import { useLang } from "../i18n.jsx";
 
 /* Contact form without a visible address. Messages are relayed by FormSubmit
    to the inbox in data/profile.js (contactForm). No address in the page text. */
-const endpoint = () => `https://formsubmit.co/ajax/${contactForm.alias || [contactForm.user, contactForm.domain].join("@")}`;
+const endpoint = () => contactForm.endpoint || `https://formsubmit.co/ajax/${contactForm.alias || [contactForm.user, contactForm.domain].join("@")}`;
 
 const T = {
   en: { name: "Name", email: "Your email", company: "Company (optional)", message: "Message", send: "Send message", sending: "Sending…",
@@ -37,7 +37,7 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
     try {
       const r = await fetch(endpoint(), {
         method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ name: f.name, email: f.email, company: f.company, message: f.message, source, _subject: subject || t.subject, _template: "table", _captcha: "false", _replyto: f.email })
+        body: JSON.stringify({ name: f.name, email: f.email, company: f.company, message: f.message, source, lang, _subject: subject || t.subject, _template: "table", _captcha: "false", _replyto: f.email, _honey: f.hp })
       });
       const j = await r.json().catch(() => ({}));
       if (r.ok && String(j.success) === "true") { setState("ok"); setF(x => ({ ...x, message: "", consent: false })); return; }
