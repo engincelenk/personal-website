@@ -553,6 +553,20 @@ a { color: var(--link); }
 .form-group input { width: 100%; }
 .performer-row { margin-bottom: 6px; }
 .performer-row .form-group { gap: 6px; }
+/* Mitwirkende: Name, Instrument und Entfernen-Knopf gleich hoch und im selben Stil */
+.performer-row input, .performer-row select, .performer-row .remove-perf { height: 44px; box-sizing: border-box; font-size: 16px; }
+.performer-row select.p-instrument {
+  -webkit-appearance: none; appearance: none; width: 100%; cursor: pointer; text-overflow: ellipsis;
+  padding: 0 34px 0 12px; border: 1px solid var(--border); border-radius: var(--radius); background-color: var(--bg); color: var(--fg);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23888' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+}
+.performer-row .remove-perf { width: 44px; padding: 0; flex-shrink: 0; }
+@media (max-width: 560px) {
+  .performer-row { flex-wrap: wrap; }
+  .performer-row > .form-group:first-child { flex: 1 1 100% !important; }
+  .performer-row > .form-group:nth-child(2) { flex: 1 1 0 !important; }
+}
 
 /* ---- Autocomplete ---- */
 .suggest-wrap { position: relative; }
@@ -2307,11 +2321,13 @@ function renderTeacherContent() {
       </div>
     </div>`;
 
-  // Done / no entry buttons
+  // Status: immer änderbar (fertig <-> offen)
   html += `
-    <div style="display:flex;gap:8px;margin-top:20px;flex-wrap:wrap">
-      ${!isDone ? `<button class="btn btn-gold" id="markDoneBtn">✓ Ich bin fertig</button>` : `<span class="chip chip-success" style="font-size:13px;padding:8px 16px">✓ Als fertig markiert</span>`}
-      ${!isDone ? `<button class="btn btn-secondary" id="noEntryBtn">Ich habe keinen Beitrag</button>` : ''}
+    <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;align-items:center">
+      <span class="chip ${isDone ? 'chip-success' : 'chip-warning'}" style="font-size:13px;padding:8px 16px">${isDone ? '✓ Fertig' : '⏳ Noch offen'}${isDone && !myEntries.length ? ' (kein Beitrag)' : ''}</span>
+      ${isDone
+        ? `<button class="btn btn-secondary" id="reopenBtn" type="button">Wieder öffnen</button>`
+        : `<button class="btn btn-gold" id="markDoneBtn" type="button">✓ Als fertig markieren</button>`}
     </div>`;
 
   return html;
@@ -2431,7 +2447,8 @@ function bindEvents() {
     const entry = { id: Date.now(), teacher: currentRole, composer, werk, performers, note };
     ev.entries.push(entry);
     learn(entry, currentRole);
-    toast('Beitrag gespeichert!');
+    if (ev.status[currentRole] === 'done') { ev.status[currentRole] = 'pending'; toast('Beitrag gespeichert – Status wieder „offen“, bitte erneut als fertig markieren'); }
+    else toast('Beitrag gespeichert!');
     render();
   });
 
@@ -2444,12 +2461,12 @@ function bindEvents() {
     render();
   });
 
-  // No entry
-  const noEntryBtn = document.getElementById('noEntryBtn');
-  if (noEntryBtn) noEntryBtn.addEventListener('click', () => {
+  // Wieder öffnen
+  const reopenBtn = document.getElementById('reopenBtn');
+  if (reopenBtn) reopenBtn.addEventListener('click', () => {
     const ev = EVENTS.find(e => e.id === selectedEvent);
-    ev.status[currentRole] = 'done';
-    toast('Kein Beitrag — als fertig markiert ✓');
+    ev.status[currentRole] = 'pending';
+    toast('Status: offen');
     render();
   });
 
@@ -3041,7 +3058,7 @@ für unsere Veranstaltung „${ev.title}“${ev.date ? ' am ' + ev.date : ''}${e
 Bitte tragen Sie Ihre Stücke${ev.deadline ? ' bis zum ' + ev.deadline : ''} im Programmheft-Tool ein:
 ${toolLink()}
 
-Falls Sie diesmal keinen Beitrag haben, klicken Sie dort bitte auf „Ich habe keinen Beitrag“.
+Falls Sie diesmal keinen Beitrag haben, klicken Sie dort bitte auf „Als fertig markieren“.
 
 Vielen Dank!
 Jugendmusikschule Freiberg a.N. · Pleidelsheim e.V.`
