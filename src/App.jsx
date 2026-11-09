@@ -8,6 +8,9 @@ import Lab from "./components/Lab.jsx";
 import About from "./components/About.jsx";
 import Contact from "./components/Contact.jsx";
 import Footer from "./components/Footer.jsx";
+import Stats from "./components/Stats.jsx";
+import ScrollProgress from "./components/ScrollProgress.jsx";
+import Spotlight from "./components/Spotlight.jsx";
 import { LangProvider, useLang } from "./i18n.jsx";
 
 /* Personal application links: ?company=…&to=…&role=…&focus=security|architecture|innovation&lang=de|en (German keys also work). */
@@ -31,9 +34,12 @@ function Page() {
   return (
     <>
       <a href="#journey" className="sr-only z-[60] rounded bg-signal px-3 py-2 text-ink focus:not-sr-only focus:fixed focus:left-3 focus:top-3">{t("skip")}</a>
+      <ScrollProgress />
+      <Spotlight />
       <Nav showFreelance={!msg} />
       <main>
         <Hero guest={msg} />
+        <Stats />
         <Career />
         <Education />
         <Expertise domain={domain} setDomain={setDomain} />

@@ -24,7 +24,7 @@ export default function Expertise({ domain, setDomain }) {
             const on = sel.id === p.id;
             return (
               <button key={p.id} type="button" onClick={() => setDomain(p.id)} aria-pressed={on}
-                className={`flex min-w-0 flex-col rounded-2xl border p-5 text-left transition-all duration-300 ${on ? "border-signal/70 bg-navy/60 shadow-[0_0_50px_-24px_rgba(232,101,10,.7)]" : sel.id === "ai" ? "border-white/[0.08] bg-navy/20" : "border-white/[0.08] bg-navy/20 opacity-70 hover:opacity-100"}`}>
+                className={`spot flex min-w-0 flex-col rounded-2xl border p-5 text-left transition-all duration-300 ${on ? "border-signal/70 bg-navy/60 shadow-[0_0_50px_-24px_rgba(232,101,10,.7)]" : sel.id === "ai" ? "border-white/[0.08] bg-navy/20" : "border-white/[0.08] bg-navy/20 opacity-70 hover:opacity-100"}`}>
                 <span className="flex items-start gap-3">
                   <span className={`grid h-11 w-11 flex-none place-items-center rounded-xl ${on ? "bg-signal text-ink" : "bg-white/[0.06] text-signal"}`}><Icon name={p.icon} size={20} /></span>
                   <span className="min-w-0">

@@ -34,3 +34,33 @@
 .caret::after { content: "▍"; color: #E8650A; animation: blink 1s steps(2) infinite; }
 @keyframes blink { 50% { opacity: 0; } }
 @keyframes sweep { 0% { transform: translateX(0); } 60%, 100% { transform: translateX(450%); } }
+
+/* --- visual polish --- */
+.panel, .spot { position: relative; }
+.panel::before, .spot::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(232,101,10,.13), transparent 62%);
+}
+@media (hover: hover) { .panel:hover::before, .spot:hover::before { opacity: 1; } }
+
+/* sections: soft colour bands and a glowing hairline between them */
+main > .section::after {
+  content: ""; position: absolute; top: 0; left: 50%; width: min(720px, 70%); height: 1px; transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(232,101,10,.45), transparent); pointer-events: none;
+}
+main > .section:nth-of-type(even) { background: linear-gradient(180deg, transparent, rgba(30,58,95,.20) 35%, rgba(30,58,95,.20) 65%, transparent); }
+main > .section:nth-of-type(3n)::before {
+  content: ""; position: absolute; z-index: -1; right: -10%; top: 10%; width: 520px; height: 520px; max-width: 80vw; border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,101,10,.09), transparent 65%); pointer-events: none;
+}
+main > .section { overflow-x: clip; isolation: isolate; }
+
+/* logo marquee */
+.marquee-row { animation: marquee 38s linear infinite; }
+.marquee:hover .marquee-row { animation-play-state: paused; }
+@keyframes marquee { to { transform: translateX(-100%); } }
+@media (prefers-reduced-motion: reduce) {
+  .marquee { overflow-x: auto; mask-image: none; -webkit-mask-image: none; }
+  .marquee-row { animation: none; }
+  .marquee-row[aria-hidden] { display: none; }
+}
