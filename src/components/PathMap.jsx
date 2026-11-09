@@ -1,4 +1,5 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useRef } from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
 import Logo from "./Logo.jsx";
 import Icon from "./Icon.jsx";
 
@@ -13,7 +14,11 @@ function Node({ item, state, size = "h-12 w-12", logoSize = "h-12 w-20" }) {
 
 export default function PathMap({ items, mode = "curve", active, setActive, renderCard, label }) {
   const reduce = useReducedMotion();
-  const n = items.length, ai = items.findIndex(x => x.id === active);
+  const root = useRef(null);
+  const seen = useInView(root, { once: true, amount: 0.3 }) || reduce;
+  const n = items.length, real = items.findIndex(x => x.id === active);
+  const ai = seen ? real : -1; // the path draws itself once the section scrolls into view
+  const pop = i => reduce ? {} : { initial: { opacity: 0, scale: 0.7 }, animate: seen ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.7 }, transition: { duration: 0.4, delay: i * 0.09, ease: [0.2, 0.8, 0.2, 1] } };
   const W = 1000, H = mode === "stairs" ? 330 : 250, padX = 56;
   const pts = items.map((_, i) => {
     const x = padX + (i * (W - 2 * padX)) / (n - 1);
@@ -27,17 +32,17 @@ export default function PathMap({ items, mode = "curve", active, setActive, rend
   };
   const state = i => (i === ai ? "active" : i < ai ? "done" : "todo");
   const draw = i => reduce ? {} : { initial: { pathLength: 0 }, animate: { pathLength: 1 }, transition: { duration: 0.22, delay: i * 0.14, ease: "easeInOut" } };
-  const card = ai >= 0 && (
+  const card = real >= 0 && (
     <AnimatePresence mode="wait">
-      <motion.div key={items[ai].id} initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -6 }}
-        transition={{ duration: 0.3, delay: reduce ? 0 : Math.min(0.5, ai * 0.06) }}>
-        {renderCard(items[ai])}
+      <motion.div key={items[real].id} initial={reduce ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0, y: -6 }}
+        transition={{ duration: 0.3, delay: reduce ? 0 : Math.min(0.5, real * 0.06) }}>
+        {renderCard(items[real])}
       </motion.div>
     </AnimatePresence>
   );
 
   return (
-    <div>
+    <div ref={root}>
       {/* Desktop map */}
       <div className="hidden md:block">
         <div className="relative w-full" style={{ aspectRatio: `${W} / ${H}` }} role="group" aria-label={label}>
@@ -48,10 +53,10 @@ export default function PathMap({ items, mode = "curve", active, setActive, rend
             ))}
           </svg>
           {items.map((it, i) => (
-            <button key={it.id} type="button" onClick={() => setActive(it.id)} aria-pressed={i === ai}
+            <button key={it.id} type="button" onClick={() => setActive(it.id)} aria-pressed={i === real}
               className="group absolute flex w-28 -translate-x-1/2 -translate-y-6 flex-col items-center text-center"
               style={{ left: `${(pts[i][0] / W) * 100}%`, top: `${(pts[i][1] / H) * 100}%` }}>
-              <Node item={it} state={state(i)} />
+              <motion.span {...pop(i)} className="block"><Node item={it} state={state(i)} /></motion.span>
               <span className={`mt-3 font-mono text-[11px] ${i <= ai ? "text-signal" : "text-mist"}`}>{it.year || " "}</span>
               <span className={`mt-0.5 text-[13px] font-medium leading-tight transition-colors ${i === ai ? "text-snow" : "text-mist group-hover:text-snow"}`}>{it.short}</span>
             </button>
@@ -69,15 +74,15 @@ export default function PathMap({ items, mode = "curve", active, setActive, rend
                 {i < ai && <motion.span key={`r${ai}`} className="absolute inset-0 origin-top bg-signal" initial={reduce ? false : { scaleY: 0 }} animate={{ scaleY: 1 }} transition={{ duration: 0.2, delay: i * 0.12 }} />}
               </span>
             )}
-            <button type="button" onClick={() => setActive(it.id)} aria-expanded={i === ai} className="flex min-h-[64px] w-full items-center gap-4 py-2 text-left">
-              <span className="absolute left-0"><Node item={it} state={state(i)} logoSize="h-12 w-12" /></span>
+            <button type="button" onClick={() => setActive(it.id)} aria-expanded={i === real} className="flex min-h-[64px] w-full items-center gap-4 py-2 text-left">
+              <motion.span {...pop(i)} className="absolute left-0"><Node item={it} state={state(i)} logoSize="h-12 w-12" /></motion.span>
               <span>
                 <span className={`block font-mono text-[11px] ${i <= ai ? "text-signal" : "text-mist"}`}>{it.year || " "}</span>
                 <span className={`block text-base font-medium leading-tight ${i === ai ? "text-snow" : "text-snow/75"}`}>{it.short}</span>
               </span>
             </button>
             <AnimatePresence initial={false}>
-              {i === ai && (
+              {i === real && (
                 <motion.div className="overflow-hidden" initial={reduce ? false : { height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={reduce ? undefined : { height: 0, opacity: 0 }} transition={{ duration: 0.3 }}>
                   <div className="pb-5 pt-1">{renderCard(it, true)}</div>
                 </motion.div>

@@ -21,7 +21,7 @@ export default function ServiceMatrix({ T }) {
       {/* Pillars */}
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {pillars.map(p => (
-          <div key={p.id} className={`flex min-w-0 flex-col rounded-2xl border transition-all duration-300 ${sel === p.id ? "border-signal/70 bg-navy/50" : "border-white/[0.08] bg-navy/20"} ${dimCol(p.id) ? "opacity-40" : ""}`}>
+          <div key={p.id} className={`spot flex min-w-0 flex-col rounded-2xl border transition-all duration-300 ${sel === p.id ? "border-signal/70 bg-navy/50" : "border-white/[0.08] bg-navy/20"} ${dimCol(p.id) ? "opacity-40" : ""}`}>
             <button type="button" onClick={() => toggle(p.id)} aria-pressed={sel === p.id} className="flex items-start gap-3 p-5 text-left">
               <span className={`grid h-11 w-11 flex-none place-items-center rounded-xl ${sel === p.id ? "bg-signal text-ink" : "bg-white/[0.06] text-signal"}`}><Icon name={p.icon} size={20} /></span>
               <span className="min-w-0">
