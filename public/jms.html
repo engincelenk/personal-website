@@ -1689,6 +1689,7 @@ function renderEventList() {
           </div>
           <span style="display:flex;align-items:center;gap:8px">
             <span class="chip ${chipClass}">${chipLabel}</span>
+            <a class="btn btn-icon btn-sm edit-event-card" href="#${eventPath(ev.id, 'bearbeiten')}" title="Veranstaltung bearbeiten" aria-label="Veranstaltung „${esc(ev.title)}“ bearbeiten">✎</a>
             <button class="btn btn-icon btn-sm del-event-card" data-del-event="${ev.id}" title="Veranstaltung löschen" aria-label="Veranstaltung „${esc(ev.title)}“ löschen">🗑</button>
           </span>
         </div>
@@ -2358,6 +2359,7 @@ function bindEvents() {
     go('/login');
   }));
 
+  $$('.edit-event-card').forEach(a => a.addEventListener('click', e => e.stopPropagation()));
   // Veranstaltung direkt aus der Liste löschen (Admin)
   $$('.del-event-card').forEach(b => b.addEventListener('click', (e) => {
     e.stopPropagation();
