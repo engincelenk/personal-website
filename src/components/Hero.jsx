@@ -46,7 +46,7 @@ export default function Hero({ guest }) {
           <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-signal/20 blur-3xl" aria-hidden="true" />
           <img src="/engin.jpg" alt={t("portrait")} width="720" height="720" className="aspect-square w-full rounded-[2rem] border border-white/10 object-cover shadow-2xl" />
           <figcaption className="absolute -bottom-4 left-6 rounded-full border border-white/10 bg-ink/90 px-4 py-2 text-sm backdrop-blur">
-            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-emerald-400 align-middle" />Cyber Security Engineer · Bosch
+            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-emerald-400 align-middle" />{t("photoLabel")}
           </figcaption>
         </motion.figure>
         </div>
