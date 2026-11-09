@@ -1464,6 +1464,7 @@ function go(path, replace) {
   location.hash = h; // löst hashchange -> handleRoute aus
 }
 function eventPath(id, sub) { return `/admin/v/${id}${sub ? '/' + sub : ''}`; }
+function teacherEntryPath(name, evId, entryId) { return `${teacherPath(name, evId)}/beitrag/${entryId}`; }
 function teacherPath(name, id) { return `/l/${encodeURIComponent(name)}${id ? '/v/' + id : ''}`; }
 
 function handleRoute() {
@@ -1514,6 +1515,10 @@ function handleRoute() {
       const ev = EVENTS.find(e => String(e.id) === p[3] && e.teachers.includes(currentRole));
       if (!ev) return go(teacherPath(currentRole), true);
       selectedEvent = ev.id;
+      if (p[4] === 'beitrag' && p[5]) {
+        if (!ev.entries.some(e => String(e.id) === p[5] && e.teacher === currentRole)) return go(teacherPath(currentRole, ev.id), true);
+        editEntryId = p[5];
+      }
     }
   } else {
     return go('/login', true);
@@ -1548,7 +1553,7 @@ function parentPath() {
     if (adminPage === 'entry') return eventPath(selectedEvent, 'programm');
     return ['reminder', 'editEvent'].includes(adminPage) ? eventPath(selectedEvent) : '/admin';
   }
-  if (currentView === 'teacher') return teacherPath(currentRole);
+  if (currentView === 'teacher') return editEntryId ? teacherPath(currentRole, selectedEvent) : teacherPath(currentRole);
   return '/rolle';
 }
 
@@ -2168,6 +2173,7 @@ function renderTeacherContent() {
   const ev = EVENTS.find(e => e.id === selectedEvent);
   const myEntries = ev.entries.filter(e => e.teacher === currentRole);
   const isDone = ev.status[currentRole] === 'done';
+  if (editEntryId) return renderTeacherEntryEdit(ev);
 
   let html = `
     <button class="btn btn-secondary btn-sm" id="backBtn" style="margin-bottom:16px">← Zurück</button>
@@ -2193,7 +2199,10 @@ function renderTeacherContent() {
               <div style="font-family:var(--font-display);font-size:16px;font-weight:600">${e.composer || 'Trad.'} — <em>${e.werk}</em></div>
               <div style="font-size:12px;color:var(--fg-muted);margin-top:2px">${perfStr}</div>
             </div>
-            <button class="btn btn-icon btn-sm delete-entry" data-id="${e.id}" title="Löschen">✕</button>
+            <div style="display:flex;gap:4px;flex-shrink:0">
+              <a class="btn btn-icon btn-sm edit-entry-link" href="#${teacherEntryPath(currentRole, ev.id, e.id)}" title="Bearbeiten" aria-label="Beitrag bearbeiten">✎</a>
+              <button class="btn btn-icon btn-sm delete-entry" data-id="${e.id}" title="Löschen" aria-label="Beitrag löschen">✕</button>
+            </div>
           </div>
         </div>`;
     });
@@ -2404,6 +2413,7 @@ function bindEvents() {
   bindNewEventPage();
   bindEditEventPage();
   bindEntryPage();
+  bindTeacherEntryEdit();
   bindProgramAdmin();
   bindTeachersPage();
   bindSettingsPage();
@@ -2698,6 +2708,41 @@ function bindEditEventPage() {
     EVENTS.splice(EVENTS.indexOf(ev), 1);
     toast('Veranstaltung gelöscht');
     go('/admin', true);
+  });
+}
+
+
+/* ---------- Lehrkraft: eigenen Beitrag bearbeiten ---------- */
+function renderTeacherEntryEdit(ev) {
+  const e = ev.entries.find(x => String(x.id) === editEntryId);
+  return `
+    <button class="btn btn-secondary btn-sm" id="backBtn" style="margin-bottom:16px">← Zurück</button>
+    <div class="event-header">
+      <div>
+        <div class="event-title">${esc(ev.title)}</div>
+        <div class="event-meta"><span>📅 ${esc(ev.date)} · ${esc(ev.time)}</span><span>⏰ Abgabe: ${esc(ev.deadline)}</span></div>
+      </div>
+    </div>
+    <div class="entry-section">
+      <h3>Beitrag bearbeiten</h3>
+      <div class="form-grid" id="entryForm">${entryFieldsHtml(e)}</div>
+      <div class="page-actions">
+        <button class="btn btn-secondary" id="teCancelBtn" type="button">Abbrechen</button>
+        <button class="btn btn-primary" id="teSaveBtn" type="button">Änderungen speichern</button>
+      </div>
+    </div>`;
+}
+function bindTeacherEntryEdit() {
+  const save = document.getElementById('teSaveBtn');
+  if (!save) return;
+  document.getElementById('teCancelBtn').addEventListener('click', () => go(parentPath()));
+  save.addEventListener('click', () => {
+    const ev = EVENTS.find(x => x.id === selectedEvent); if (!ev) return;
+    const e = ev.entries.find(x => String(x.id) === editEntryId); if (!e) return;
+    const v = readEntryForm(); if (!v) return;
+    Object.assign(e, v);
+    toast('Beitrag gespeichert');
+    go(teacherPath(currentRole, ev.id), true);
   });
 }
 
