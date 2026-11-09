@@ -7,7 +7,7 @@
 
 // ---- Settings -------------------------------------------------
 $TO      = 'engincelenk@web.de';          // where messages go
-$FROM    = 'kontakt@immofuchs.info';      // an existing IONOS mailbox on your domain
+$FROM    = 'engincelenk@web.de';          // sender address shown in the mail
 $ORIGINS = ['https://ec.immofuchs.info']; // sites allowed to use this form
 $LIMIT   = 5;                             // max messages per IP per hour
 $CONFIRM = ['freelance'];                 // form sources whose sender gets a confirmation email
