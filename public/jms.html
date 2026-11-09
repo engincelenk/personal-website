@@ -597,11 +597,81 @@ a { color: var(--link); }
 .pdf-footer { text-align: center; font-size: 9px; color: #999; margin-top: auto; padding-top: 12px; border-top: 1px solid #e2ddd8; }
 .pdf-event-info .pdf-event-title { font-weight: 300 !important; color: #00b2b6 !important; font-size: 24px !important; }
 
+
+/* ---- Admin-Navigation (Band wie auf jms-mosaik.de) ---- */
+.app-header + .admin-nav { margin-top: -6px; }
+.admin-nav {
+  display: flex; gap: 2px; overflow-x: auto; background: var(--accent-bright);
+  margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px)));
+  padding: 0 max(16px, env(safe-area-inset-left, 0px));
+
+}
+.admin-nav a {
+  color: #fff; text-decoration: none; font-family: var(--font-display); font-weight: 300; font-size: 16px;
+  padding: 9px 14px; white-space: nowrap; border-bottom: 3px solid transparent;
+}
+.admin-nav a:hover { background: rgba(0,0,0,.08); }
+.admin-nav a.active { font-weight: 600; border-bottom-color: #fff; background: rgba(0,0,0,.1); }
+:root[data-theme="dark"] .admin-nav a, .admin-nav a { color: #fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .admin-nav { background: #0e7f82; } }
+:root[data-theme="dark"] .admin-nav { background: #0e7f82; }
+a.btn { text-decoration: none; }
+
+/* ---- Seiten ---- */
+.page-title { font-family: var(--font-display); color: var(--accent-bright); font-weight: 300; font-size: 28px; margin-bottom: 4px; }
+.page-sub { color: var(--fg-muted); margin-bottom: 16px; }
+.page-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; }
+.role-card { max-width: 560px; }
+.divider { position: relative; text-align: center; color: var(--fg-muted); font-size: 12px; }
+.divider::before { content: ""; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: var(--border); }
+.divider span { position: relative; background: var(--bg-card); padding: 0 12px; }
+.form-group textarea { width: 100%; resize: vertical; font-family: var(--font-body); line-height: 1.5; }
+
+/* ---- Lehrkräfte-Tabelle ---- */
+.teacher-table { background: var(--bg-card); box-shadow: var(--shadow); border-radius: var(--radius); }
+.tt-row { display: grid; grid-template-columns: 1.2fr 1.4fr 1.4fr auto; gap: 8px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.tt-row:last-child { border-bottom: none; }
+.tt-head { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--fg-muted); background: var(--bg); }
+.tt-row input { width: 100%; min-width: 0; padding: 6px 8px; border: 1px solid transparent; background: transparent; color: var(--fg); border-radius: var(--radius); }
+.tt-row input:hover { border-color: var(--border); }
+.tt-row input:focus { outline: 2px solid var(--accent); outline-offset: -1px; background: var(--bg); }
+.tt-row .tt-name { font-weight: 600; }
+.tt-row .tt-email.missing { background: var(--gold-light); }
+.tt-row .tt-email.missing::placeholder { color: var(--gold); }
+@media (max-width: 640px) {
+  .tt-head { display: none; }
+  .tt-row { grid-template-columns: 1fr auto; }
+  .tt-row .tt-name { grid-column: 1; }
+  .tt-row .tt-del { grid-column: 2; grid-row: 1; }
+  .tt-row .tt-faecher, .tt-row .tt-email { grid-column: 1 / -1; }
+}
+
+/* ---- Schalter ---- */
+.switch-row { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.switch-row input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.switch { flex-shrink: 0; width: 44px; height: 24px; background: var(--border); border-radius: 12px; position: relative; transition: background .15s; }
+.switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform .15s; box-shadow: 0 1px 2px rgba(0,0,0,.3); }
+.switch-row input:checked + .switch { background: var(--accent); }
+.switch-row input:checked + .switch::after { transform: translateX(20px); }
+.switch-row input:focus-visible + .switch { outline: 2px solid var(--link); outline-offset: 2px; }
+
+/* ---- Erinnerung ---- */
+.warn-box { background: var(--gold-light); color: var(--fg); padding: 8px 12px; margin-bottom: 12px; border-left: 4px solid var(--gold-fill); }
+.rcpt-list { display: flex; flex-direction: column; }
+.rcpt { display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "cb name single" "cb mail single"; gap: 0 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); cursor: pointer; }
+.rcpt:last-child { border-bottom: none; }
+.rcpt input { grid-area: cb; width: 18px; height: 18px; }
+.rcpt-name { grid-area: name; font-weight: 600; }
+.rcpt-mail { grid-area: mail; font-size: 12px; color: var(--fg-muted); overflow: hidden; text-overflow: ellipsis; }
+.rcpt-single { grid-area: single; font-size: 12px !important; }
+.rcpt.no-mail { opacity: .7; cursor: default; }
+.rcpt.no-mail .rcpt-mail { color: var(--gold); }
+
 /* ---- Print: only the programme page ---- */
 @media print {
   @page { size: A4; margin: 0; }
   body { padding: 0 !important; background: #fff !important; }
-  body::before, .app-header, .tabs, .event-header, .img-picker, #backBtn, #generatePdfBtn, .toast { display: none !important; }
+  body::before, .app-header, .tabs, .event-header, .img-picker, .admin-nav, #backBtn, #generatePdfBtn, .toast { display: none !important; }
   .main-content { padding: 0 !important; max-width: none !important; }
   .main-content > div:has(> #backBtn) { display: none !important; }
   .pdf-preview-container { background: none !important; padding: 0 !important; }
@@ -870,8 +940,27 @@ const EVENTS = [
   }
 ];
 
-let currentView = 'login';
-let currentRole = null; // 'admin' or teacher name
+/* ---------- Speicherung (Demo: im Browser via localStorage) ---------- */
+const STORE = { events: 'jms-events-v1', teachers: 'jms-teachers-v1', settings: 'jms-settings-v1', images: 'jms-images-v1' };
+function load(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+function store(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { console.warn('Speichern nicht möglich', e); } }
+
+let TEACHER_LIST = load(STORE.teachers, TEACHER_DATA.map(t => ({ ...t, email: '' })));
+let SETTINGS = load(STORE.settings, { passwordEnabled: true, password: PASSWORD });
+{ const saved = load(STORE.events, null); if (Array.isArray(saved)) EVENTS.splice(0, EVENTS.length, ...saved); }
+load(STORE.images, []).forEach(i => { if (!IMAGES.some(x => x.id === i.id)) IMAGES.push(i); });
+function persist() {
+  store(STORE.events, EVENTS); store(STORE.teachers, TEACHER_LIST); store(STORE.settings, SETTINGS);
+  store(STORE.images, IMAGES.filter(i => i.id.startsWith('upload-')));
+}
+function teacherByName(n) { return TEACHER_LIST.find(t => t.name === n); }
+function faecherOf(n) { const t = teacherByName(n); return t ? t.faecher : ''; }
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/* ---------- Ansicht-Zustand (kommt aus der URL) ---------- */
+let currentView = 'login';   // login | role | admin | teacher
+let currentRole = null;      // 'admin' oder Name der Lehrkraft
+let adminPage = 'events';    // events | event | newEvent | teachers | settings | reminder
 let selectedEvent = null;
 let activeTab = 'uebersicht';
 
@@ -1072,15 +1161,81 @@ function readInstrument(row) {
   return v === '__other' ? row.querySelector('.p-instrument-other').value.trim() : v;
 }
 
+/* ---------- Routing: jede Ansicht hat eine URL -> Browser vor/zurück funktioniert ---------- */
+function isAuthed() {
+  if (!SETTINGS.passwordEnabled) return true;
+  try { return sessionStorage.getItem('jms-auth') === '1'; } catch (e) { return window.__jmsAuth === true; }
+}
+function setAuthed(v) {
+  window.__jmsAuth = v;
+  try { v ? sessionStorage.setItem('jms-auth', '1') : sessionStorage.removeItem('jms-auth'); } catch (e) {}
+}
+function go(path, replace) {
+  const h = '#' + path;
+  if (replace) { history.replaceState(null, '', h); handleRoute(); return; }
+  if (location.hash === h) { handleRoute(); return; }
+  location.hash = h; // löst hashchange -> handleRoute aus
+}
+function eventPath(id, sub) { return `/admin/v/${id}${sub ? '/' + sub : ''}`; }
+function teacherPath(name, id) { return `/l/${encodeURIComponent(name)}${id ? '/v/' + id : ''}`; }
+
+function handleRoute() {
+  const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(x => { try { return decodeURIComponent(x); } catch (e) { return x; } });
+  const top = p[0] || 'login';
+  if (top !== 'login' && !isAuthed()) return go('/login', true);
+  selectedEvent = null; activeTab = 'uebersicht'; adminPage = 'events';
+
+  if (top === 'login') {
+    if (isAuthed()) return go('/rolle', true);
+    currentView = 'login'; currentRole = null;
+  } else if (top === 'rolle') {
+    currentView = 'role'; currentRole = null;
+  } else if (top === 'admin') {
+    currentView = 'admin'; currentRole = 'admin';
+    const sub = p[1];
+    if (sub === 'neu') adminPage = 'newEvent';
+    else if (sub === 'lehrkraefte') adminPage = 'teachers';
+    else if (sub === 'einstellungen') adminPage = 'settings';
+    else if (sub === 'v') {
+      const ev = EVENTS.find(e => String(e.id) === p[2]);
+      if (!ev) return go('/admin', true);
+      selectedEvent = ev.id;
+      if (p[3] === 'erinnerung') adminPage = 'reminder';
+      else { adminPage = 'event'; activeTab = ['programm', 'vorschau'].includes(p[3]) ? p[3] : 'uebersicht'; }
+    }
+  } else if (top === 'l') {
+    if (!teacherByName(p[1])) return go('/rolle', true);
+    currentView = 'teacher'; currentRole = p[1];
+    if (p[2] === 'v') {
+      const ev = EVENTS.find(e => String(e.id) === p[3] && e.teachers.includes(currentRole));
+      if (!ev) return go(teacherPath(currentRole), true);
+      selectedEvent = ev.id;
+    }
+  } else {
+    return go('/login', true);
+  }
+  render();
+  window.scrollTo(0, 0);
+}
+
+function parentPath() {
+  if (currentView === 'admin') return adminPage === 'reminder' ? eventPath(selectedEvent) : '/admin';
+  if (currentView === 'teacher') return teacherPath(currentRole);
+  return '/rolle';
+}
+
 function render() {
   const app = document.getElementById('app');
   if (currentView === 'login') {
     app.innerHTML = renderLogin();
+  } else if (currentView === 'role') {
+    app.innerHTML = renderRolePage();
   } else if (currentView === 'admin') {
     app.innerHTML = renderAdminHeader() + '<div class="main-content">' + renderAdminContent() + '</div>';
   } else if (currentView === 'teacher') {
     app.innerHTML = renderTeacherHeader() + '<div class="main-content">' + renderTeacherContent() + '</div>';
   }
+  persist();
   bindEvents();
 }
 
@@ -1097,7 +1252,7 @@ function renderLogin() {
         </div>
         <div class="login-error" id="loginError">Falsches Passwort. Bitte versuchen Sie es erneut.</div>
         <button class="btn btn-primary" style="width:100%;justify-content:center" id="loginBtn">Anmelden</button>
-        <p style="font-size:11px;color:var(--fg-muted)">Passwort: <code style="background:var(--accent-light);padding:2px 6px;border-radius:4px">jms2026</code> (Demo)</p>
+        ${SETTINGS.password === PASSWORD ? `<p style="font-size:11px;color:var(--fg-muted)">Passwort: <code style="background:var(--accent-light);padding:2px 6px;border-radius:4px">${PASSWORD}</code> (Demo)</p>` : ''}
       </div>
     </div>`;
 }
@@ -1111,7 +1266,12 @@ function renderAdminHeader() {
         <span class="user-badge">👤 Admin</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
       </div>
-    </header>`;
+    </header>
+    <nav class="admin-nav" aria-label="Adminbereich">
+      <a href="#/admin" class="${['events', 'event', 'newEvent', 'reminder'].includes(adminPage) ? 'active' : ''}">Veranstaltungen</a>
+      <a href="#/admin/lehrkraefte" class="${adminPage === 'teachers' ? 'active' : ''}">Lehrkräfte</a>
+      <a href="#/admin/einstellungen" class="${adminPage === 'settings' ? 'active' : ''}">Einstellungen</a>
+    </nav>`;
 }
 
 function eventThumb(ev) {
@@ -1120,10 +1280,14 @@ function eventThumb(ev) {
 }
 
 function renderAdminContent() {
-  if (!selectedEvent) {
-    return renderEventList();
+  switch (adminPage) {
+    case 'newEvent': return renderNewEventPage();
+    case 'teachers': return renderTeachersPage();
+    case 'settings': return renderSettingsPage();
+    case 'reminder': return renderReminderPage();
+    case 'event': return renderEventDetail();
+    default: return renderEventList();
   }
-  return renderEventDetail();
 }
 
 function renderEventList() {
@@ -1202,10 +1366,11 @@ function renderEventDetail() {
           <span>📅 ${ev.date}</span>
           <span>🕐 ${ev.time}</span>
           <span>📍 ${ev.location}</span>
+          ${ev.reminders && ev.reminders.length ? `<span>📧 Zuletzt erinnert: ${fmtDateTime(ev.reminders[ev.reminders.length - 1].at)}</span>` : ''}
         </div>
       </div>
       <div class="header-actions">
-        <button class="btn btn-gold btn-sm" id="remindBtn">📧 <span class="hide-mobile">Erinnerung senden</span></button>
+        <a class="btn btn-gold btn-sm" href="#${eventPath(ev.id, 'erinnerung')}">📧 <span class="hide-mobile">Erinnerung senden</span></a>
       </div>
     </div>
     ${tabs}${content}`;
@@ -1240,7 +1405,7 @@ function renderOverviewTab(ev, total, done, pending) {
     html += `
       <div class="teacher-row">
         <div class="teacher-avatar">${getInitials(t)}</div>
-        <div class="name">${t}<span class="faecher">${esc(FAECHER[t] || '')}</span></div>
+        <div class="name">${t}<span class="faecher">${esc(faecherOf(t))}</span></div>
         ${count ? `<span style="font-size:11px;color:var(--fg-muted)">${count}×</span>` : ''}
         <span class="chip ${isDone ? 'chip-success' : 'chip-danger'}">${isDone ? '✓' : '⏳'}</span>
       </div>`;
@@ -1493,8 +1658,9 @@ function bindEvents() {
   if (loginBtn) {
     const doLogin = () => {
       const pw = document.getElementById('loginPw').value;
-      if (pw === PASSWORD) {
-        showRolePicker();
+      if (pw === SETTINGS.password) {
+        setAuthed(true);
+        go('/rolle');
       } else {
         document.getElementById('loginError').style.display = 'block';
       }
@@ -1506,25 +1672,23 @@ function bindEvents() {
 
   // Logout
   $$('#logoutBtn').forEach(btn => btn.addEventListener('click', () => {
-    currentView = 'login'; currentRole = null; selectedEvent = null; activeTab = 'uebersicht';
-    render();
+    setAuthed(false);
+    go(SETTINGS.passwordEnabled ? '/login' : '/rolle');
   }));
 
   // Event click
   $$('[data-event-id]').forEach(el => el.addEventListener('click', () => {
-    selectedEvent = parseInt(el.dataset.eventId);
-    activeTab = 'uebersicht';
-    render();
+    const id = el.dataset.eventId;
+    go(currentView === 'admin' ? eventPath(id) : teacherPath(currentRole, id));
   }));
 
   // Back
   const backBtn = document.getElementById('backBtn');
-  if (backBtn) backBtn.addEventListener('click', () => { selectedEvent = null; render(); });
+  if (backBtn) backBtn.addEventListener('click', () => go(parentPath()));
 
   // Tabs
   $$('.tab').forEach(t => t.addEventListener('click', () => {
-    activeTab = t.dataset.tab;
-    render();
+    go(eventPath(selectedEvent, t.dataset.tab === 'uebersicht' ? '' : t.dataset.tab));
   }));
 
   // Group toggle
@@ -1615,14 +1779,6 @@ function bindEvents() {
     render();
   }));
 
-  // Remind
-  const remindBtn = document.getElementById('remindBtn');
-  if (remindBtn) remindBtn.addEventListener('click', () => {
-    const ev = EVENTS.find(e => e.id === selectedEvent);
-    const pending = ev.teachers.filter(t => ev.status[t] !== 'done');
-    if (!pending.length) { toast('Alle Lehrkräfte haben bereits eingetragen!'); return; }
-    toast(`Erinnerung an ${pending.length} Lehrkraft/Lehrkräfte gesendet.`);
-  });
 
   // Generate PDF
   const genPdfBtn = document.getElementById('generatePdfBtn');
@@ -1660,61 +1816,63 @@ function bindEvents() {
 
   // New event
   const newEventBtn = document.getElementById('newEventBtn');
-  if (newEventBtn) newEventBtn.addEventListener('click', () => showNewEventModal());
+  if (newEventBtn) newEventBtn.addEventListener('click', () => go('/admin/neu'));
+
+  bindRolePage();
+  bindNewEventPage();
+  bindTeachersPage();
+  bindSettingsPage();
+  bindReminderPage();
 }
 
-function showRolePicker() {
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay open';
-  modal.innerHTML = `
-    <div class="modal">
-      <h2>Anmelden als…</h2>
-      <p style="font-size:13px;color:var(--fg-muted);margin-bottom:16px">Wählen Sie Ihre Rolle für diese Demo.</p>
-      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px" id="pickAdmin">🔧 Admin / Schulleitung</button>
-      <div style="position:relative;text-align:center;margin:12px 0;color:var(--fg-muted);font-size:12px">
-        <span style="background:var(--bg-card);padding:0 12px;position:relative;z-index:1">oder als Lehrkraft</span>
-        <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)"></div>
-      </div>
-      <div class="picker-grid">
-        ${TEACHER_DATA.map(t => `<button class="btn btn-secondary btn-sm pick-teacher" data-name="${esc(t.name)}"><span class="pt-name">${esc(t.name)}</span><span class="pt-sub">${esc(t.faecher)}</span></button>`).join('')}
-      </div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" id="closePickerBtn">Abbrechen</button>
+function fmtDateTime(iso) {
+  try { return new Date(iso).toLocaleString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }); } catch (e) { return iso; }
+}
+function pageHead(title, sub) {
+  return `
+    <div style="margin-bottom:16px"><button class="btn btn-secondary btn-sm" id="backBtn">← Zurück</button></div>
+    <h2 class="page-title">${title}</h2>
+    ${sub ? `<p class="page-sub">${sub}</p>` : ''}`;
+}
+
+/* ---------- Rollenwahl (eigene Seite) ---------- */
+function renderRolePage() {
+  return `
+    <div class="login-screen">
+      <div class="login-card role-card">
+        <img src="${LOGO_SRC}" alt="JugendMusikSchule">
+        <h2>Anmelden als…</h2>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" id="pickAdmin">🔧 Admin / Schulleitung</button>
+        <div class="divider"><span>oder als Lehrkraft</span></div>
+        <div class="picker-grid">
+          ${TEACHER_LIST.map(t => `<button class="btn btn-secondary btn-sm pick-teacher" data-name="${esc(t.name)}"><span class="pt-name">${esc(t.name)}</span><span class="pt-sub">${esc(t.faecher)}</span></button>`).join('')}
+        </div>
+        ${SETTINGS.passwordEnabled ? `<button class="btn btn-secondary btn-sm" id="logoutBtn" style="align-self:center">Abmelden</button>` : ''}
       </div>
     </div>`;
-  document.body.appendChild(modal);
-
-  modal.querySelector('#pickAdmin').addEventListener('click', () => {
-    currentView = 'admin'; currentRole = 'admin'; selectedEvent = null;
-    modal.remove(); render();
-  });
-  modal.querySelectorAll('.pick-teacher').forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentView = 'teacher'; currentRole = btn.dataset.name; selectedEvent = null;
-      modal.remove(); render();
-    });
-  });
-  modal.querySelector('#closePickerBtn').addEventListener('click', () => modal.remove());
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+}
+function bindRolePage() {
+  const a = document.getElementById('pickAdmin');
+  if (a) a.addEventListener('click', () => go('/admin'));
+  $$('.pick-teacher').forEach(b => b.addEventListener('click', () => go(teacherPath(b.dataset.name))));
 }
 
-function showNewEventModal() {
-  const modal = document.createElement('div');
-  modal.className = 'modal-overlay open';
-  modal.innerHTML = `
-    <div class="modal">
-      <h2>Neue Veranstaltung</h2>
+/* ---------- Neue Veranstaltung (eigene Seite) ---------- */
+function renderNewEventPage() {
+  return `
+    ${pageHead('Neue Veranstaltung')}
+    <div class="entry-section">
       <div class="form-grid">
-        <div class="form-group full"><label>Titel</label><input type="text" id="neTitle" placeholder="z.B. Concertino"></div>
-        <div class="form-group full"><label>Untertitel (optional)</label><input type="text" id="neSubtitle" placeholder="z.B. Die kleine Konzertreihe"></div>
-        <div class="form-group"><label>Datum</label><input type="date" id="neDate"></div>
-        <div class="form-group"><label>Uhrzeit</label><input type="time" id="neTime" value="18:00"></div>
-        <div class="form-group full"><label>Ort</label><input type="text" id="neLocation" placeholder="z.B. Prisma, Freiberg a.N."></div>
-        <div class="form-group"><label>Abgabefrist</label><input type="date" id="neDeadline"></div>
+        <div class="form-group full"><label for="neTitle">Titel *</label><input type="text" id="neTitle" placeholder="z.B. Concertino"></div>
+        <div class="form-group full"><label for="neSubtitle">Untertitel (optional)</label><input type="text" id="neSubtitle" placeholder="z.B. Die kleine Konzertreihe"></div>
+        <div class="form-group"><label for="neDate">Datum</label><input type="date" id="neDate"></div>
+        <div class="form-group"><label for="neTime">Uhrzeit</label><input type="time" id="neTime" value="18:00"></div>
+        <div class="form-group full"><label for="neLocation">Ort</label><input type="text" id="neLocation" placeholder="z.B. Prisma, Freiberg a.N."></div>
+        <div class="form-group"><label for="neDeadline">Abgabefrist</label><input type="date" id="neDeadline"></div>
         <div class="form-group full">
           <label>Lehrkräfte <button type="button" class="link-btn" id="neToggleAll">alle ab-/anwählen</button></label>
           <div class="check-chips">
-            ${TEACHER_DATA.map(t => `<label class="check-chip" title="${esc(t.faecher)}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}" checked> ${esc(t.name)}</label>`).join('')}
+            ${TEACHER_LIST.map(t => `<label class="check-chip" title="${esc(t.faecher)}"><input type="checkbox" class="ne-teacher" value="${esc(t.name)}" checked> ${esc(t.name)}</label>`).join('')}
           </div>
         </div>
         <div class="form-group full">
@@ -1722,53 +1880,271 @@ function showNewEventModal() {
           <div class="img-grid img-grid-sm">
             ${IMAGES.map(i => `<label class="img-pick img-check" title="${esc(i.label)}"><input type="checkbox" class="ne-image" value="${i.id}"><img src="${i.src}" alt="${esc(i.label)}"><span class="img-label">${esc(i.label)}</span></label>`).join('')}
           </div>
+          <span class="form-hint">Das erste gewählte Bild wird das Titelbild im PDF. Weitere Bilder können später in der PDF-Vorschau hochgeladen werden.</span>
         </div>
       </div>
-      <div class="modal-actions">
-        <button class="btn btn-secondary" id="closeNewEventBtn">Abbrechen</button>
-        <button class="btn btn-primary" id="createEventBtn">Anlegen</button>
+      <div class="page-actions">
+        <button class="btn btn-secondary" id="cancelNewEventBtn">Abbrechen</button>
+        <button class="btn btn-primary" id="createEventBtn">Veranstaltung anlegen</button>
       </div>
     </div>`;
-  document.body.appendChild(modal);
-
-  modal.querySelector('#createEventBtn').addEventListener('click', () => {
-    const title = modal.querySelector('#neTitle').value.trim();
-    if (!title) { toast('Bitte Titel eingeben.'); return; }
-    const d = modal.querySelector('#neDate').value;
-    const date = d ? d.split('-').reverse().join('.') : '';
-    const time = modal.querySelector('#neTime').value ? modal.querySelector('#neTime').value + ' Uhr' : '';
-    const dl = modal.querySelector('#neDeadline').value;
-    const deadline = dl ? dl.split('-').reverse().join('.') : '';
-    const teachers = [...modal.querySelectorAll('.ne-teacher:checked')].map(cb => cb.value);
-    const images = [...modal.querySelectorAll('.ne-image:checked')].map(cb => cb.value);
-    const status = {};
-    teachers.forEach(t => status[t] = 'pending');
-    EVENTS.push({
-      id: Date.now(),
-      title,
-      subtitle: modal.querySelector('#neSubtitle').value.trim(),
-      date, time,
-      location: modal.querySelector('#neLocation').value.trim(),
-      deadline,
-      images, pdfImages: images.slice(0, 1),
-      teachers, entries: [], status
-    });
-    modal.remove();
-    toast('Veranstaltung angelegt!');
-    render();
-  });
-  modal.querySelector('#neToggleAll').addEventListener('click', () => {
-    const boxes = [...modal.querySelectorAll('.ne-teacher')];
-    const allOn = boxes.every(b => b.checked);
+}
+function bindNewEventPage() {
+  const create = document.getElementById('createEventBtn');
+  if (!create) return;
+  const toDe = v => v ? v.split('-').reverse().join('.') : '';
+  document.getElementById('cancelNewEventBtn').addEventListener('click', () => go('/admin'));
+  document.getElementById('neToggleAll').addEventListener('click', () => {
+    const boxes = $$('.ne-teacher'); const allOn = boxes.every(b => b.checked);
     boxes.forEach(b => { b.checked = !allOn; });
   });
-  modal.querySelectorAll('.img-check input').forEach(cb => cb.addEventListener('change', () => cb.parentElement.classList.toggle('selected', cb.checked)));
-  modal.querySelector('#closeNewEventBtn').addEventListener('click', () => modal.remove());
-  modal.addEventListener('click', (e) => { if (e.target === modal) modal.remove(); });
+  $$('.img-check input').forEach(cb => cb.addEventListener('change', () => cb.parentElement.classList.toggle('selected', cb.checked)));
+  create.addEventListener('click', () => {
+    const title = document.getElementById('neTitle').value.trim();
+    if (!title) { toast('Bitte Titel eingeben.'); document.getElementById('neTitle').focus(); return; }
+    const teachers = $$('.ne-teacher:checked').map(cb => cb.value);
+    const images = $$('.ne-image:checked').map(cb => cb.value);
+    const t = document.getElementById('neTime').value;
+    const id = Date.now();
+    EVENTS.push({
+      id, title,
+      subtitle: document.getElementById('neSubtitle').value.trim(),
+      date: toDe(document.getElementById('neDate').value),
+      time: t ? t + ' Uhr' : '',
+      location: document.getElementById('neLocation').value.trim(),
+      deadline: toDe(document.getElementById('neDeadline').value),
+      images, pdfImages: images.slice(0, 1),
+      teachers, entries: [], status: Object.fromEntries(teachers.map(n => [n, 'pending'])),
+      reminders: []
+    });
+    persist();
+    toast('Veranstaltung angelegt!');
+    go(eventPath(id), true); // ersetzt "neu" im Verlauf, damit Zurück nicht wieder das leere Formular zeigt
+  });
 }
 
-// Initial render
-render();
+/* ---------- Lehrkräfte verwalten ---------- */
+function renderTeachersPage() {
+  const missing = TEACHER_LIST.filter(t => !t.email).length;
+  return `
+    <h2 class="page-title">Lehrkräfte</h2>
+    <p class="page-sub">${TEACHER_LIST.length} Lehrkräfte${missing ? ` · <span style="color:var(--gold)">${missing} ohne E-Mail</span> (für Erinnerungen nötig)` : ' · alle mit E-Mail'}</p>
+    <div class="entry-section">
+      <h3>Neue Lehrkraft anlegen</h3>
+      <div class="form-grid teacher-add">
+        <div class="form-group"><label for="ntName">Name *</label><input type="text" id="ntName" placeholder="Vorname Nachname"></div>
+        <div class="form-group"><label for="ntEmail">E-Mail</label><input type="email" id="ntEmail" placeholder="name@beispiel.de"></div>
+        <div class="form-group full"><label for="ntFaecher">Fächer</label><input type="text" id="ntFaecher" placeholder="z.B. Klavier, Gesang"></div>
+      </div>
+      <div class="page-actions"><button class="btn btn-primary" id="addTeacherBtn">＋ Lehrkraft anlegen</button></div>
+    </div>
+    <div class="teacher-table" role="table" aria-label="Lehrkräfte">
+      <div class="tt-row tt-head" role="row"><span>Name</span><span>Fächer</span><span>E-Mail</span><span></span></div>
+      ${TEACHER_LIST.map((t, i) => `
+        <div class="tt-row" role="row" data-idx="${i}">
+          <input type="text" class="tt-name" value="${esc(t.name)}" aria-label="Name">
+          <input type="text" class="tt-faecher" value="${esc(t.faecher)}" aria-label="Fächer" placeholder="Fächer">
+          <input type="email" class="tt-email${t.email ? '' : ' missing'}" value="${esc(t.email)}" aria-label="E-Mail von ${esc(t.name)}" placeholder="E-Mail fehlt">
+          <button class="btn btn-icon btn-sm tt-del" title="${esc(t.name)} löschen" aria-label="${esc(t.name)} löschen">🗑</button>
+        </div>`).join('')}
+    </div>
+    <p class="form-hint" style="margin-top:8px">Änderungen werden beim Verlassen eines Feldes gespeichert.</p>`;
+}
+function renameTeacher(oldName, newName) {
+  EVENTS.forEach(ev => {
+    ev.teachers = ev.teachers.map(n => n === oldName ? newName : n);
+    if (oldName in ev.status) { ev.status[newName] = ev.status[oldName]; delete ev.status[oldName]; }
+    ev.entries.forEach(e => { if (e.teacher === oldName) e.teacher = newName; });
+  });
+}
+function bindTeachersPage() {
+  const addBtn = document.getElementById('addTeacherBtn');
+  if (!addBtn) return;
+  addBtn.addEventListener('click', () => {
+    const name = document.getElementById('ntName').value.trim();
+    const email = document.getElementById('ntEmail').value.trim();
+    const faecher = document.getElementById('ntFaecher').value.trim();
+    if (!name) { toast('Bitte Namen eingeben.'); return; }
+    if (teacherByName(name)) { toast('Diese Lehrkraft gibt es schon.'); return; }
+    if (email && !EMAIL_RE.test(email)) { toast('E-Mail-Adresse ist ungültig.'); return; }
+    TEACHER_LIST.push({ name, faecher, email });
+    TEACHER_LIST.sort((a, b) => a.name.split(' ').pop().localeCompare(b.name.split(' ').pop(), 'de'));
+    toast(`${name} angelegt`);
+    render();
+  });
+  $$('.tt-row[data-idx]').forEach(row => {
+    const t = TEACHER_LIST[+row.dataset.idx];
+    const nameI = row.querySelector('.tt-name'), fI = row.querySelector('.tt-faecher'), eI = row.querySelector('.tt-email');
+    nameI.addEventListener('change', () => {
+      const n = nameI.value.trim();
+      if (!n || (n !== t.name && teacherByName(n))) { toast(!n ? 'Name darf nicht leer sein.' : 'Name existiert bereits.'); nameI.value = t.name; return; }
+      renameTeacher(t.name, n); t.name = n; persist(); toast('Gespeichert');
+    });
+    fI.addEventListener('change', () => { t.faecher = fI.value.trim(); persist(); toast('Gespeichert'); });
+    eI.addEventListener('change', () => {
+      const v = eI.value.trim();
+      if (v && !EMAIL_RE.test(v)) { toast('E-Mail-Adresse ist ungültig.'); eI.focus(); return; }
+      t.email = v; eI.classList.toggle('missing', !v); persist(); toast('Gespeichert');
+    });
+    row.querySelector('.tt-del').addEventListener('click', () => {
+      const withEntries = EVENTS.filter(ev => ev.entries.some(e => e.teacher === t.name)).length;
+      const msg = `${t.name} wirklich löschen?` + (withEntries ? `\n\nBereits eingetragene Beiträge (${withEntries} Veranstaltung/en) bleiben im Programm erhalten.` : '');
+      if (!confirm(msg)) return;
+      EVENTS.forEach(ev => {
+        if (!ev.entries.some(e => e.teacher === t.name)) {
+          ev.teachers = ev.teachers.filter(n => n !== t.name);
+          delete ev.status[t.name];
+        }
+      });
+      TEACHER_LIST = TEACHER_LIST.filter(x => x !== t);
+      toast(`${t.name} gelöscht`);
+      render();
+    });
+  });
+}
+
+/* ---------- Einstellungen: Kennwort ---------- */
+function renderSettingsPage() {
+  return `
+    <h2 class="page-title">Einstellungen</h2>
+    <div class="entry-section">
+      <h3>Kennwortschutz</h3>
+      <label class="switch-row">
+        <input type="checkbox" id="pwEnabled" ${SETTINGS.passwordEnabled ? 'checked' : ''}>
+        <span class="switch" aria-hidden="true"></span>
+        <span><strong>${SETTINGS.passwordEnabled ? 'Aktiv' : 'Deaktiviert'}</strong> – ${SETTINGS.passwordEnabled ? 'beim Öffnen des Tools wird ein Kennwort abgefragt.' : 'das Tool öffnet sich ohne Kennwort direkt mit der Rollenwahl.'}</span>
+      </label>
+      <div class="form-grid" style="margin-top:16px">
+        <div class="form-group"><label for="pwNew">Neues Kennwort</label><input type="password" id="pwNew" autocomplete="new-password" placeholder="mind. 6 Zeichen"></div>
+        <div class="form-group"><label for="pwRepeat">Wiederholen</label><input type="password" id="pwRepeat" autocomplete="new-password"></div>
+      </div>
+      <div class="page-actions"><button class="btn btn-primary" id="pwSaveBtn">Kennwort ändern</button></div>
+      <p class="form-hint" style="margin-top:12px">⚠️ Demo: Das Kennwort wird nur im Browser geprüft und gespeichert. Für echten Schutz braucht es eine Anmeldung auf dem Server.</p>
+    </div>
+    <div class="entry-section">
+      <h3>Daten</h3>
+      <p class="form-hint" style="margin-bottom:12px">Veranstaltungen, Lehrkräfte und Einstellungen werden derzeit nur in diesem Browser gespeichert.</p>
+      <button class="btn btn-secondary" id="resetDataBtn">Demo-Daten zurücksetzen</button>
+    </div>`;
+}
+function bindSettingsPage() {
+  const tgl = document.getElementById('pwEnabled');
+  if (!tgl) return;
+  tgl.addEventListener('change', () => {
+    if (!tgl.checked && !confirm('Kennwortschutz wirklich deaktivieren? Dann kann jede Person mit dem Link das Tool öffnen.')) { tgl.checked = true; return; }
+    SETTINGS.passwordEnabled = tgl.checked;
+    if (tgl.checked) setAuthed(true); // aktuelle Sitzung bleibt angemeldet
+    toast(tgl.checked ? 'Kennwortschutz aktiviert' : 'Kennwortschutz deaktiviert');
+    render();
+  });
+  document.getElementById('pwSaveBtn').addEventListener('click', () => {
+    const a = document.getElementById('pwNew').value, b = document.getElementById('pwRepeat').value;
+    if (a.length < 6) { toast('Mindestens 6 Zeichen.'); return; }
+    if (a !== b) { toast('Kennwörter stimmen nicht überein.'); return; }
+    SETTINGS.password = a; SETTINGS.passwordEnabled = true; setAuthed(true);
+    toast('Kennwort geändert');
+    render();
+  });
+  document.getElementById('resetDataBtn').addEventListener('click', () => {
+    if (!confirm('Alle Änderungen (Veranstaltungen, Lehrkräfte, E-Mails, Kennwort, gelerntes Repertoire) in diesem Browser verwerfen?')) return;
+    try { Object.values(STORE).concat(['jms-repertoire-v1']).forEach(k => localStorage.removeItem(k)); sessionStorage.removeItem('jms-auth'); } catch (e) {}
+    location.hash = '#/login';
+    location.reload();
+  });
+}
+
+/* ---------- Erinnerung per E-Mail ---------- */
+function toolLink() { return location.href.split('#')[0]; }
+function reminderDefaults(ev) {
+  return {
+    subject: `Erinnerung: Programmbeiträge für „${ev.title}“${ev.deadline ? ' bis ' + ev.deadline : ''}`,
+    body: `Liebe Kolleginnen und Kollegen,
+
+für unsere Veranstaltung „${ev.title}“${ev.date ? ' am ' + ev.date : ''}${ev.time ? ' um ' + ev.time : ''}${ev.location ? ' (' + ev.location + ')' : ''} fehlen noch Ihre Programmbeiträge.
+
+Bitte tragen Sie Ihre Stücke${ev.deadline ? ' bis zum ' + ev.deadline : ''} im Programmheft-Tool ein:
+${toolLink()}
+
+Falls Sie diesmal keinen Beitrag haben, klicken Sie dort bitte auf „Ich habe keinen Beitrag“.
+
+Vielen Dank!
+Jugendmusikschule Freiberg a.N. · Pleidelsheim e.V.`
+  };
+}
+function renderReminderPage() {
+  const ev = EVENTS.find(e => e.id === selectedEvent);
+  const pending = ev.teachers.filter(t => ev.status[t] !== 'done');
+  const d = reminderDefaults(ev);
+  const rows = pending.map(n => {
+    const t = teacherByName(n); const email = t && t.email;
+    return `<label class="rcpt${email ? '' : ' no-mail'}">
+        <input type="checkbox" class="rcpt-cb" value="${esc(n)}" ${email ? 'checked' : 'disabled'}>
+        <span class="rcpt-name">${esc(n)}</span>
+        <span class="rcpt-mail">${email ? esc(email) : 'keine E-Mail hinterlegt'}</span>
+        ${email ? `<a class="link-btn rcpt-single" href="#" data-name="${esc(n)}">einzeln senden</a>` : ''}
+      </label>`;
+  }).join('');
+  const noMail = pending.filter(n => !(teacherByName(n) || {}).email).length;
+  return `
+    ${pageHead(`Erinnerung senden`, `${esc(ev.title)} · Abgabe ${esc(ev.deadline || '–')}`)}
+    ${!pending.length ? `<div class="entry-section"><p>✓ Alle Lehrkräfte haben bereits eingetragen – keine Erinnerung nötig.</p></div>` : `
+    <div class="entry-section">
+      <h3>Empfänger (${pending.length} noch offen)</h3>
+      ${noMail ? `<p class="warn-box">${noMail} Lehrkraft/Lehrkräfte ohne E-Mail. <a href="#/admin/lehrkraefte">E-Mail-Adressen ergänzen →</a></p>` : ''}
+      <div class="rcpt-list">${rows}</div>
+    </div>
+    <div class="entry-section">
+      <h3>Nachricht</h3>
+      <div class="form-grid">
+        <div class="form-group full"><label for="rmSubject">Betreff</label><input type="text" id="rmSubject" value="${esc(d.subject)}"></div>
+        <div class="form-group full"><label for="rmBody">Text</label><textarea id="rmBody" rows="13">${esc(d.body)}</textarea></div>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-secondary" id="rmCopyBtn">Adressen kopieren</button>
+        <button class="btn btn-primary" id="rmSendBtn">📧 E-Mail-Programm öffnen</button>
+      </div>
+      <p class="form-hint" style="margin-top:10px">Öffnet Ihr E-Mail-Programm mit allen gewählten Lehrkräften in <strong>BCC</strong> (die Adressen sehen sich gegenseitig nicht). Sie prüfen die Mail und klicken selbst auf Senden.</p>
+    </div>`}
+    ${ev.reminders && ev.reminders.length ? `<div class="entry-section"><h3>Bisherige Erinnerungen</h3>${ev.reminders.slice().reverse().map(r => `<div class="form-hint">📧 ${fmtDateTime(r.at)} an ${r.to.map(esc).join(', ')}</div>`).join('')}</div>` : ''}`;
+}
+function bindReminderPage() {
+  const send = document.getElementById('rmSendBtn');
+  const copy = document.getElementById('rmCopyBtn');
+  if (!send && !copy) return;
+  const ev = EVENTS.find(e => e.id === selectedEvent);
+  const chosen = () => $$('.rcpt-cb:checked').map(cb => cb.value);
+  const mailsOf = names => names.map(n => (teacherByName(n) || {}).email).filter(Boolean);
+  const log = names => { ev.reminders = [...(ev.reminders || []), { at: new Date().toISOString(), to: names }]; persist(); };
+  const open = (to, bcc, subject, body) => {
+    const q = [bcc.length ? 'bcc=' + bcc.map(encodeURIComponent).join(',') : '', 'subject=' + encodeURIComponent(subject), 'body=' + encodeURIComponent(body)].filter(Boolean).join('&');
+    window.location.href = `mailto:${to ? encodeURIComponent(to) : ''}?${q}`;
+  };
+  send.addEventListener('click', () => {
+    const names = chosen(); const mails = mailsOf(names);
+    if (!mails.length) { toast('Keine Empfänger mit E-Mail gewählt.'); return; }
+    open('', mails, document.getElementById('rmSubject').value, document.getElementById('rmBody').value);
+    log(names);
+    toast(`E-Mail-Programm geöffnet (${mails.length} Empfänger)`);
+    setTimeout(render, 800);
+  });
+  copy.addEventListener('click', async () => {
+    const mails = mailsOf(chosen()).join('; ');
+    if (!mails) { toast('Keine Adressen gewählt.'); return; }
+    try { await navigator.clipboard.writeText(mails); toast('Adressen kopiert'); } catch (e) { prompt('Adressen kopieren:', mails); }
+  });
+  $$('.rcpt-single').forEach(a => a.addEventListener('click', e => {
+    e.preventDefault();
+    const n = a.dataset.name; const t = teacherByName(n);
+    const body = document.getElementById('rmBody').value.replace(/^Liebe Kolleginnen und Kollegen,/, `Hallo ${n},`);
+    open(t.email, [], document.getElementById('rmSubject').value, body);
+    log([n]);
+    setTimeout(render, 800);
+  }));
+}
+
+// Start: URL auswerten; Browser vor/zurück löst hashchange aus
+window.addEventListener('hashchange', handleRoute);
+handleRoute();
 </script>
 </body>
 </html>
