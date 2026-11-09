@@ -10,6 +10,7 @@ $TO      = 'engincelenk@web.de';          // where messages go
 $FROM    = 'kontakt@immofuchs.info';      // an existing IONOS mailbox on your domain
 $ORIGINS = ['https://ec.immofuchs.info']; // sites allowed to use this form
 $LIMIT   = 5;                             // max messages per IP per hour
+$CONFIRM = ['freelance'];                 // form sources whose sender gets a confirmation email
 // ---------------------------------------------------------------
 
 header('Content-Type: application/json; charset=utf-8');
@@ -33,6 +34,7 @@ $company = $clean($in['company'] ?? '', 160);
 $message = $clean($in['message'] ?? '', 5000);
 $source  = $clean($in['source'] ?? 'portfolio', 40);
 $subject = $clean($in['_subject'] ?? 'Neue Nachricht über ec.immofuchs.info', 160);
+$lang    = ($in['lang'] ?? 'de') === 'en' ? 'en' : 'de';
 
 // Honeypot: bots fill hidden fields. Pretend success.
 if (!empty($in['_honey'])) { echo json_encode(['success' => 'true']); exit; }
@@ -57,6 +59,25 @@ $headers = [
   'Content-Transfer-Encoding: 8bit'
 ];
 $ok = mail($TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers), '-f' . $FROM);
+
+/* Confirmation to the sender. Fixed text only, no submitted content is echoed back,
+   so the form cannot be abused to send arbitrary text to third parties. Only for
+   requests coming from the site itself (Origin header present and allowed). */
+if ($ok && in_array($source, $CONFIRM, true) && in_array($origin, $ORIGINS, true)) {
+  $c = $lang === 'en'
+    ? ['Your request via ec.immofuchs.info',
+       "Hello,\n\nthank you for your request. Your message has reached me and I will get back to you shortly.\n\nKind regards\nEngin Celenk\nhttps://ec.immofuchs.info/freelance.html\n\nThis is an automatic confirmation. If you did not send a request, please ignore this email."]
+    : ['Ihre Anfrage über ec.immofuchs.info',
+       "Guten Tag,\n\nvielen Dank für Ihre Anfrage. Ihre Nachricht ist bei mir angekommen, ich melde mich zeitnah bei Ihnen.\n\nViele Grüße\nEngin Celenk\nhttps://ec.immofuchs.info/freelance.html\n\nDies ist eine automatische Bestätigung. Falls Sie keine Anfrage gesendet haben, ignorieren Sie diese E-Mail bitte."];
+  $cHeaders = [
+    'From: Engin Celenk <' . $FROM . '>',
+    'Auto-Submitted: auto-replied',
+    'MIME-Version: 1.0',
+    'Content-Type: text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding: 8bit'
+  ];
+  @mail($email, '=?UTF-8?B?' . base64_encode($c[0]) . '?=', $c[1], implode("\r\n", $cHeaders), '-f' . $FROM);
+}
 
 if ($ok) { echo json_encode(['success' => 'true']); }
 else { http_response_code(500); echo json_encode(['success' => 'false', 'message' => 'Mail could not be sent']); }

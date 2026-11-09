@@ -3,18 +3,19 @@ import { Check, Loader2, Send } from "lucide-react";
 import { contactForm } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
-/* Contact form without a visible address. Messages are relayed by FormSubmit
-   to the inbox in data/profile.js (contactForm). No address in the page text. */
+/* Contact form without a visible address. Messages go to the IONOS script set in
+   data/profile.js (contactForm.endpoint), FormSubmit is only the fallback. Freelance
+   requests also get an automatic confirmation email from that script. */
 const endpoint = () => contactForm.endpoint || `https://formsubmit.co/ajax/${contactForm.alias || [contactForm.user, contactForm.domain].join("@")}`;
 
 const T = {
   en: { name: "Name", email: "Your email", company: "Company (optional)", message: "Message", send: "Send message", sending: "Sending…",
-    ok: "Thank you. Your message has been sent, I will get back to you soon.", err: "Sending failed. Please try again later or write via LinkedIn.",
+    ok: "Thank you. Your message has been sent, I will get back to you soon.", confirmSent: "You will receive a confirmation by email.", err: "Sending failed. Please try again later or write via LinkedIn.",
     activate: "The contact form is being set up right now. Please try again in a few hours or write via LinkedIn.",
     consent: "I agree that my details are used to answer my request.", privacy: "Privacy", required: "Please fill in name, email and message and confirm the consent.",
     subject: "New message via ec.immofuchs.info" },
   de: { name: "Name", email: "Ihre E-Mail", company: "Unternehmen (optional)", message: "Nachricht", send: "Nachricht senden", sending: "Wird gesendet…",
-    ok: "Vielen Dank. Ihre Nachricht ist angekommen, ich melde mich zeitnah.", err: "Senden fehlgeschlagen. Bitte später erneut versuchen oder über LinkedIn schreiben.",
+    ok: "Vielen Dank. Ihre Nachricht ist angekommen, ich melde mich zeitnah.", confirmSent: "Sie erhalten eine Bestätigung per E-Mail.", err: "Senden fehlgeschlagen. Bitte später erneut versuchen oder über LinkedIn schreiben.",
     activate: "Das Kontaktformular wird gerade eingerichtet. Bitte in einigen Stunden erneut versuchen oder über LinkedIn schreiben.",
     consent: "Ich bin einverstanden, dass meine Angaben zur Beantwortung meiner Anfrage verwendet werden.", privacy: "Datenschutz", required: "Bitte Name, E-Mail und Nachricht ausfüllen und die Einwilligung bestätigen.",
     subject: "Neue Nachricht über ec.immofuchs.info" }
@@ -47,7 +48,7 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
   };
 
   const field = "mt-2 min-h-[48px] w-full rounded-xl border border-white/10 bg-ink px-4 text-[16px] text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none";
-  if (state === "ok") return <p className="flex items-start gap-3 rounded-xl border border-signal/40 bg-signal/10 p-5" role="status"><Check size={20} className="mt-0.5 flex-none text-signal" />{t.ok}</p>;
+  if (state === "ok") return <p className="flex items-start gap-3 rounded-xl border border-signal/40 bg-signal/10 p-5" role="status"><Check size={20} className="mt-0.5 flex-none text-signal" />{t.ok}{source === "freelance" && contactForm.endpoint ? ` ${t.confirmSent}` : ""}</p>;
 
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
