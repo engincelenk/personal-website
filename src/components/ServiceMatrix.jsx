@@ -26,6 +26,7 @@ export default function ServiceMatrix({ T }) {
               <span className={`grid h-11 w-11 flex-none place-items-center rounded-xl ${sel === p.id ? "bg-signal text-ink" : "bg-white/[0.06] text-signal"}`}><Icon name={p.icon} size={20} /></span>
               <span className="min-w-0">
                 <span className="block text-lg font-semibold leading-tight tracking-tight">{p.title}</span>
+                {p.subtitle && <span className="mt-0.5 block text-xs text-mist">{p.subtitle}</span>}
                 <span className="mt-1 block text-sm text-mist">{p.claim}</span>
               </span>
             </button>

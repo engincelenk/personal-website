@@ -2,14 +2,14 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight, Download } from "lucide-react";
 import NetworkCanvas from "./NetworkCanvas.jsx";
 import Logo from "./Logo.jsx";
-import { hero, person, focuses, logoStrip } from "../data/profile.js";
+import { hero, person, cv as rawCv, logoStrip } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
-export default function Hero({ guest, focus }) {
+export default function Hero({ guest }) {
   const reduce = useReducedMotion();
   const { t, L } = useLang();
   const h = L(hero), p = L(person);
-  const cv = L((focuses.find(f => f.id === focus) || focuses[0]).file);
+  const cv = L(rawCv.file);
   const rise = i => reduce ? {} : { initial: { opacity: 0, y: 22 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8, delay: 0.1 + i * 0.1, ease: [0.2, 0.8, 0.2, 1] } };
 
   return (

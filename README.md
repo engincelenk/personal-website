@@ -18,16 +18,16 @@ German and English. Switch in the header or with `?lang=de` / `?lang=en`. Conten
 - `src/data/knowledge.js` – answers for “Ask my portfolio”, skill terms for “Challenge me”
 
 ## Tailored CV PDFs
-`cv.html?focus=security|architecture|innovation&lang=de|en` is the printable CV. After content changes regenerate the PDFs and the social image:
+`cv.html?lang=de|en` is the printable CV (one unified CV per language). After content changes regenerate the PDFs and the social image:
 
 ```bash
 npm run build && npm run cv:pdf
 ```
 
-Six PDFs (three focuses, German and English) land in `public/cv/` and must be committed.
+Two PDFs (German and English) land in `public/cv/` and must be committed.
 
 ## Personal application links
-Open `/link.html` (unlisted, noindex). Parameters: `company`, `to`, `role`, `focus` (`security` | `architecture` | `innovation`), `lang` (`de` | `en`). German keys `firma`, `an`, `rolle`, `fokus` still work.
+Open `/link.html` (unlisted, noindex). Parameters: `company`, `to`, `role`, `focus` (`architecture` | `security` | `management` | `ai`), `lang` (`de` | `en`). German keys `firma`, `an`, `rolle`, `fokus` still work.
 
 ## Local development
 ```bash

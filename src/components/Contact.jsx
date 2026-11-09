@@ -1,15 +1,12 @@
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Download, ExternalLink, Linkedin } from "lucide-react";
 import SectionHead from "./SectionHead.jsx";
 import ContactForm from "./ContactForm.jsx";
-import { person, focuses as rawFocuses, domains as rawDomains } from "../data/profile.js";
+import { person, cv as rawCv, domains as rawDomains } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
-export default function Contact({ focus, setFocus }) {
+export default function Contact() {
   const { t, L, lang } = useLang();
-  const reduce = useReducedMotion();
-  const focuses = L(rawFocuses), domains = L(rawDomains);
-  const f = focuses.find(x => x.id === focus) || focuses[0];
+  const cv = L(rawCv), domains = L(rawDomains);
 
   return (
     <section id="contact" aria-labelledby="contact-title" className="section">
@@ -28,24 +25,15 @@ export default function Contact({ focus, setFocus }) {
           <div className="panel min-w-0 self-start p-5 sm:p-7">
             <p className="label text-signal">{t("tailored")}</p>
             <h3 className="mt-2 text-2xl font-semibold tracking-tight">{t("tailoredTitle")}</h3>
-            <div role="radiogroup" aria-label={t("cvFocus")} className="mt-6 grid grid-cols-1 gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-              {focuses.map(x => (
-                <button key={x.id} type="button" role="radio" aria-checked={x.id === f.id} onClick={() => setFocus(x.id)}
-                  className={`min-h-[48px] rounded-xl border px-4 text-sm font-medium transition-colors ${x.id === f.id ? "border-signal bg-signal/10 text-snow" : "border-white/10 text-mist hover:border-white/25 hover:text-snow"}`}>{x.label}</button>
-              ))}
+            <div className="mt-5 rounded-xl border border-white/[0.07] bg-ink p-5">
+              <p className="font-semibold leading-snug">{cv.headline}</p>
+              <ul className="mt-4 flex flex-wrap gap-2">
+                {domains.map(d => <li key={d.id} className={`rounded-full px-3 py-1 font-mono text-[11px] uppercase tracking-wider ${d.id === "ai" ? "bg-signal/15 text-signal" : "bg-white/[0.05] text-mist"}`}>{d.title}</li>)}
+              </ul>
             </div>
-            <AnimatePresence mode="wait">
-              <motion.div key={f.id + lang} initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0 }} transition={{ duration: 0.25 }}
-                className="mt-6 rounded-xl border border-white/[0.07] bg-ink p-5">
-                <p className="font-semibold leading-snug">{f.headline}</p>
-                <ol className="mt-4 flex flex-wrap gap-2">
-                  {f.domains.map((d, i) => <li key={d} className="rounded-full bg-white/[0.05] px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-mist"><span className="text-signal">{i + 1}</span> {domains.find(x => x.id === d).title}</li>)}
-                </ol>
-              </motion.div>
-            </AnimatePresence>
             <div className="mt-6 flex flex-wrap gap-2">
-              <a className="btn-primary" href={f.file} download><Download size={16} />{t("downloadPdf")}</a>
-              <a className="btn-ghost" href={`/cv.html?focus=${f.id}&lang=${lang}`} target="_blank" rel="noopener"><ExternalLink size={16} />{t("webVersion")}</a>
+              <a className="btn-primary" href={cv.file} download><Download size={16} />{t("downloadPdf")}</a>
+              <a className="btn-ghost" href={`/cv.html?lang=${lang}`} target="_blank" rel="noopener"><ExternalLink size={16} />{t("webVersion")}</a>
             </div>
           </div>
         </div>
