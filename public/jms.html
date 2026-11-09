@@ -632,7 +632,17 @@ a.btn { text-decoration: none; }
 /* ---- Lehrkräfte-Tabelle ---- */
 .teacher-table { background: var(--bg-card); box-shadow: var(--shadow); border-radius: var(--radius); }
 .tt-row { display: grid; grid-template-columns: 1.2fr 1.4fr 1.4fr auto; gap: 8px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border); }
-.tt-row:last-child { border-bottom: none; }
+.tt-group { border-bottom: 1px solid var(--border); }
+.tt-group:last-child { border-bottom: none; }
+.tt-group .tt-row { border-bottom: none; }
+.tt-entries, .tt-noentries { padding: 0 12px 8px; font-size: 13px; }
+.tt-noentries { color: var(--fg-muted); }
+.tt-entries summary { cursor: pointer; color: var(--accent); font-weight: 600; padding: 4px 0; }
+.tt-entries ul { list-style: none; margin: 4px 0 0; padding: 0; }
+.tt-entries li { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px dashed var(--border); }
+.tte-text { min-width: 0; overflow-wrap: anywhere; }
+.tte-meta { color: var(--fg-muted); font-size: 12px; }
+.tte-actions { display: flex; gap: 4px; flex-shrink: 0; }
 .tt-head { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--fg-muted); background: var(--bg); }
 .tt-row input { width: 100%; min-width: 0; padding: 6px 8px; border: 1px solid transparent; background: transparent; color: var(--fg); border-radius: var(--radius); }
 .tt-row input:hover { border-color: var(--border); }
@@ -1249,7 +1259,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 let currentView = 'login';   // login | role | admin | teacher
 let currentRole = null;      // 'admin' oder Name der Lehrkraft
 let adminPage = 'events';    // events | event | newEvent | editEvent | entry | teachers | settings | reminder
-let editEntryId = null;      // Beitrag, der gerade bearbeitet wird (null = neuer Beitrag)
+let entryReturn = null;      // Rücksprung nach dem Bearbeiten eines Beitrags (z.B. zur Lehrkräfte-Seite)
+let editEntryId = null;     // Beitrag, der gerade bearbeitet wird (null = neuer Beitrag)
 let selectedEvent = null;
 let activeTab = 'uebersicht';
 
@@ -1470,6 +1481,7 @@ function teacherPath(name, id) { return `/l/${encodeURIComponent(name)}${id ? '/
 function handleRoute() {
   const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(x => { try { return decodeURIComponent(x); } catch (e) { return x; } });
   const top = p[0] || 'login';
+  const prevAdminPage = adminPage;
   selectedEvent = null; activeTab = 'uebersicht'; adminPage = 'events'; editEntryId = null;
 
   if (top === 'login') {
@@ -1500,6 +1512,8 @@ function handleRoute() {
       else if (p[3] === 'bearbeiten') adminPage = 'editEvent';
       else if (p[3] === 'beitrag') {
         adminPage = 'entry';
+        if (prevAdminPage === 'teachers') entryReturn = '/admin/lehrkraefte';
+        else if (prevAdminPage !== 'entry') entryReturn = null;
         if (p[4] && p[4] !== 'neu') {
           if (!ev.entries.some(e => String(e.id) === p[4])) return go(eventPath(ev.id, 'programm'), true);
           editEntryId = p[4];
@@ -1550,7 +1564,7 @@ function bindTheme() {
 
 function parentPath() {
   if (currentView === 'admin') {
-    if (adminPage === 'entry') return eventPath(selectedEvent, 'programm');
+    if (adminPage === 'entry') return entryReturn || eventPath(selectedEvent, 'programm');
     return ['reminder', 'editEvent'].includes(adminPage) ? eventPath(selectedEvent) : '/admin';
   }
   if (currentView === 'teacher') return editEntryId ? teacherPath(currentRole, selectedEvent) : teacherPath(currentRole);
@@ -2650,7 +2664,7 @@ function renderEntryPage() {
 function bindEntryPage() {
   const save = document.getElementById('adminSaveEntryBtn');
   if (!save) return;
-  const back = () => go(eventPath(selectedEvent, 'programm'), true);
+  const back = () => go(entryReturn || eventPath(selectedEvent, 'programm'), true);
   document.getElementById('adminCancelEntryBtn').addEventListener('click', () => go(parentPath()));
   save.addEventListener('click', () => {
     const ev = EVENTS.find(e => e.id === selectedEvent); if (!ev) return;
@@ -2836,15 +2850,37 @@ function renderTeachersPage() {
     <div class="teacher-table" role="table" aria-label="Lehrkräfte">
       <div class="tt-row tt-head" role="row"><span>Name</span><span>Fächer</span><span>E-Mail</span><span></span></div>
       ${TEACHER_LIST.map((t, i) => `
+        <div class="tt-group">
         <div class="tt-row" role="row" data-idx="${i}">
           <input type="text" class="tt-name" value="${esc(t.name)}" aria-label="Name">
           <input type="text" class="tt-faecher" value="${esc(t.faecher)}" aria-label="Fächer" placeholder="Fächer">
           <input type="email" class="tt-email${t.email ? '' : ' missing'}" value="${esc(t.email)}" aria-label="E-Mail von ${esc(t.name)}" placeholder="E-Mail fehlt">
           <button class="btn btn-icon btn-sm tt-del" title="${esc(t.name)} löschen" aria-label="${esc(t.name)} löschen">🗑</button>
+        </div>
+        ${teacherEntriesHtml(t)}
         </div>`).join('')}
     </div>
     <p class="form-hint" style="margin-top:8px">Änderungen werden beim Verlassen eines Feldes gespeichert.</p>`;
 }
+// Beiträge einer Lehrkraft über alle Veranstaltungen – ausklappbar, mit Bearbeiten/Löschen
+function teacherEntriesHtml(t) {
+  const items = [];
+  EVENTS.forEach(ev => ev.entries.filter(e => e.teacher === t.name).forEach(e => items.push({ ev, e })));
+  if (!items.length) return '<div class="tt-noentries">Keine Beiträge</div>';
+  return `<details class="tt-entries" data-teacher="${esc(t.name)}"${openTeacherEntries.has(t.name) ? ' open' : ''}>
+    <summary>🎼 ${items.length} Beitrag${items.length === 1 ? '' : 'e'}</summary>
+    <ul>${items.map(({ ev, e }) => {
+      const perf = (e.performers || []).map(p => p.name + (p.instrument ? ` (${p.instrument})` : '')).join(', ');
+      return `<li>
+        <div class="tte-text"><strong>${esc(e.composer || '—')}</strong> — <em>${esc(e.werk)}</em>
+          <div class="tte-meta">${esc(ev.title)}${perf ? ' · ' + esc(perf) : ''}</div></div>
+        <div class="tte-actions">
+          <a class="btn btn-icon btn-sm" href="#${eventPath(ev.id, 'beitrag/' + e.id)}" title="Bearbeiten" aria-label="Beitrag bearbeiten">✎</a>
+          <button class="btn btn-icon btn-sm tte-del" data-ev="${ev.id}" data-id="${e.id}" title="Löschen" aria-label="Beitrag löschen">🗑</button>
+        </div></li>`;
+    }).join('')}</ul></details>`;
+}
+const openTeacherEntries = new Set();
 function renameTeacher(oldName, newName) {
   EVENTS.forEach(ev => {
     ev.teachers = ev.teachers.map(n => n === oldName ? newName : n);
@@ -2867,6 +2903,17 @@ function bindTeachersPage() {
     toast(`${name} angelegt`);
     render();
   });
+  $$('.tt-entries').forEach(d => d.addEventListener('toggle', () => {
+    d.open ? openTeacherEntries.add(d.dataset.teacher) : openTeacherEntries.delete(d.dataset.teacher);
+  }));
+  $$('.tte-del').forEach(b => b.addEventListener('click', () => {
+    const ev = EVENTS.find(x => String(x.id) === b.dataset.ev); if (!ev) return;
+    const e = ev.entries.find(x => String(x.id) === b.dataset.id); if (!e) return;
+    if (!confirm(`„${e.werk}“ (${e.teacher}) wirklich löschen?`)) return;
+    ev.entries = ev.entries.filter(x => x !== e);
+    toast('Beitrag gelöscht');
+    render();
+  }));
   $$('.tt-row[data-idx]').forEach(row => {
     const t = TEACHER_LIST[+row.dataset.idx];
     const nameI = row.querySelector('.tt-name'), fI = row.querySelector('.tt-faecher'), eI = row.querySelector('.tt-email');
