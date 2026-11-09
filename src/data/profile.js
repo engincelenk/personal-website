@@ -9,8 +9,7 @@ export const person = {
   initials: "EC",
   roles: [{ en: "M.Sc. Computer Science", de: "M.Sc. Informatik" }, "Cyber Security Engineer", "IT Architect"],
   location: { en: "Stuttgart region, Germany", de: "Region Stuttgart" },
-  email: "engincelenk@web.de",
-  phone: ["+49", "163", "685", "4373"], // shown only after a click
+  // Contact form target (FormSubmit). After activation, put the random alias from FormSubmit into `alias` to hide the address completely.
   linkedin: "https://de.linkedin.com/in/engin-celenk",
   site: "https://ec.immofuchs.info",
   careerStart: "2012-03",
@@ -20,6 +19,8 @@ export const person = {
     { name: { en: "English", de: "Englisch" }, level: { en: "Fluent · daily working language", de: "Fließend · tägliche Arbeitssprache" } }
   ]
 };
+
+export const contactForm = { user: "engincelenk", domain: "web.de", alias: "" };
 
 export const hero = {
   title: [{ en: "I connect technology,", de: "Ich verbinde Technologie," }, { en: "security & business.", de: "Security & Business." }],
@@ -63,21 +64,24 @@ export const career = [
   { id: "bosch-arch", from: "2019-05", to: "2021-11", logo: "bosch", place: "Stuttgart",
     short: { en: "Lead Solution Architect", de: "Lead Solution Architect" },
     role: { en: "IT (Senior) Solution (Lead) Architect · Digital Business & CX", de: "IT (Senior) Solution (Lead) Architect · Digital Business & CX" }, org: "Robert Bosch GmbH · Central IT",
-    points: [{ en: "Lead architect for customer-facing digital platforms", de: "Lead-Architekt für kundennahe digitale Plattformen" }],
+    points: [{ en: "Lead architect for customer-facing digital platforms", de: "Lead-Architekt für kundennahe digitale Plattformen" }, { en: "Microservice, cloud and SaaS architectures", de: "Microservice-, Cloud- und SaaS-Architekturen" }],
     projects: ["Bosch Smart Home Website", "ATMO E-Commerce", "MAM / Sharedien", "Audit SaaS", "eLAKE"], domains: ["architecture"] },
   { id: "bosch-logistics", from: "2021-07", to: "2023-12", logo: "bosch", place: "Stuttgart",
     short: { en: "IT Solution Manager", de: "IT Solution Manager" },
     role: { en: "IT Solution Manager in Logistics", de: "IT Solution Manager Logistik" }, org: "Bosch Digital · Robert Bosch GmbH",
     points: [
       { en: "Overall responsibility for Bosch's central IT solution for transport management worldwide: Next Generation Transport Management (NGTM)", de: "Gesamtverantwortung für die zentrale IT-Lösung von Bosch für das weltweite Transportmanagement: Next Generation Transport Management (NGTM)" },
+      { en: "Single point of contact on the IT side, full budget and project responsibility", de: "Single Point of Contact auf IT-Seite, volle Budget- und Projektverantwortung" },
       { en: "Expert for logistics IT solutions, partners SupplyOn & Eurolog", de: "Experte für Logistiklösungen, Partner SupplyOn & Eurolog" }],
     projects: ["NGTM", "SupplyOn", "Eurolog"], domains: ["management"] },
   { id: "bosch-cse", from: "2024-01", to: null, logo: "bosch", place: "Stuttgart",
     short: { en: "Cyber Security Engineer", de: "Cyber Security Engineer" },
     role: { en: "Cyber Security Engineer", de: "Cyber Security Engineer" }, org: "Bosch Digital · Robert Bosch GmbH",
     points: [
-      { en: "Security engineering in digital business projects", de: "Security Engineering in Digital-Business-Projekten" },
-      { en: "Threat analysis & risk assessment (TARA)", de: "Bedrohungs- und Risikoanalysen (TARA)" }], domains: ["security", "architecture"] }
+      { en: "Cyber security for multiple projects within Bosch worldwide", de: "Cyber Security für mehrere Projekte innerhalb von Bosch weltweit" },
+      { en: "Implementing security concepts in line with the cyber security policy", de: "Umsetzung von Security-Konzepten gemäß Cyber Security Policy" },
+      { en: "TARA for various projects and SAP", de: "TARA für verschiedene Projekte und SAP" },
+      { en: "Cyber security mentoring within the Bosch Group", de: "Cyber-Security-Mentoring in der Bosch-Gruppe" }], domains: ["security", "architecture"] }
 ];
 
 /* Education staircase, bottom step first. */
@@ -96,17 +100,34 @@ export const education = [
     extra: { logo: "tss", text: { en: "Thesis at Daimler TSS: iOS app on Sybase Unwired Platform", de: "Masterarbeit bei Daimler TSS: iOS-App auf Sybase Unwired Platform" } } }
 ];
 
-/* Competence model. */
+/* Competence model. `evidence` = concrete, CV-backed highlights shown when a domain is opened. */
 export const domains = [
-  { id: "security", icon: "ShieldCheck", title: "Cyber Security",
-    keywords: ["Security Engineering", "TARA", "STRIDE", { en: "Risk Assessment", de: "Risikobewertung" }, "Governance", "NIST CSF", "OWASP", "ISO 27001"],
-    evidence: [{ en: "Cyber Security Engineer, Bosch Digital, since 2024", de: "Cyber Security Engineer, Bosch Digital, seit 2024" }] },
   { id: "architecture", icon: "Boxes", title: { en: "Architecture", de: "Architektur" },
-    keywords: ["Solution Architecture", "System Design", "Integration", "Cloud & SaaS"],
-    evidence: [{ en: "Lead Architect, Bosch Central IT", de: "Lead Architect, Bosch Central IT" }, { en: "Solution Architect at TRUMPF & Daimler", de: "Solution Architect bei TRUMPF & Daimler" }, "Bosch Confirmed Architect"] },
+    keywords: ["Solution Architecture", { en: "Microservices", de: "Microservices" }, "Cloud & SaaS", "Integration & APIs", "System Design"],
+    evidence: [
+      { en: "Architect for multiple Bosch projects worldwide, across different technologies", de: "Als Architekt für mehrere Bosch-Projekte weltweit beauftragt, über verschiedene Technologien hinweg" },
+      { en: "Microservice architectures", de: "Microservice-Architekturen" },
+      { en: "Architectures for SC3", de: "Architekturen für SC3" },
+      { en: "Cloud and SaaS architectures", de: "Cloud- und SaaS-Architekturen" },
+      { en: "Lead Architect at Bosch Central IT, Solution Architect at TRUMPF and Daimler", de: "Lead Architect bei Bosch Central IT, Solution Architect bei TRUMPF und Daimler" },
+      "Bosch Confirmed Architect"] },
+  { id: "security", icon: "ShieldCheck", title: "Cyber Security",
+    keywords: ["Security Engineering", "TARA", "STRIDE", { en: "Risk Management", de: "Risikomanagement" }, "NIST CSF", "OWASP", "ISO 27001"],
+    evidence: [
+      { en: "Cyber security engineer for multiple projects within Bosch worldwide", de: "Als Cyber Security Engineer für mehrere Projekte innerhalb von Bosch weltweit beauftragt" },
+      { en: "Implementing cyber security concepts in line with the corporate cyber security policy", de: "Umsetzung von Cyber-Security-Konzepten gemäß Cyber Security Policy" },
+      { en: "Threat analysis and risk assessment (TARA) for various projects and SAP", de: "Bedrohungs- und Risikoanalysen (TARA) für verschiedene Projekte und SAP" },
+      { en: "Cyber security mentoring within the Bosch Group", de: "Cyber-Security-Mentoring innerhalb der Bosch-Gruppe" }] },
   { id: "management", icon: "Workflow", title: { en: "Management & Logistics", de: "Management & Logistik" },
-    keywords: ["Solution Management", { en: "Logistics Solutions", de: "Logistiklösungen" }, "Transport Management", { en: "E2E Ownership", de: "E2E-Verantwortung" }, "Stakeholder", { en: "Agile Delivery", de: "Agile Umsetzung" }],
-    evidence: [{ en: "Overall responsibility for Bosch's worldwide transport management (NGTM)", de: "Gesamtverantwortung für das weltweite Transportmanagement von Bosch (NGTM)" }, { en: "Expert for logistics IT solutions", de: "Experte für Logistiklösungen" }, { en: "PM for mercedes-benz.com", de: "Projektleitung mercedes-benz.com" }, "IPMA D · PSM I · PSPO I · ITIL"] },
+    keywords: ["Solution Management", { en: "Project Management", de: "Projektmanagement" }, { en: "Budget Responsibility", de: "Budgetverantwortung" }, "Stakeholder", { en: "Logistics Solutions", de: "Logistiklösungen" }],
+    evidence: [
+      { en: "Single point of contact on the IT side", de: "Single Point of Contact auf IT-Seite" },
+      { en: "Full budget and project responsibility", de: "Volle Budget- und Projektverantwortung" },
+      { en: "Contracting and steering of further roles", de: "Beauftragung und Steuerung weiterer Rollen" },
+      { en: "Project management for B, C and D projects", de: "Projektmanagement für B-, C- und D-Projekte" },
+      { en: "Stakeholder management from team to executive level", de: "Stakeholder-Management vom Team bis zur Führungsebene" },
+      { en: "Overall responsibility for Bosch's worldwide transport management (NGTM)", de: "Gesamtverantwortung für das weltweite Transportmanagement von Bosch (NGTM)" },
+      "IPMA D · PSM I · PSPO I · ITIL"] },
   { id: "ai", icon: "Sparkles", title: { en: "AI & Innovation", de: "KI & Innovation" },
     keywords: [{ en: "Agentic Architectures", de: "Agentische Architekturen" }, { en: "AI Applications", de: "KI-Anwendungen" }, { en: "AI-assisted Security", de: "KI-gestützte Security" }, { en: "Product Development", de: "Produktentwicklung" }],
     evidence: [{ en: "Familiar with agentic AI architectures", de: "Vertraut mit agentischen KI-Architekturen" }, { en: "Built ImmoFuchs", de: "ImmoFuchs entwickelt" }, { en: "Built this portfolio with AI", de: "Dieses Portfolio mit KI gebaut" }] }
@@ -128,14 +149,7 @@ export const certificates = [
 ];
 
 export const trainings = [
-  { year: 2022, name: { en: "Self-confidence and assertiveness", de: "Selbstbewusstsein und Durchsetzungsvermögen" } },
-  { year: 2018, name: "Design Thinking" },
-  { year: 2017, name: { en: "Communication & personality", de: "Kommunikation & Persönlichkeit" } },
-  { year: 2016, name: "APIs, Daimler" },
-  { year: 2015, name: { en: "Agile projects with JIRA", de: "Agile Projekte mit JIRA" } },
-  { year: 2015, name: "Hybris (E-Commerce)" },
-  { year: 2012, name: "Houston IT" },
-  { year: 2012, name: "Intershop (E-Commerce)" }
+  { year: 2018, name: "Design Thinking" }
 ];
 
 export const sideProject = { name: "ImmoFuchs", link: "https://immofuchs.info", text: { en: "Real estate analysis product, built independently with AI.", de: "Immobilien-Analyseprodukt, eigenständig mit KI entwickelt." } };

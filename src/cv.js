@@ -31,7 +31,7 @@ document.getElementById("cv").innerHTML = `
     </div>
     <img src="/engin.jpg" alt="" class="photo">
   </header>
-  <p class="contact"><span>${esc(person.email)}</span><span>${esc(person.location)}</span><span>${esc(person.site.replace("https://", ""))}</span>${person.linkedin ? `<span>${esc(person.linkedin.replace(/^https:\/\/(de\.)?/, ""))}</span>` : ""}</p>
+  <p class="contact"><span>${esc(person.location)}</span><span>${esc(person.site.replace("https://", ""))}</span>${person.linkedin ? `<span>${esc(person.linkedin.replace(/^https:\/\/(de\.)?/, ""))}</span>` : ""}</p>
   <section class="profile"><p>${esc(f.profile)}</p></section>
   <div class="cols">
     <div class="main">

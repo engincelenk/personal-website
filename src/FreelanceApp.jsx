@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowUpRight, Check, Copy, Mail } from "lucide-react";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import ContactForm from "./components/ContactForm.jsx";
 import { LangProvider, useLang } from "./i18n.jsx";
 import LangSwitch from "./components/LangSwitch.jsx";
 import SectionHead from "./components/SectionHead.jsx";
@@ -22,7 +23,6 @@ function Page() {
   const [company, setCompany] = useState("");
   const [note, setNote] = useState("");
   const [step, setStep] = useState(steps[0].id);
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => { document.title = T.title; document.querySelector('meta[name="description"]')?.setAttribute("content", T.desc); }, [T]);
   const toggle = id => setPicked(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
@@ -31,9 +31,8 @@ function Page() {
     const names = areas.filter(a => picked.includes(a.id)).map(a => a.title);
     const subject = T.subject(names.join(", "));
     const body = T.body(names.map(n => `• ${n}`).join("\n"), formats[format], timing.find(t => t.id === when).label, company.trim(), note.trim());
-    return { names, subject, body, href: `mailto:${person.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}` };
+    return { names, subject, body };
   }, [picked, format, when, company, note, lang]); // eslint-disable-line react-hooks/exhaustive-deps
-  const copy = async () => { try { await navigator.clipboard.writeText(`${mail.subject}\n\n${mail.body}`); setCopied(true); setTimeout(() => setCopied(false), 1600); } catch { /* ignore */ } };
   const chip = on => `min-h-[44px] rounded-xl border px-3 text-sm font-medium transition-colors ${on ? "border-signal bg-signal/10 text-snow" : "border-white/10 text-mist hover:text-snow"}`;
 
   return (
@@ -118,18 +117,10 @@ function Page() {
               </div>
               <div className="panel flex min-w-0 flex-col p-5 sm:p-7 lg:sticky lg:top-24 lg:self-start">
                 <p className="label">{T.preview}</p>
-                {mail.names.length ? (
-                  <>
-                    <p className="mt-3 text-sm font-semibold">{mail.subject}</p>
-                    <pre className="mt-3 max-h-80 overflow-auto whitespace-pre-wrap rounded-xl bg-ink p-4 font-sans text-sm leading-relaxed text-snow/90">{mail.body}</pre>
-                    <div className="mt-5 flex flex-wrap gap-2">
-                      <a href={mail.href} className="btn-primary"><Mail size={16} />{T.openMail}</a>
-                      <button type="button" onClick={copy} className="btn-ghost">{copied ? <Check size={16} /> : <Copy size={16} />}{copied ? T.copied : T.copyText}</button>
-                    </div>
-                  </>
-                ) : <p className="mt-3 rounded-xl border border-dashed border-white/15 p-6 text-center text-mist">{T.none}</p>}
+                {mail.names.length
+                  ? <div className="mt-4"><ContactForm key={mail.subject} initialMessage={mail.body} subject={mail.subject} source="freelance" /></div>
+                  : <p className="mt-3 rounded-xl border border-dashed border-white/15 p-6 text-center text-mist">{T.none}</p>}
                 <p className="mt-5 text-xs text-mist">{T.note}</p>
-                <p className="mt-2 select-all text-sm">{person.email}</p>
               </div>
             </div>
           </div>
