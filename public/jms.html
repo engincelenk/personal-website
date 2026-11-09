@@ -750,6 +750,14 @@ a.btn { text-decoration: none; }
 .bk-table.dense-2 { font-size: 7.5pt; }
 .bk-table.dense-2 td { padding: .8mm 1mm .8mm 0; }
 
+
+/* ---- Speicherstatus ---- */
+.save-state { font-size: 12px; color: var(--fg-muted); white-space: nowrap; }
+.save-state[data-state="error"] { color: var(--magenta); font-weight: 600; }
+.save-state[data-state="ok"] { color: var(--accent); }
+@media (max-width: 600px) { .save-state[data-state="ok"], .save-state[data-state="saving"] { display: none; } }
+.login-card .form-group input { width: 100%; padding: 10px 14px; }
+
 /* ---- Print: only the programme page ---- */
 @media print {
   body { padding: 0 !important; background: #fff !important; }
@@ -1024,18 +1032,126 @@ const EVENTS = [
   }
 ];
 
-/* ---------- Speicherung (Demo: im Browser via localStorage) ---------- */
-const STORE = { events: 'jms-events-v1', teachers: 'jms-teachers-v1', settings: 'jms-settings-v1', images: 'jms-images-v1' };
-function load(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
-function store(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { console.warn('Speichern nicht möglich', e); } }
+/* ---------- Daten: zentral in Cloudflare D1 (EU) über die JMS-API ---------- */
+const API_URL = (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).get('api'))
+  || 'https://jms-api.engincelenk.workers.dev'; // ?api=… nur lokal zum Testen
+let TEACHER_LIST = [];
+let SETTINGS = { passwordEnabled: true };
+let PUBLIC_TEACHERS = null; // Namensliste für die Rollenwahl
+let AUTH = { token: null, role: null, me: null }; // role: gate | teacher | admin
+EVENTS.length = 0; // Startdaten liegen jetzt in der Datenbank
+try { AUTH = JSON.parse(localStorage.getItem('jms-auth-v2')) || AUTH; } catch (e) {}
+function saveAuth() { try { AUTH.token ? localStorage.setItem('jms-auth-v2', JSON.stringify(AUTH)) : localStorage.removeItem('jms-auth-v2'); } catch (e) {} }
+// alte Demo-Daten aus dem Browser entfernen
+try { ['jms-events-v1', 'jms-teachers-v1', 'jms-settings-v1', 'jms-images-v1', 'jms-repertoire-v1'].forEach(k => localStorage.removeItem(k)); sessionStorage.removeItem('jms-auth'); } catch (e) {}
 
-let TEACHER_LIST = load(STORE.teachers, TEACHER_DATA.map(t => ({ ...t, email: '' })));
-let SETTINGS = load(STORE.settings, { passwordEnabled: true, password: PASSWORD });
-{ const saved = load(STORE.events, null); if (Array.isArray(saved)) EVENTS.splice(0, EVENTS.length, ...saved); }
-load(STORE.images, []).forEach(i => { if (!IMAGES.some(x => x.id === i.id)) IMAGES.push(i); });
+function clearSession() {
+  AUTH = { token: null, role: null, me: null }; saveAuth();
+  EVENTS.length = 0; TEACHER_LIST = []; SYNCED = null; LEARNED = [];
+}
+async function api(path, opts = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (AUTH.token) headers.Authorization = 'Bearer ' + AUTH.token;
+  let res;
+  try {
+    res = await fetch(API_URL + path, { method: opts.method || 'GET', headers, body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined });
+  } catch (e) { throw Object.assign(new Error('Keine Verbindung zum Server.'), { status: 0 }); }
+  let data = null;
+  try { data = await res.json(); } catch (e) {}
+  if (!res.ok) {
+    if (res.status === 401 && AUTH.token && !opts.noLogout) {
+      clearSession();
+      toast('Bitte erneut anmelden.');
+      setTimeout(() => go('/login', true), 0);
+    }
+    throw Object.assign(new Error((data && data.error) || 'Fehler ' + res.status), { status: res.status });
+  }
+  return data;
+}
+function imageUrl(id) { return API_URL + '/api/images/' + id; }
+function applyState(s) {
+  TEACHER_LIST = s.teachers.map(t => ({ email: '', ...t }));
+  SETTINGS.passwordEnabled = s.settings.passwordEnabled;
+  EVENTS.splice(0, EVENTS.length, ...s.events.map(ev => {
+    const e = { ...ev };
+    if (e.backText === null || e.backText === undefined) delete e.backText;
+    return e;
+  }));
+  s.images.forEach(i => { if (!IMAGES.some(x => x.id === i.id)) IMAGES.push({ id: i.id, label: i.label, src: imageUrl(i.id) }); });
+  LEARNED = (s.repertoire || []).map(r => ({ ...r }));
+  AUTH.me = s.me;
+  SYNCED = snapshot();
+}
+async function loadState() { applyState(await api('/api/state')); }
+
+/* ---------- Synchronisation: Änderungen erkennen und an die API schicken ---------- */
+let SYNCED = null;
+let SAVE_STATE = '';
+const EVENT_FIELDS = ['title', 'subtitle', 'date', 'time', 'location', 'deadline', 'images', 'pdfImages', 'pdfLayout', 'pdfFooter', 'backText', 'reminders', 'teachers'];
+function eventBody(ev) { const o = { id: ev.id }; EVENT_FIELDS.forEach(k => { o[k] = ev[k]; }); return o; }
+function eventMeta(ev) { return JSON.stringify(EVENT_FIELDS.map(k => ev[k] === undefined ? null : ev[k])); }
+const teacherSig = t => JSON.stringify([t.name, t.faecher, t.email]);
+function snapshot() {
+  return {
+    teachers: new Map(TEACHER_LIST.filter(t => t.id).map(t => [t.id, teacherSig(t)])),
+    events: new Map(EVENTS.map(ev => [ev.id, { meta: eventMeta(ev), status: JSON.stringify(ev.status || {}), entries: new Set(ev.entries.map(e => e.id)) }])),
+  };
+}
+function setSaveState(s) {
+  SAVE_STATE = s;
+  const el = document.getElementById('saveState');
+  if (el) { el.textContent = s === 'saving' ? 'Speichert…' : s === 'ok' ? '✓ Gespeichert' : s === 'error' ? '⚠ Nicht gespeichert' : ''; el.dataset.state = s; }
+}
+let syncChain = Promise.resolve();
 function persist() {
-  store(STORE.events, EVENTS); store(STORE.teachers, TEACHER_LIST); store(STORE.settings, SETTINGS);
-  store(STORE.images, IMAGES.filter(i => i.id.startsWith('upload-')));
+  if (!SYNCED || !AUTH.token || AUTH.role === 'gate') return;
+  syncChain = syncChain.then(doSync);
+}
+async function doSync() {
+  const old = SYNCED;
+  if (!old) return;
+  const target = snapshot();
+  const isAdmin = AUTH.role === 'admin';
+  let changed = false;
+  const call = async (path, opts) => { if (!changed) { changed = true; setSaveState('saving'); } return api(path, opts); };
+  try {
+    if (isAdmin) {
+      for (const t of TEACHER_LIST) {
+        if (!t.id) {
+          const r = await call('/api/teachers', { method: 'POST', body: { name: t.name, faecher: t.faecher, email: t.email } });
+          t.id = r.id; target.teachers.set(t.id, teacherSig(t));
+        } else if (old.teachers.get(t.id) !== teacherSig(t)) {
+          await call('/api/teachers/' + t.id, { method: 'PUT', body: { name: t.name, faecher: t.faecher, email: t.email } });
+        }
+      }
+      for (const id of old.teachers.keys()) if (!TEACHER_LIST.some(t => t.id === id)) await call('/api/teachers/' + id, { method: 'DELETE' });
+      for (const ev of EVENTS) {
+        const o = old.events.get(ev.id);
+        if (!o) await call('/api/events', { method: 'POST', body: eventBody(ev) });
+        else if (o.meta !== eventMeta(ev)) await call('/api/events/' + ev.id, { method: 'PUT', body: eventBody(ev) });
+      }
+      for (const id of old.events.keys()) if (!EVENTS.some(e => e.id === id)) await call('/api/events/' + id, { method: 'DELETE' });
+    }
+    for (const ev of EVENTS) {
+      const o = old.events.get(ev.id);
+      if (!isAdmin && o && o.status !== JSON.stringify(ev.status || {})) {
+        await call(`/api/events/${ev.id}/status`, { method: 'PUT', body: { status: ev.status[AUTH.me] } });
+      }
+      const before = o ? o.entries : new Set();
+      for (const e of ev.entries) {
+        if (before.has(e.id)) continue;
+        const r = await call(`/api/events/${ev.id}/entries`, { method: 'POST', body: e });
+        if (r.id !== e.id) { target.events.get(ev.id).entries.delete(e.id); e.id = r.id; target.events.get(ev.id).entries.add(r.id); }
+      }
+      for (const id of before) if (!ev.entries.some(e => e.id === id)) await call('/api/entries/' + id, { method: 'DELETE' });
+    }
+    SYNCED = target;
+    if (changed) setSaveState('ok');
+  } catch (err) {
+    setSaveState('error');
+    toast('Speichern fehlgeschlagen: ' + err.message);
+    if (AUTH.token) { try { await loadState(); renderOnly(); } catch (e) {} }
+  }
 }
 function teacherByName(n) { return TEACHER_LIST.find(t => t.name === n); }
 function faecherOf(n) { const t = teacherByName(n); return t ? t.faecher : ''; }
@@ -1071,9 +1187,8 @@ function splitComposer(c) { const m = (c || '').match(/^(.*?)\s*(\([^)]*\))?\s*$
 function norm(s) { return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
 
 const REPERTOIRE_STORE = 'jms-repertoire-v1';
-let LEARNED = []; // [{composer, werk, instrument, teacher, count}]
-try { LEARNED = JSON.parse(localStorage.getItem(REPERTOIRE_STORE) || '[]'); } catch (e) { LEARNED = []; }
-function saveLearned() { try { localStorage.setItem(REPERTOIRE_STORE, JSON.stringify(LEARNED)); } catch (e) {} }
+let LEARNED = []; // [{composer, werk, instrument, teacher, count}] – kommt vom Server (ohne Schülernamen)
+function saveLearned() {}
 
 function learn(entry, teacher) {
   const instruments = entry.performers.map(p => p.instrument).filter(Boolean);
@@ -1246,13 +1361,11 @@ function readInstrument(row) {
 }
 
 /* ---------- Routing: jede Ansicht hat eine URL -> Browser vor/zurück funktioniert ---------- */
-function isAuthed() {
-  if (!SETTINGS.passwordEnabled) return true;
-  try { return sessionStorage.getItem('jms-auth') === '1'; } catch (e) { return window.__jmsAuth === true; }
-}
-function setAuthed(v) {
-  window.__jmsAuth = v;
-  try { v ? sessionStorage.setItem('jms-auth', '1') : sessionStorage.removeItem('jms-auth'); } catch (e) {}
+function isAuthed() { return !!AUTH.token || !SETTINGS.passwordEnabled; }
+function homePath() {
+  if (AUTH.role === 'admin') return '/admin';
+  if (AUTH.role === 'teacher' && AUTH.me) return teacherPath(AUTH.me);
+  return '/rolle';
 }
 function go(path, replace) {
   const h = '#' + path;
@@ -1266,15 +1379,23 @@ function teacherPath(name, id) { return `/l/${encodeURIComponent(name)}${id ? '/
 function handleRoute() {
   const p = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean).map(x => { try { return decodeURIComponent(x); } catch (e) { return x; } });
   const top = p[0] || 'login';
-  if (top !== 'login' && !isAuthed()) return go('/login', true);
   selectedEvent = null; activeTab = 'uebersicht'; adminPage = 'events';
 
   if (top === 'login') {
-    if (isAuthed()) return go('/rolle', true);
+    if (AUTH.role === 'admin' || AUTH.role === 'teacher' || isAuthed()) return go(homePath(), true);
     currentView = 'login'; currentRole = null;
+  } else if (top === 'admin-login') {
+    if (AUTH.role === 'admin') return go('/admin', true);
+    currentView = 'adminLogin'; currentRole = null;
   } else if (top === 'rolle') {
+    if (!isAuthed()) return go('/login', true);
     currentView = 'role'; currentRole = null;
+    if (!PUBLIC_TEACHERS) {
+      api('/api/teachers-public').then(r => { PUBLIC_TEACHERS = r.teachers; if (currentView === 'role') renderOnly(); })
+        .catch(e => toast(e.message));
+    }
   } else if (top === 'admin') {
+    if (AUTH.role !== 'admin') return go('/admin-login', true);
     currentView = 'admin'; currentRole = 'admin';
     const sub = p[1];
     if (sub === 'neu') adminPage = 'newEvent';
@@ -1288,8 +1409,9 @@ function handleRoute() {
       else { adminPage = 'event'; activeTab = ['programm', 'vorschau'].includes(p[3]) ? p[3] : 'uebersicht'; }
     }
   } else if (top === 'l') {
-    if (!teacherByName(p[1])) return go('/rolle', true);
-    currentView = 'teacher'; currentRole = p[1];
+    if (AUTH.role !== 'teacher') return go(isAuthed() ? '/rolle' : '/login', true);
+    if (p[1] !== AUTH.me) return go(teacherPath(AUTH.me), true);
+    currentView = 'teacher'; currentRole = AUTH.me;
     if (p[2] === 'v') {
       const ev = EVENTS.find(e => String(e.id) === p[3] && e.teachers.includes(currentRole));
       if (!ev) return go(teacherPath(currentRole), true);
@@ -1308,10 +1430,13 @@ function parentPath() {
   return '/rolle';
 }
 
-function render() {
+function render() { renderOnly(); persist(); }
+function renderOnly() {
   const app = document.getElementById('app');
   if (currentView === 'login') {
     app.innerHTML = renderLogin();
+  } else if (currentView === 'adminLogin') {
+    app.innerHTML = renderAdminLogin();
   } else if (currentView === 'role') {
     app.innerHTML = renderRolePage();
   } else if (currentView === 'admin') {
@@ -1319,7 +1444,7 @@ function render() {
   } else if (currentView === 'teacher') {
     app.innerHTML = renderTeacherHeader() + '<div class="main-content">' + renderTeacherContent() + '</div>';
   }
-  persist();
+  setSaveState(SAVE_STATE);
   bindEvents();
 }
 
@@ -1330,13 +1455,31 @@ function renderLogin() {
         <img src="${LOGO_SRC}" alt="JugendMusikSchule">
         <h2><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a></h2>
         <p class="login-tagline">Mehr Freude durch Musik</p>
-        <p style="font-size:13px;color:var(--fg-muted)">Bitte melden Sie sich an, um Ihre Programmbeiträge zu verwalten.</p>
+        <p style="font-size:13px;color:var(--fg-muted)">Für Lehrkräfte: Bitte das Kennwort der Musikschule eingeben.</p>
         <div>
-          <input type="password" id="loginPw" placeholder="Passwort eingeben" autocomplete="off">
+          <label for="loginPw" class="sr-only">Kennwort</label>
+          <input type="password" id="loginPw" placeholder="Kennwort eingeben" autocomplete="current-password">
         </div>
-        <div class="login-error" id="loginError">Falsches Passwort. Bitte versuchen Sie es erneut.</div>
+        <div class="login-error" id="loginError" role="alert"></div>
         <button class="btn btn-primary" style="width:100%;justify-content:center" id="loginBtn">Anmelden</button>
-        ${SETTINGS.password === PASSWORD ? `<p style="font-size:11px;color:var(--fg-muted)">Passwort: <code style="background:var(--accent-light);padding:2px 6px;border-radius:4px">${PASSWORD}</code> (Demo)</p>` : ''}
+        <a class="link-btn" href="#/admin-login" style="align-self:center;font-size:13px">Anmeldung für Admin / Schulleitung</a>
+      </div>
+    </div>`;
+}
+
+function renderAdminLogin() {
+  return `
+    <div class="login-screen">
+      <div class="login-card">
+        <img src="${LOGO_SRC}" alt="JugendMusikSchule">
+        <h2>Admin-Anmeldung</h2>
+        <div class="form-group" style="text-align:left"><label for="adEmail">E-Mail</label>
+          <input type="email" id="adEmail" autocomplete="username" placeholder="name@beispiel.de"></div>
+        <div class="form-group" style="text-align:left"><label for="adPw">Passwort</label>
+          <input type="password" id="adPw" autocomplete="current-password"></div>
+        <div class="login-error" id="adError" role="alert"></div>
+        <button class="btn btn-primary" style="width:100%;justify-content:center" id="adLoginBtn">Anmelden</button>
+        <a class="link-btn" href="#/login" style="align-self:center;font-size:13px">← Zur Anmeldung für Lehrkräfte</a>
       </div>
     </div>`;
 }
@@ -1347,6 +1490,7 @@ function renderAdminHeader() {
       <img src="${LOGO_SRC}" alt="Logo">
       <h1><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a><small>Mehr Freude durch Musik</small></h1>
       <div class="header-actions">
+        <span id="saveState" class="save-state" aria-live="polite"></span>
         <span class="user-badge">👤 Admin</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
       </div>
@@ -1799,7 +1943,8 @@ function renderTeacherHeader() {
       <img src="${LOGO_SRC}" alt="Logo">
       <h1><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a><small>Mehr Freude durch Musik</small></h1>
       <div class="header-actions">
-        <span class="user-badge">🎵 ${currentRole}</span>
+        <span id="saveState" class="save-state" aria-live="polite"></span>
+        <span class="user-badge">🎵 ${esc(currentRole)}</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
       </div>
     </header>`;
@@ -1908,27 +2053,45 @@ function renderTeacherContent() {
 }
 
 function bindEvents() {
-  // Login
+  // Login Lehrkräfte (gemeinsames Kennwort)
   const loginBtn = document.getElementById('loginBtn');
   if (loginBtn) {
-    const doLogin = () => {
-      const pw = document.getElementById('loginPw').value;
-      if (pw === SETTINGS.password) {
-        setAuthed(true);
+    const err = document.getElementById('loginError');
+    const doLogin = async () => {
+      loginBtn.disabled = true; err.style.display = 'none';
+      try {
+        const r = await api('/api/login/gate', { method: 'POST', body: { password: document.getElementById('loginPw').value }, noLogout: true });
+        AUTH = { token: r.token, role: 'gate', me: null }; saveAuth();
         go('/rolle');
-      } else {
-        document.getElementById('loginError').style.display = 'block';
-      }
+      } catch (e) { err.textContent = e.message; err.style.display = 'block'; loginBtn.disabled = false; }
     };
     loginBtn.addEventListener('click', doLogin);
-    const pwInput = document.getElementById('loginPw');
-    if (pwInput) pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+    document.getElementById('loginPw').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  }
+
+  // Login Admin
+  const adBtn = document.getElementById('adLoginBtn');
+  if (adBtn) {
+    const err = document.getElementById('adError');
+    const doAdmin = async () => {
+      adBtn.disabled = true; err.style.display = 'none';
+      try {
+        const r = await api('/api/login/admin', { method: 'POST', body: { email: document.getElementById('adEmail').value.trim(), password: document.getElementById('adPw').value }, noLogout: true });
+        AUTH = { token: r.token, role: 'admin', me: null }; saveAuth();
+        await loadState();
+        go('/admin');
+      } catch (e) { err.textContent = e.message; err.style.display = 'block'; adBtn.disabled = false; }
+    };
+    adBtn.addEventListener('click', doAdmin);
+    ['adEmail', 'adPw'].forEach(id => document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') doAdmin(); }));
   }
 
   // Logout
-  $$('#logoutBtn').forEach(btn => btn.addEventListener('click', () => {
-    setAuthed(false);
-    go(SETTINGS.passwordEnabled ? '/login' : '/rolle');
+  $$('#logoutBtn').forEach(btn => btn.addEventListener('click', async () => {
+    try { await api('/api/logout', { method: 'POST', noLogout: true }); } catch (e) {}
+    clearSession();
+    PUBLIC_TEACHERS = null;
+    go('/login');
   }));
 
   // Event click
@@ -2053,23 +2216,24 @@ function bindEvents() {
     render();
   }));
 
-  // Eigenes Bild hochladen
+  // Eigenes Bild hochladen (verkleinert auf max. 1600 px, als JPEG in die Datenbank)
   const imgUpload = document.getElementById('imgUpload');
-  if (imgUpload) imgUpload.addEventListener('change', () => {
+  if (imgUpload) imgUpload.addEventListener('change', async () => {
     const file = imgUpload.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { toast('Bild ist größer als 5 MB.'); return; }
-    const reader = new FileReader();
-    reader.onload = () => {
+    if (!/^image\//.test(file.type)) { toast('Bitte eine Bilddatei wählen.'); return; }
+    try {
+      toast('Bild wird hochgeladen…');
+      const dataUrl = await downscaleImage(file, 1600, 0.85);
+      const label = file.name.replace(/\.[^.]+$/, '');
+      const r = await api('/api/images', { method: 'POST', body: { label, dataUrl } });
+      IMAGES.push({ id: r.id, label, src: imageUrl(r.id) });
       const ev = EVENTS.find(e => e.id === selectedEvent);
-      const id = 'upload-' + Date.now();
-      IMAGES.push({ id, src: reader.result, label: file.name.replace(/\.[^.]+$/, '') });
-      ev.images = [...(ev.images || []), id];
-      ev.pdfImages = [...(ev.pdfImages || []), id];
+      ev.images = [...(ev.images || []), r.id];
+      ev.pdfImages = [...(ev.pdfImages || []), r.id];
       toast('Bild hinzugefügt');
       render();
-    };
-    reader.readAsDataURL(file);
+    } catch (e) { toast('Upload fehlgeschlagen: ' + e.message); }
   });
 
   // New event
@@ -2096,24 +2260,32 @@ function pageHead(title, sub) {
 
 /* ---------- Rollenwahl (eigene Seite) ---------- */
 function renderRolePage() {
+  const list = PUBLIC_TEACHERS;
   return `
     <div class="login-screen">
       <div class="login-card role-card">
         <img src="${LOGO_SRC}" alt="JugendMusikSchule">
-        <h2>Anmelden als…</h2>
-        <button class="btn btn-primary" style="width:100%;justify-content:center" id="pickAdmin">🔧 Admin / Schulleitung</button>
-        <div class="divider"><span>oder als Lehrkraft</span></div>
+        <h2>Wer sind Sie?</h2>
         <div class="picker-grid">
-          ${TEACHER_LIST.map(t => `<button class="btn btn-secondary btn-sm pick-teacher" data-name="${esc(t.name)}"><span class="pt-name">${esc(t.name)}</span><span class="pt-sub">${esc(t.faecher)}</span></button>`).join('')}
+          ${list ? list.map(t => `<button class="btn btn-secondary btn-sm pick-teacher" data-name="${esc(t.name)}"><span class="pt-name">${esc(t.name)}</span><span class="pt-sub">${esc(t.faecher)}</span></button>`).join('')
+                 : '<p class="form-hint">Lädt…</p>'}
         </div>
+        <div class="divider"><span>oder</span></div>
+        <a class="btn btn-secondary btn-sm" href="#/admin-login" style="justify-content:center">🔧 Admin / Schulleitung</a>
         ${SETTINGS.passwordEnabled ? `<button class="btn btn-secondary btn-sm" id="logoutBtn" style="align-self:center">Abmelden</button>` : ''}
       </div>
     </div>`;
 }
 function bindRolePage() {
-  const a = document.getElementById('pickAdmin');
-  if (a) a.addEventListener('click', () => go('/admin'));
-  $$('.pick-teacher').forEach(b => b.addEventListener('click', () => go(teacherPath(b.dataset.name))));
+  $$('.pick-teacher').forEach(b => b.addEventListener('click', async () => {
+    $$('.pick-teacher').forEach(x => { x.disabled = true; });
+    try {
+      const r = await api('/api/login/teacher', { method: 'POST', body: { name: b.dataset.name } });
+      AUTH = { token: r.token, role: 'teacher', me: b.dataset.name }; saveAuth();
+      await loadState();
+      go(teacherPath(AUTH.me));
+    } catch (e) { toast(e.message); $$('.pick-teacher').forEach(x => { x.disabled = false; }); }
+  }));
 }
 
 /* ---------- Neue Veranstaltung (eigene Seite) ---------- */
@@ -2262,53 +2434,71 @@ function bindTeachersPage() {
   });
 }
 
-/* ---------- Einstellungen: Kennwort ---------- */
+/* ---------- Einstellungen: Kennwörter ---------- */
 function renderSettingsPage() {
   return `
     <h2 class="page-title">Einstellungen</h2>
     <div class="entry-section">
-      <h3>Kennwortschutz</h3>
+      <h3>Kennwort für Lehrkräfte</h3>
       <label class="switch-row">
         <input type="checkbox" id="pwEnabled" ${SETTINGS.passwordEnabled ? 'checked' : ''}>
         <span class="switch" aria-hidden="true"></span>
-        <span><strong>${SETTINGS.passwordEnabled ? 'Aktiv' : 'Deaktiviert'}</strong> – ${SETTINGS.passwordEnabled ? 'beim Öffnen des Tools wird ein Kennwort abgefragt.' : 'das Tool öffnet sich ohne Kennwort direkt mit der Rollenwahl.'}</span>
+        <span><strong>${SETTINGS.passwordEnabled ? 'Aktiv' : 'Deaktiviert'}</strong> – ${SETTINGS.passwordEnabled ? 'Lehrkräfte geben zuerst das gemeinsame Kennwort ein und wählen dann ihren Namen.' : 'Lehrkräfte wählen ohne Kennwort direkt ihren Namen.'}</span>
       </label>
       <div class="form-grid" style="margin-top:16px">
         <div class="form-group"><label for="pwNew">Neues Kennwort</label><input type="password" id="pwNew" autocomplete="new-password" placeholder="mind. 6 Zeichen"></div>
         <div class="form-group"><label for="pwRepeat">Wiederholen</label><input type="password" id="pwRepeat" autocomplete="new-password"></div>
       </div>
       <div class="page-actions"><button class="btn btn-primary" id="pwSaveBtn">Kennwort ändern</button></div>
-      <p class="form-hint" style="margin-top:12px">⚠️ Demo: Das Kennwort wird nur im Browser geprüft und gespeichert. Für echten Schutz braucht es eine Anmeldung auf dem Server.</p>
+      <p class="form-hint" style="margin-top:8px">Nach einer Änderung müssen sich alle Lehrkräfte neu anmelden.</p>
+    </div>
+    <div class="entry-section">
+      <h3>Mein Admin-Passwort</h3>
+      <div class="form-grid">
+        <div class="form-group full"><label for="adCur">Aktuelles Passwort</label><input type="password" id="adCur" autocomplete="current-password"></div>
+        <div class="form-group"><label for="adNew">Neues Passwort</label><input type="password" id="adNew" autocomplete="new-password" placeholder="mind. 10 Zeichen"></div>
+        <div class="form-group"><label for="adRep">Wiederholen</label><input type="password" id="adRep" autocomplete="new-password"></div>
+      </div>
+      <div class="page-actions"><button class="btn btn-primary" id="adPwSaveBtn">Admin-Passwort ändern</button></div>
     </div>
     <div class="entry-section">
       <h3>Daten</h3>
-      <p class="form-hint" style="margin-bottom:12px">Veranstaltungen, Lehrkräfte und Einstellungen werden derzeit nur in diesem Browser gespeichert.</p>
-      <button class="btn btn-secondary" id="resetDataBtn">Demo-Daten zurücksetzen</button>
+      <p class="form-hint">Alle Veranstaltungen, Beiträge, Lehrkräfte und Bilder liegen zentral in einer eigenen Cloudflare-Datenbank mit Speicherort EU. Lehrkräfte sehen nur ihre eigenen Beiträge und keine E-Mail-Adressen.</p>
     </div>`;
 }
 function bindSettingsPage() {
   const tgl = document.getElementById('pwEnabled');
   if (!tgl) return;
-  tgl.addEventListener('change', () => {
-    if (!tgl.checked && !confirm('Kennwortschutz wirklich deaktivieren? Dann kann jede Person mit dem Link das Tool öffnen.')) { tgl.checked = true; return; }
-    SETTINGS.passwordEnabled = tgl.checked;
-    if (tgl.checked) setAuthed(true); // aktuelle Sitzung bleibt angemeldet
-    toast(tgl.checked ? 'Kennwortschutz aktiviert' : 'Kennwortschutz deaktiviert');
-    render();
+  tgl.addEventListener('change', async () => {
+    const on = tgl.checked;
+    if (!on && !confirm('Kennwort für Lehrkräfte wirklich deaktivieren? Dann kann jede Person mit dem Link als Lehrkraft Beiträge eintragen.')) { tgl.checked = true; return; }
+    try {
+      await api('/api/settings', { method: 'PUT', body: { passwordEnabled: on } });
+      SETTINGS.passwordEnabled = on;
+      toast(on ? 'Kennwort aktiviert' : 'Kennwort deaktiviert');
+      render();
+    } catch (e) { tgl.checked = !on; toast(e.message); }
   });
-  document.getElementById('pwSaveBtn').addEventListener('click', () => {
+  document.getElementById('pwSaveBtn').addEventListener('click', async () => {
     const a = document.getElementById('pwNew').value, b = document.getElementById('pwRepeat').value;
     if (a.length < 6) { toast('Mindestens 6 Zeichen.'); return; }
     if (a !== b) { toast('Kennwörter stimmen nicht überein.'); return; }
-    SETTINGS.password = a; SETTINGS.passwordEnabled = true; setAuthed(true);
-    toast('Kennwort geändert');
-    render();
+    try {
+      await api('/api/settings', { method: 'PUT', body: { newPassword: a, passwordEnabled: true } });
+      SETTINGS.passwordEnabled = true;
+      toast('Kennwort für Lehrkräfte geändert');
+      render();
+    } catch (e) { toast(e.message); }
   });
-  document.getElementById('resetDataBtn').addEventListener('click', () => {
-    if (!confirm('Alle Änderungen (Veranstaltungen, Lehrkräfte, E-Mails, Kennwort, gelerntes Repertoire) in diesem Browser verwerfen?')) return;
-    try { Object.values(STORE).concat(['jms-repertoire-v1']).forEach(k => localStorage.removeItem(k)); sessionStorage.removeItem('jms-auth'); } catch (e) {}
-    location.hash = '#/login';
-    location.reload();
+  document.getElementById('adPwSaveBtn').addEventListener('click', async () => {
+    const cur = document.getElementById('adCur').value, a = document.getElementById('adNew').value, b = document.getElementById('adRep').value;
+    if (a.length < 10) { toast('Neues Passwort: mindestens 10 Zeichen.'); return; }
+    if (a !== b) { toast('Passwörter stimmen nicht überein.'); return; }
+    try {
+      await api('/api/admin/password', { method: 'PUT', body: { current: cur, next: a } });
+      toast('Admin-Passwort geändert');
+      render();
+    } catch (e) { toast(e.message); }
   });
 }
 
@@ -2401,9 +2591,45 @@ function bindReminderPage() {
   }));
 }
 
-// Start: URL auswerten; Browser vor/zurück löst hashchange aus
-window.addEventListener('hashchange', handleRoute);
-handleRoute();
+// Bild im Browser verkleinern (spart Speicher, D1-Zeilenlimit)
+function downscaleImage(file, maxSide, quality) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Bild konnte nicht gelesen werden.')); };
+    img.src = url;
+  });
+}
+
+// Start: Einstellungen und ggf. Daten vom Server laden, dann URL auswerten
+async function boot() {
+  const app = document.getElementById('app');
+  app.innerHTML = '<div class="login-screen"><p class="form-hint">Lädt…</p></div>';
+  try {
+    const pub = await api('/api/public', { noLogout: true });
+    SETTINGS.passwordEnabled = pub.passwordEnabled;
+  } catch (e) {
+    app.innerHTML = `<div class="login-screen"><div class="login-card"><h2>Keine Verbindung</h2><p>${esc(e.message)}</p><button class="btn btn-primary" onclick="location.reload()">Erneut versuchen</button></div></div>`;
+    return;
+  }
+  if (AUTH.token && (AUTH.role === 'admin' || AUTH.role === 'teacher')) {
+    try { await loadState(); } catch (e) { clearSession(); }
+  }
+  window.addEventListener('hashchange', handleRoute);
+  handleRoute();
+}
+boot();
+
 </script>
 </body>
 </html>
