@@ -3,7 +3,15 @@ import { useEffect, useRef } from "react";
 /* An abstract network of connected systems. Points live in 3D; the view
    rotates slowly and tilts with scroll, so the perspective changes as the
    visitor moves down the page. A few nodes carry the signal colour. */
-const LABELS = ["API", "IAM", "TARA", "CLOUD", "DATA", "EDGE", "SOC", "CI/CD"];
+/* Keywords from the three pillars and the AI vertical, interleaved so every
+   screen size shows a balanced mix. ai: drawn in the signal colour. */
+const LABELS = [
+  ["MICROSERVICES"], ["TARA"], ["NGTM"], ["AGENTS", 1],
+  ["CLOUD"], ["ZERO TRUST"], ["E2E"], ["LLM", 1],
+  ["API"], ["STRIDE"], ["BUDGET"], ["MCP", 1],
+  ["SAAS"], ["NIST CSF"], ["STAKEHOLDER"], ["AGENTIC", 1],
+  ["SC3"], ["ISO 27001"], ["PROGRAM"], ["INTEGRATION"], ["OWASP"], ["SCRUM"]
+];
 
 export default function NetworkCanvas() {
   const ref = useRef(null);
@@ -17,11 +25,12 @@ export default function NetworkCanvas() {
     const count = () => (window.innerWidth < 640 ? 46 : window.innerWidth < 1100 ? 70 : 96);
     let nodes = [];
     const seed = () => {
-      nodes = Array.from({ length: count() }, (_, i) => {
+      const n0 = count(), step = Math.max(3, Math.floor(n0 / LABELS.length));
+      nodes = Array.from({ length: n0 }, (_, i) => {
         const r = 0.55 + Math.random() * 0.45, th = Math.random() * Math.PI * 2, ph = Math.acos(2 * Math.random() - 1);
         return {
           x: r * Math.sin(ph) * Math.cos(th) * 1.5, y: r * Math.cos(ph) * 0.85, z: r * Math.sin(ph) * Math.sin(th),
-          sig: i % 13 === 0, label: i % 11 === 0 ? LABELS[(i / 11) % LABELS.length | 0] : null, ph: Math.random() * 6.28
+          sig: i % 13 === 0, label: i % step === 0 && i / step < LABELS.length ? LABELS[i / step] : null, ph: Math.random() * 6.28
         };
       });
     };
@@ -75,8 +84,9 @@ export default function NetworkCanvas() {
         ctx.beginPath(); ctx.arc(sx, sy, r, 0, 6.283); ctx.fill();
         if (n.label && w > 640) {
           ctx.font = "500 10px 'Geist Mono Variable', ui-monospace, monospace";
-          ctx.fillStyle = `rgba(169,180,194,${0.18 + 0.35 * (p - 0.6)})`;
-          ctx.fillText(n.label, sx + 7, sy + 3);
+          const al = 0.2 + 0.4 * (p - 0.6);
+          ctx.fillStyle = n.label[1] ? `rgba(232,101,10,${al + 0.1})` : `rgba(169,180,194,${al})`;
+          ctx.fillText(n.label[0], sx + 7, sy + 3);
         }
       });
       if (!reduce && visible) raf = requestAnimationFrame(draw);
