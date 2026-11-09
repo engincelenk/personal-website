@@ -667,15 +667,98 @@ a.btn { text-decoration: none; }
 .rcpt.no-mail { opacity: .7; cursor: default; }
 .rcpt.no-mail .rcpt-mail { color: var(--gold); }
 
+
+/* ---- Titel-Link ---- */
+.brand-link { color: inherit; text-decoration: none; }
+.brand-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---- Format-Wahl ---- */
+.layout-choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+@media (max-width: 560px) { .layout-choice { grid-template-columns: 1fr; } }
+.layout-opt { display: flex; gap: 12px; align-items: center; padding: 12px; border: 2px solid var(--border); border-radius: var(--radius); cursor: pointer; background: var(--bg); }
+.layout-opt.selected { border-color: var(--accent-bright); background: var(--accent-light); }
+.layout-opt input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.layout-opt:has(input:focus-visible) { outline: 2px solid var(--link); outline-offset: 2px; }
+.lo-icon { flex-shrink: 0; border: 2px solid var(--accent); background: var(--bg-card); }
+.lo-portrait { width: 26px; height: 36px; }
+.lo-booklet { width: 44px; height: 31px; background: linear-gradient(90deg, transparent 49%, var(--accent) 49%, var(--accent) 51%, transparent 51%), var(--bg-card); }
+.print-hints { display: flex; flex-direction: column; gap: 4px; }
+.warn-inline { color: var(--magenta); font-weight: 600; font-size: 13px; }
+@media screen { .sheet .overflowing, .sheet.overflowing { outline: 3px solid #c4265c; outline-offset: -3px; } }
+.print-bar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+
+/* ---- Druckbögen (echte mm-Größe, Vorschau per zoom skaliert) ---- */
+.sheet-stage { background: #8a8f8f; padding: 12px; display: flex; flex-direction: column; align-items: center; gap: 6px; border-radius: var(--radius); }
+.sheet-label { color: #fff; font-size: 12px; align-self: flex-start; margin-top: 6px; }
+.sheet {
+  background: #fff; color: #2b2b2b; box-shadow: 0 4px 20px rgba(0,0,0,.3); overflow: hidden; flex-shrink: 0;
+  font-family: 'Hind', system-ui, sans-serif; font-size: 10.5pt; line-height: 1.3;
+}
+.sheet-portrait { width: 210mm; height: 297mm; padding: 14mm 14mm 10mm; display: flex; flex-direction: column; }
+.sheet-landscape { width: 297mm; height: 210mm; display: grid; grid-template-columns: 1fr 1fr; }
+.half { padding: 12mm 12mm 9mm; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+.sheet .pg-empty { color: #999; text-align: center; margin-top: 20mm; }
+.sheet .pg-logo { height: 26mm; width: auto; }
+.sheet .pg-prog { font-family: 'Titillium Web', sans-serif; font-weight: 300; color: #00a3a7; font-size: 22pt; margin: 6mm 0 4mm; }
+.sheet .pg-foot { margin-top: auto; padding-top: 3mm; border-top: 0.3mm solid #cfcfcf; font-size: 8pt; color: #777; text-align: center; }
+.sheet .pg-loc { color: #555; }
+.sheet .pg-strip { display: flex; gap: 4mm; justify-content: center; margin: 4mm 0; }
+.sheet .pg-strip img { height: 26mm; width: auto; max-width: 45%; object-fit: cover; }
+
+/* A4 hoch */
+.pg-head { display: flex; align-items: center; gap: 6mm; padding-bottom: 4mm; border-bottom: 1.2mm solid #00b2b6; }
+.pg-title { flex: 1; text-align: center; }
+.pg-ev { font-family: 'Titillium Web', sans-serif; font-size: 26pt; font-weight: 300; color: #00a3a7; line-height: 1.1; }
+.pg-sub { font-style: italic; color: #555; }
+.pg-date { font-weight: 600; margin-top: 1.5mm; }
+.pg-cover { height: 30mm; width: 30mm; object-fit: cover; }
+.pg-list { flex: 1; min-height: 0; }
+.pg-row { display: grid; grid-template-columns: 38% 24% 38%; gap: 3mm; padding: 1.6mm 0; border-bottom: 0.2mm solid #e3e3e3; break-inside: avoid; }
+.pg-werk { font-weight: 600; }
+.pg-perf em { display: block; font-size: .9em; color: #555; }
+.pg-instr { color: #666; font-size: .9em; }
+.pg-note { text-align: center; margin: 3mm 0 2mm; font-style: italic; }
+.sheet-portrait.dense-1 { font-size: 9pt; }
+.sheet-portrait.dense-1 .pg-row { padding: 1mm 0; }
+.sheet-portrait.dense-2 { font-size: 8pt; }
+.sheet-portrait.dense-2 .pg-row { padding: .6mm 0; }
+
+/* A4 quer, 4-seitig */
+.bk-cover { align-items: center; text-align: center; }
+.bk-cover .pg-logo { height: 22mm; }
+.bk-cover-img { width: 100%; max-height: 100mm; object-fit: cover; margin-top: 6mm; }
+.bk-cover-title { font-family: 'Titillium Web', sans-serif; font-size: 34pt; font-weight: 300; color: #00a3a7; margin-top: 20mm; }
+.bk-cover .pg-prog { font-size: 26pt; margin: 6mm 0 3mm; }
+.bk-when { font-weight: 700; font-size: 16pt; line-height: 1.3; }
+.bk-back { font-size: 11pt; }
+.bk-intro { margin-top: 8mm; }
+.bk-teachers { font-weight: 600; margin-top: 2mm; }
+.bk-foerder { margin-top: auto; display: flex; gap: 5mm; align-items: center; padding: 4mm; background: #f2f9f9; border-left: 1.2mm solid #00b2b6; margin-bottom: 4mm; }
+.bk-back .pg-foot { margin-top: 0; }
+.bk-foerder img { width: 32mm; height: auto; flex-shrink: 0; }
+.bk-foerder p { font-size: 10pt; }
+.bk-inner { padding-top: 10mm; }
+.bk-table { width: 100%; border-collapse: collapse; font-size: 9.5pt; }
+.bk-table td { vertical-align: top; padding: 2mm 2mm 2mm 0; border-bottom: 0.2mm solid #e3e3e3; }
+.bk-table tr { break-inside: avoid; }
+.bk-comp { width: 34%; }
+.bk-comp span { font-size: .88em; color: #666; }
+.bk-werk { width: 32%; }
+.bk-perf span { color: #666; font-size: .9em; }
+.bk-table.dense-1 { font-size: 8.5pt; }
+.bk-table.dense-1 td { padding: 1.2mm 1.5mm 1.2mm 0; }
+.bk-table.dense-2 { font-size: 7.5pt; }
+.bk-table.dense-2 td { padding: .8mm 1mm .8mm 0; }
+
 /* ---- Print: only the programme page ---- */
 @media print {
-  @page { size: A4; margin: 0; }
   body { padding: 0 !important; background: #fff !important; }
-  body::before, .app-header, .tabs, .event-header, .img-picker, .admin-nav, #backBtn, #generatePdfBtn, .toast { display: none !important; }
+  body::before, .app-header, .tabs, .event-header, .img-picker, .admin-nav, .print-bar, .sheet-label, #backBtn, .toast { display: none !important; }
   .main-content { padding: 0 !important; max-width: none !important; }
   .main-content > div:has(> #backBtn) { display: none !important; }
-  .pdf-preview-container { background: none !important; padding: 0 !important; }
-  .pdf-page { box-shadow: none !important; max-width: none !important; width: 210mm; height: 297mm; }
+  .sheet-stage { background: none !important; padding: 0 !important; display: block !important; }
+  .sheet { box-shadow: none !important; margin: 0 !important; zoom: 1 !important; break-after: page; }
+  .sheet:last-child { break-after: auto; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 }
 </style>
@@ -689,6 +772,7 @@ const LOGO_SRC = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAT8AAACoCAIAAAAZ
 
 // Demo password
 const PASSWORD = 'jms2026';
+const APP_URL = 'https://ec.immofuchs.info/jms';
 
 // Demo data
 // Lehrkräfte laut https://jms-mosaik.de/unsere-lehrkraefte (Stand 09.11.2026)
@@ -722,7 +806,7 @@ const FAECHER = Object.fromEntries(TEACHER_DATA.map(t => [t.name, t.faecher]));
 
 // Bildbibliothek – jede Veranstaltung hat eigene Bilder, alle sind für das PDF wählbar
 const IMAGES = [
-  { id: 'concertino', src: 'jms-assets/concertino.png', label: 'Concertino' },
+  { id: 'concertino', src: 'jms-assets/concertino.jpg', label: 'Concertino' },
   { id: 'weihnachtliche-klaenge', src: 'jms-assets/weihnachtliche-klaenge.png', label: 'Weihnachtliche Klänge' },
   { id: 'weihnachten-instrumente', src: 'jms-assets/weihnachten-instrumente.png', label: 'Weihnachtstisch mit Instrumenten' },
   { id: 'frueherziehung-weihnachten', src: 'jms-assets/frueherziehung-weihnachten.png', label: 'Früherziehung feiert Weihnachten' },
@@ -1244,7 +1328,7 @@ function renderLogin() {
     <div class="login-screen">
       <div class="login-card">
         <img src="${LOGO_SRC}" alt="JugendMusikSchule">
-        <h2>Programmheft-Tool</h2>
+        <h2><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a></h2>
         <p class="login-tagline">Mehr Freude durch Musik</p>
         <p style="font-size:13px;color:var(--fg-muted)">Bitte melden Sie sich an, um Ihre Programmbeiträge zu verwalten.</p>
         <div>
@@ -1261,7 +1345,7 @@ function renderAdminHeader() {
   return `
     <header class="app-header">
       <img src="${LOGO_SRC}" alt="Logo">
-      <h1>Programmheft-Tool<small>Mehr Freude durch Musik</small></h1>
+      <h1><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a><small>Mehr Freude durch Musik</small></h1>
       <div class="header-actions">
         <span class="user-badge">👤 Admin</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
@@ -1474,19 +1558,117 @@ function renderProgramItem(e, num) {
     </div>`;
 }
 
-function renderPreviewTab(ev) {
-  let items = '';
-  ev.entries.forEach(e => {
-    const perfStr = e.performers.map(p => `${p.name}${p.instrument ? ', ' + p.instrument : ''}`).join(' · ');
-    items += `
-      <div class="pdf-item">
-        <div><span class="pdf-composer">${e.composer || 'Trad.'}</span><span class="pdf-werk"> — ${e.werk}</span></div>
-        <div class="pdf-performers">${perfStr}</div>
-      </div>`;
-  });
+/* ---------- Programmheft: zwei Druckvarianten ---------- */
+const FOERDER_TEXT = 'Möchten Sie sich in der JMS engagieren?\nDann wäre der Förderverein eine sinnvolle Möglichkeit.\nOb „aktiv“ bei Veranstaltungen oder „passiv“ –\nwir freuen uns sehr über Sie!';
+const WEEKDAYS = ['Sonntag', 'Montag', 'Dienstag', 'Mittwoch', 'Donnerstag', 'Freitag', 'Samstag'];
+function weekdayDate(d) {
+  const m = (d || '').match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/);
+  if (!m) return d || '';
+  return `${WEEKDAYS[new Date(+m[3], +m[2] - 1, +m[1]).getDay()]}, ${d}`;
+}
+// "Ludwig van Beethoven (1770–1827)" -> "L. v. Beethoven"
+function shortComposer(c) {
+  const name = splitComposer(c).name.trim();
+  const parts = name.split(/\s+/);
+  if (parts.length < 2) return name;
+  const last = parts.pop();
+  return parts.map(w => /^(van|von|de|da|di|du|le|la|der)$/i.test(w) ? w[0].toLowerCase() + '.'
+    : /\.$/.test(w) ? w : w.split('-').map(x => x[0].toUpperCase() + '.').join('-')).join(' ') + ' ' + last;
+}
+function klasse(teacher) { return teacher ? 'Klasse ' + teacher.trim().split(/\s+/).pop() : ''; }
+function andJoin(list) { return list.length < 2 ? list.join('') : list.slice(0, -1).join(', ') + ' und ' + list[list.length - 1]; }
+function nl2br(s) { return esc(s).replace(/\n/g, '<br>'); }
+function suggestedLayout(ev) { return ev.entries.length > 10 ? 'booklet' : 'a4'; }
+function entryWeight(e) {
+  const comp = splitComposer(e.composer).dates ? 2 : 1;
+  const werk = Math.ceil((e.werk || '').length / 28) || 1;
+  return Math.max(comp, werk, e.performers.length) + 0.6;
+}
+function densityClass(weight, capacity) {
+  return weight > capacity * 1.35 ? ' dense-2' : weight > capacity ? ' dense-1' : '';
+}
 
+function sheetA4(ev, cover, strip) {
+  const weight = ev.entries.reduce((a, e) => a + entryWeight(e), 0);
+  const rows = ev.entries.map(e => `
+      <div class="pg-row">
+        <div class="pg-werk">${esc(e.werk)}</div>
+        <div class="pg-comp">${esc(shortComposer(e.composer) || 'Trad.')}</div>
+        <div class="pg-perf">${e.performers.map(p => esc(p.name)).join(', ')}${e.performers.some(p => p.instrument) ? `<span class="pg-instr"> (${esc([...new Set(e.performers.map(p => p.instrument).filter(Boolean))].join(', '))})</span>` : ''}<em>${esc(klasse(e.teacher))}</em></div>
+      </div>`).join('');
+  return `
+    <div class="sheet sheet-portrait${densityClass(weight, 46)}">
+      <header class="pg-head">
+        <img class="pg-logo" src="${LOGO_SRC}" alt="JugendMusikSchule Freiberg a.N. · Pleidelsheim e.V.">
+        <div class="pg-title">
+          <div class="pg-ev">${esc(ev.title)}</div>
+          ${ev.subtitle ? `<div class="pg-sub">${esc(ev.subtitle)}</div>` : ''}
+          <div class="pg-date">${esc(weekdayDate(ev.date))}${ev.time ? ' · ' + esc(ev.time) : ''}</div>
+          ${ev.location ? `<div class="pg-loc">${esc(ev.location)}</div>` : ''}
+        </div>
+        ${cover ? `<img class="pg-cover" src="${cover.src}" alt="${esc(cover.label)}">` : ''}
+      </header>
+      <h2 class="pg-prog">Programm</h2>
+      <div class="pg-list">${rows || '<p class="pg-empty">Noch keine Beiträge vorhanden.</p>'}</div>
+      ${strip.length ? `<div class="pg-strip">${strip.map(i => `<img src="${i.src}" alt="${esc(i.label)}">`).join('')}</div>` : ''}
+      ${ev.pdfFooter ? `<div class="pg-note">${esc(ev.pdfFooter)}</div>` : ''}
+      <div class="pg-foot">JugendMusikSchule Freiberg a.N. · Pleidelsheim e.V.</div>
+    </div>`;
+}
+
+function bookletTable(entries, dense) {
+  if (!entries.length) return '<p class="pg-empty">—</p>';
+  return `<table class="bk-table${dense}"><tbody>${entries.map(e => {
+    const c = splitComposer(e.composer);
+    return `<tr>
+      <td class="bk-comp"><strong>${esc(c.name || 'Trad.')}</strong>${c.dates ? `<br><span>${esc(c.dates)}</span>` : ''}</td>
+      <td class="bk-werk">${esc(e.werk)}</td>
+      <td class="bk-perf">${e.performers.map(p => `${esc(p.name)}${p.instrument ? ` <span>(${esc(p.instrument)})</span>` : ''}`).join('<br>')}</td>
+    </tr>`;
+  }).join('')}</tbody></table>`;
+}
+
+function sheetsBooklet(ev, cover, strip) {
+  // Programm gleichmäßig auf Seite 2 und 3 verteilen
+  const weights = ev.entries.map(entryWeight);
+  const total = weights.reduce((a, b) => a + b, 0);
+  let acc = 0, cut = ev.entries.length;
+  for (let i = 0; i < weights.length; i++) { if (acc + weights[i] / 2 > total / 2) { cut = i; break; } acc += weights[i]; }
+  const p2 = ev.entries.slice(0, cut), p3 = ev.entries.slice(cut);
+  const dense = densityClass(Math.max(acc, total - acc), 30);
+  const teachers = [...new Set(ev.entries.map(e => e.teacher))];
+  return `
+    <div class="sheet-label">Blatt 1 – Außenseite: Seite 4 (Rückseite) | Seite 1 (Titel)</div>
+    <div class="sheet sheet-landscape">
+      <section class="half bk-back">
+        <p class="bk-intro">Es musizieren Schülerinnen und Schüler der Instrumentalklassen von:</p>
+        <p class="bk-teachers">${esc(andJoin(teachers)) || '—'}</p>
+        ${strip.length ? `<div class="pg-strip">${strip.map(i => `<img src="${i.src}" alt="${esc(i.label)}">`).join('')}</div>` : ''}
+        <div class="bk-foerder">
+          <img src="jms-assets/foerderverein.jpg" alt="Freunde der Jugendmusikschule Freiberg a.N./Pleidelsheim">
+          <p>${nl2br(ev.backText ?? FOERDER_TEXT)}</p>
+        </div>
+        <div class="pg-foot">JugendMusikSchule Freiberg a.N. · Pleidelsheim e.V.</div>
+      </section>
+      <section class="half bk-cover">
+        <img class="pg-logo" src="${LOGO_SRC}" alt="JugendMusikSchule">
+        ${cover ? `<img class="bk-cover-img" src="${cover.src}" alt="${esc(cover.label)}">` : `<div class="bk-cover-title">${esc(ev.title)}</div>`}
+        <h2 class="pg-prog">Programm</h2>
+        <div class="bk-when">${esc(weekdayDate(ev.date))}<br>${esc(ev.time)}</div>
+        ${ev.location ? `<div class="pg-loc">${esc(ev.location)}</div>` : ''}
+      </section>
+    </div>
+    <div class="sheet-label">Blatt 2 – Innenseite: Seite 2 | Seite 3</div>
+    <div class="sheet sheet-landscape">
+      <section class="half bk-inner">${bookletTable(p2, dense)}</section>
+      <section class="half bk-inner">${bookletTable(p3, dense)}</section>
+    </div>`;
+}
+
+function renderPreviewTab(ev) {
   ev.images = ev.images || [];
   ev.pdfImages = ev.pdfImages || [];
+  if (!ev.pdfLayout) ev.pdfLayout = suggestedLayout(ev);
   const own = ev.images.map(imgById).filter(Boolean);
   const others = IMAGES.filter(i => !ev.images.includes(i.id));
   const thumb = img => {
@@ -1499,14 +1681,32 @@ function renderPreviewTab(ev) {
       </button>`;
   };
   const sel = ev.pdfImages.map(imgById).filter(Boolean);
-  const cover = sel[0];
-  const strip = sel.slice(1);
+  const cover = sel[0], strip = sel.slice(1);
+  const sug = suggestedLayout(ev);
+  const isBooklet = ev.pdfLayout === 'booklet';
 
   return `
     <div class="img-picker">
+      <div class="img-picker-head"><h3>Format</h3>
+        <span class="form-hint">${ev.entries.length} Beiträge – empfohlen: ${sug === 'booklet' ? 'A4 quer, 4-seitig' : 'A4 hoch'}</span></div>
+      <div class="layout-choice">
+        <label class="layout-opt${!isBooklet ? ' selected' : ''}"><input type="radio" name="pdfLayout" value="a4" ${!isBooklet ? 'checked' : ''}>
+          <span class="lo-icon lo-portrait" aria-hidden="true"></span>
+          <span><strong>DIN A4 Hochformat</strong><br><span class="form-hint">1 Seite · kleine Konzerte</span></span></label>
+        <label class="layout-opt${isBooklet ? ' selected' : ''}"><input type="radio" name="pdfLayout" value="booklet" ${isBooklet ? 'checked' : ''}>
+          <span class="lo-icon lo-booklet" aria-hidden="true"></span>
+          <span><strong>DIN A4 Querformat, 4-seitig</strong><br><span class="form-hint">gefaltet zu A5 · größere Konzerte</span></span></label>
+      </div>
+      <div class="form-grid" style="margin-top:12px">
+        ${isBooklet
+          ? `<div class="form-group full"><label for="pdfBackText">Text Rückseite (Förderverein)</label><textarea id="pdfBackText" rows="4">${esc(ev.backText ?? FOERDER_TEXT)}</textarea></div>`
+          : `<div class="form-group full"><label for="pdfFooter">Hinweis unter dem Programm (optional)</label><input type="text" id="pdfFooter" value="${esc(ev.pdfFooter || '')}" placeholder="z.B. Klavierbegleitung: Dahea No"></div>`}
+      </div>
+    </div>
+    <div class="img-picker">
       <div class="img-picker-head">
         <h3>Bilder für das PDF</h3>
-        <span class="form-hint">Anklicken zum Auswählen. Das erste gewählte Bild wird Titelbild, weitere erscheinen unten.</span>
+        <span class="form-hint">Anklicken zum Auswählen. Das erste gewählte Bild wird Titelbild, weitere erscheinen ${isBooklet ? 'auf der Rückseite' : 'unten'}.</span>
       </div>
       <div class="img-group-label">Bilder dieser Veranstaltung</div>
       <div class="img-grid">${own.map(thumb).join('') || '<span class="form-hint">Noch keine eigenen Bilder.</span>'}
@@ -1514,27 +1714,82 @@ function renderPreviewTab(ev) {
       </div>
       ${others.length ? `<div class="img-group-label">Weitere Bilder</div><div class="img-grid">${others.map(thumb).join('')}</div>` : ''}
     </div>
-    <div style="display:flex;justify-content:flex-end;margin-bottom:12px;gap:8px">
+    <div class="print-bar">
+      <span class="print-hints">
+        ${isBooklet ? `<span class="form-hint">Drucken: beidseitig, <strong>an der kurzen Kante spiegeln</strong>, dann in der Mitte falten.</span>` : ''}
+        <span id="fitWarn" class="warn-inline" hidden>⚠️ Das Programm passt nicht vollständig auf ${isBooklet ? 'die Innenseiten' : 'eine Seite'}${isBooklet ? '' : ' – bitte „A4 Querformat, 4-seitig“ wählen'}.</span>
+      </span>
       <button class="btn btn-primary" id="generatePdfBtn">📄 PDF erzeugen / drucken</button>
     </div>
-    <div class="pdf-preview-container">
-      <div class="pdf-page">
-        ${cover ? `<div class="pdf-cover"><img src="${cover.src}" alt="${esc(cover.label)}"></div>` : ''}
-        <div class="pdf-header">
-          <img src="${LOGO_SRC}" alt="Logo">
-          <div class="pdf-event-info">
-            <div class="pdf-event-title">${ev.title}</div>
-            <div class="pdf-event-date">${ev.date} · ${ev.time}<br>${ev.location}</div>
-          </div>
-        </div>
-        <div class="pdf-program-title">Programm</div>
-        <div style="flex:1;overflow:hidden">${items || '<p style="color:#999;text-align:center;margin-top:40px">Noch keine Beiträge vorhanden.</p>'}</div>
-        ${strip.length ? `<div class="pdf-strip">${strip.map(i => `<img src="${i.src}" alt="${esc(i.label)}">`).join('')}</div>` : ''}
-        <div class="pdf-footer">
-          JugendMusikSchule Freiberg a.N. · Pleidelsheim e.V.
-        </div>
-      </div>
+    <div class="sheet-stage" data-layout="${isBooklet ? 'landscape' : 'portrait'}">
+      ${isBooklet ? sheetsBooklet(ev, cover, strip) : sheetA4(ev, cover, strip)}
     </div>`;
+}
+
+// Schriftgröße stufenweise verkleinern, bis das Programm auf die Seite passt (gemessen, nicht geschätzt)
+const DENSITY = ['', 'dense-1', 'dense-2'];
+function fitsAt(el, box, level) {
+  el.classList.remove('dense-1', 'dense-2');
+  if (DENSITY[level]) el.classList.add(DENSITY[level]);
+  return box.scrollHeight <= box.clientHeight + 1;
+}
+function autoDensity() {
+  const stage = document.querySelector('.sheet-stage');
+  if (!stage) return;
+  stage.querySelectorAll('.sheet').forEach(s => { s.style.zoom = 1; });
+  let overflow = false;
+  stage.querySelectorAll('.sheet-portrait').forEach(s => {
+    const list = s.querySelector('.pg-list');
+    let lv = 0; while (lv < DENSITY.length && !fitsAt(s, list, lv)) lv++;
+    if (lv >= DENSITY.length) { fitsAt(s, list, DENSITY.length - 1); overflow = true; s.classList.add('overflowing'); }
+    else s.classList.remove('overflowing');
+  });
+  // Heft: beide Innenseiten bekommen dieselbe (kleinste nötige) Schriftstufe
+  const halves = [...stage.querySelectorAll('.bk-inner')].filter(h => h.querySelector('.bk-table'));
+  if (halves.length) {
+    let lv = 0;
+    while (lv < DENSITY.length && !halves.every(h => fitsAt(h.querySelector('.bk-table'), h, lv))) lv++;
+    const ok = lv < DENSITY.length;
+    halves.forEach(h => { fitsAt(h.querySelector('.bk-table'), h, ok ? lv : DENSITY.length - 1); h.classList.toggle('overflowing', !ok && h.scrollHeight > h.clientHeight + 1); });
+    if (!ok) overflow = true;
+  }
+  const warn = document.getElementById('fitWarn');
+  if (warn) warn.hidden = !overflow;
+}
+
+// Vorschau auf Bildschirmbreite skalieren (Druck immer 1:1)
+function fitSheets() {
+  const stage = document.querySelector('.sheet-stage');
+  if (!stage) return;
+  const avail = stage.clientWidth - 24;
+  stage.querySelectorAll('.sheet').forEach(s => {
+    s.style.zoom = 1;
+    const z = Math.min(1, avail / s.offsetWidth);
+    s.style.zoom = z;
+  });
+}
+window.addEventListener('resize', fitSheets);
+window.addEventListener('beforeprint', () => document.querySelectorAll('.sheet').forEach(s => { s.style.zoom = 1; }));
+window.addEventListener('afterprint', fitSheets);
+function setPrintPageSize(landscape) {
+  let st = document.getElementById('printPageSize');
+  if (!st) { st = document.createElement('style'); st.id = 'printPageSize'; document.head.appendChild(st); }
+  st.textContent = `@page { size: A4 ${landscape ? 'landscape' : 'portrait'}; margin: 0; }`;
+}
+function bindPreviewOptions() {
+  const ev = EVENTS.find(e => e.id === selectedEvent);
+  if (!ev || !document.querySelector('.sheet-stage')) return;
+  $$('input[name=pdfLayout]').forEach(r => r.addEventListener('change', () => { ev.pdfLayout = r.value; render(); }));
+  const f = document.getElementById('pdfFooter');
+  if (f) f.addEventListener('change', () => { ev.pdfFooter = f.value.trim(); render(); });
+  const b = document.getElementById('pdfBackText');
+  if (b) b.addEventListener('change', () => { ev.backText = b.value; render(); });
+  setPrintPageSize(ev.pdfLayout === 'booklet');
+  const refit = () => { autoDensity(); fitSheets(); };
+  requestAnimationFrame(refit);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(refit);
+  document.querySelectorAll('.sheet img').forEach(img => { if (!img.complete) img.addEventListener('load', refit, { once: true }); });
+  // Bilder laden nach -> neu skalieren nicht nötig (feste mm-Größe), aber Höhe prüfen
 }
 
 // Teacher view
@@ -1542,7 +1797,7 @@ function renderTeacherHeader() {
   return `
     <header class="app-header">
       <img src="${LOGO_SRC}" alt="Logo">
-      <h1>Programmheft-Tool<small>Mehr Freude durch Musik</small></h1>
+      <h1><a class="brand-link" href="${APP_URL}">Programmheft-Tool</a><small>Mehr Freude durch Musik</small></h1>
       <div class="header-actions">
         <span class="user-badge">🎵 ${currentRole}</span>
         <button class="btn btn-secondary btn-sm" id="logoutBtn">Abmelden</button>
@@ -1783,6 +2038,9 @@ function bindEvents() {
   // Generate PDF
   const genPdfBtn = document.getElementById('generatePdfBtn');
   if (genPdfBtn) genPdfBtn.addEventListener('click', () => {
+    const ev = EVENTS.find(e => e.id === selectedEvent);
+    setPrintPageSize(ev && ev.pdfLayout === 'booklet');
+    document.querySelectorAll('.sheet').forEach(s => { s.style.zoom = 1; });
     toast('Druckdialog: „Als PDF speichern“ wählen');
     setTimeout(() => window.print(), 300);
   });
@@ -1818,6 +2076,7 @@ function bindEvents() {
   const newEventBtn = document.getElementById('newEventBtn');
   if (newEventBtn) newEventBtn.addEventListener('click', () => go('/admin/neu'));
 
+  bindPreviewOptions();
   bindRolePage();
   bindNewEventPage();
   bindTeachersPage();
@@ -2054,7 +2313,7 @@ function bindSettingsPage() {
 }
 
 /* ---------- Erinnerung per E-Mail ---------- */
-function toolLink() { return location.href.split('#')[0]; }
+function toolLink() { return APP_URL; }
 function reminderDefaults(ev) {
   return {
     subject: `Erinnerung: Programmbeiträge für „${ev.title}“${ev.deadline ? ' bis ' + ev.deadline : ''}`,
