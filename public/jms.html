@@ -1687,7 +1687,10 @@ function renderEventList() {
             <div class="card-title">${ev.title}</div>
             ${ev.subtitle ? `<div style="font-size:12px;color:var(--fg-muted);font-style:italic">${ev.subtitle}</div>` : ''}
           </div>
-          <span class="chip ${chipClass}">${chipLabel}</span>
+          <span style="display:flex;align-items:center;gap:8px">
+            <span class="chip ${chipClass}">${chipLabel}</span>
+            <button class="btn btn-icon btn-sm del-event-card" data-del-event="${ev.id}" title="Veranstaltung löschen" aria-label="Veranstaltung „${esc(ev.title)}“ löschen">🗑</button>
+          </span>
         </div>
         <div style="display:flex;gap:16px;margin-top:8px;font-size:13px;color:var(--fg-muted);flex-wrap:wrap">
           <span>📅 ${ev.date}</span>
@@ -2353,6 +2356,17 @@ function bindEvents() {
     clearSession();
     PUBLIC_TEACHERS = null;
     go('/login');
+  }));
+
+  // Veranstaltung direkt aus der Liste löschen (Admin)
+  $$('.del-event-card').forEach(b => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const ev = EVENTS.find(x => String(x.id) === b.dataset.delEvent); if (!ev) return;
+    const n = ev.entries.length;
+    if (!confirm(`„${ev.title}“ wirklich löschen?` + (n ? `\n\nDabei werden auch alle ${n} Beiträge gelöscht. Das kann nicht rückgängig gemacht werden.` : ''))) return;
+    EVENTS.splice(EVENTS.indexOf(ev), 1);
+    toast('Veranstaltung gelöscht');
+    render();
   }));
 
   // Event click
