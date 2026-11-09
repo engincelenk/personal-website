@@ -6,11 +6,12 @@ import { useEffect, useRef } from "react";
 /* Keywords from the three pillars and the AI vertical, interleaved so every
    screen size shows a balanced mix. ai: drawn in the signal colour. */
 const LABELS = [
-  ["MICROSERVICES"], ["TARA"], ["NGTM"], ["AGENTS", 1],
-  ["CLOUD"], ["ZERO TRUST"], ["E2E"], ["LLM", 1],
-  ["API"], ["STRIDE"], ["BUDGET"], ["MCP", 1],
-  ["SAAS"], ["NIST CSF"], ["STAKEHOLDER"], ["AGENTIC", 1],
-  ["SC3"], ["ISO 27001"], ["PROGRAM"], ["INTEGRATION"], ["OWASP"], ["SCRUM"]
+  ["MICROSERVICES"], ["TARA"], ["E2E"], ["AGENTS", 1],
+  ["CLOUD"], ["ZERO TRUST"], ["BUDGET"], ["LLM", 1],
+  ["API"], ["STRIDE"], ["PROGRAM"], ["AGENTIC", 1],
+  ["SAAS"], ["ISO 27001"], ["SCRUM"],
+  ["SC3"], ["OWASP"], [{ de: "LOGISTIK", en: "LOGISTICS" }],
+  ["INTEGRATION"], ["SAP"], ["DIGITAL BUSINESS"], ["CX"]
 ];
 
 export default function NetworkCanvas() {
@@ -86,7 +87,8 @@ export default function NetworkCanvas() {
           ctx.font = "500 10px 'Geist Mono Variable', ui-monospace, monospace";
           const al = 0.2 + 0.4 * (p - 0.6);
           ctx.fillStyle = n.label[1] ? `rgba(232,101,10,${al + 0.1})` : `rgba(169,180,194,${al})`;
-          ctx.fillText(n.label[0], sx + 7, sy + 3);
+          const txt = typeof n.label[0] === "string" ? n.label[0] : n.label[0][document.documentElement.lang === "de" ? "de" : "en"];
+          ctx.fillText(txt, sx + 7, sy + 3);
         }
       });
       if (!reduce && visible) raf = requestAnimationFrame(draw);
