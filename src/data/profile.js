@@ -107,7 +107,7 @@ export const domains = [
     evidence: [
       { en: "Architect for multiple Bosch projects worldwide, across different technologies", de: "Als Architekt für mehrere Bosch-Projekte weltweit beauftragt, über verschiedene Technologien hinweg" },
       { en: "Microservice architectures", de: "Microservice-Architekturen" },
-      { en: "Architectures for SC3", de: "Architekturen für SC3" },
+      { en: "Architectures for Security Class 3 (SC3) solutions", de: "Architekturen für Lösungen der Security Class 3 (SC3)" },
       { en: "Cloud and SaaS architectures", de: "Cloud- und SaaS-Architekturen" },
       { en: "Lead Architect at Bosch Central IT, Solution Architect at TRUMPF and Daimler", de: "Lead Architect bei Bosch Central IT, Solution Architect bei TRUMPF und Daimler" },
       "Bosch Confirmed Architect"] },
