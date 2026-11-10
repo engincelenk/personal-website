@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check } from "lucide-react";
 import Icon from "./Icon.jsx";
 import { pillars as rawPillars, aiVertical as rawAi } from "../data/services.js";
+import { corpNote as rawCorp } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
 /* Three equal pillars with AI as the band across all three.
@@ -10,7 +11,7 @@ import { useLang } from "../i18n.jsx";
 export default function ServiceMatrix({ T }) {
   const { L, lang } = useLang();
   const reduce = useReducedMotion();
-  const pillars = L(rawPillars), ai = L(rawAi);
+  const pillars = L(rawPillars), ai = L(rawAi), corp = L(rawCorp);
   const [sel, setSel] = useState(null);
   const toggle = id => setSel(s => (s === id ? null : id));
   const dimCol = id => sel && sel !== "ai" && sel !== id;
@@ -21,7 +22,7 @@ export default function ServiceMatrix({ T }) {
       {/* Pillars */}
       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
         {pillars.map(p => (
-          <div key={p.id} className={`spot flex min-w-0 flex-col rounded-2xl border transition-all duration-300 ${sel === p.id ? "border-signal/70 bg-navy/50" : "border-white/[0.08] bg-navy/20"} ${dimCol(p.id) ? "opacity-40" : ""}`}>
+          <div key={p.id} className={`flex min-w-0 flex-col rounded-2xl border transition-all duration-300 ${sel === p.id ? "border-signal/70 bg-navy/50" : "border-white/[0.08] bg-navy/20"} ${dimCol(p.id) ? "opacity-40" : ""}`}>
             <button type="button" onClick={() => toggle(p.id)} aria-pressed={sel === p.id} className="flex items-start gap-3 p-5 text-left">
               <span className={`grid h-11 w-11 flex-none place-items-center rounded-xl ${sel === p.id ? "bg-signal text-ink" : "bg-white/[0.06] text-signal"}`}><Icon name={p.icon} size={20} /></span>
               <span className="min-w-0">
@@ -75,6 +76,7 @@ export default function ServiceMatrix({ T }) {
             ) : (
               <>
                 <p className="text-lg font-semibold">{cur.title}</p>
+                <p className="mt-3 flex items-start gap-2.5 rounded-xl border border-signal/30 bg-signal/10 px-4 py-3 text-snow"><Check size={16} className="mt-1 flex-none text-signal" />{corp}</p>
                 <ul className="mt-4 grid gap-x-6 gap-y-3 md:grid-cols-2">
                   {cur.offers.map(o => <li key={o.title} className="flex gap-2.5"><Check size={16} className="mt-1 flex-none text-signal" /><span><span className="block text-sm font-semibold">{o.title}</span><span className="block text-sm text-mist">{o.text}</span></span></li>)}
                   <li className="flex gap-2.5"><Icon name="Sparkles" size={16} className="mt-1 flex-none text-signal" /><span><span className="block text-sm font-semibold">{cur.ai.title}</span><span className="block text-sm text-mist">{cur.ai.text}</span></span></li>

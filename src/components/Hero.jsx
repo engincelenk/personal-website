@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight, Download } from "lucide-react";
 import NetworkCanvas from "./NetworkCanvas.jsx";
 import LogoWall from "./LogoWall.jsx";
@@ -11,14 +11,10 @@ export default function Hero({ guest }) {
   const { t, L } = useLang();
   const h = L(hero), p = L(person);
   const cv = L(rawCv.file);
-  const words = L(domains).map(d => d.title);
+  const pillarChips = L(domains);
+  const words = pillarChips.map(d => d.title);
   const [wi, setWi] = useState(0);
   useEffect(() => { if (reduce) return; const id = setInterval(() => setWi(i => (i + 1) % words.length), 2200); return () => clearInterval(id); }, [reduce, words.length]);
-  // photo tilts gently towards the pointer
-  const fig = useRef(null);
-  const rx = useSpring(useMotionValue(0), { stiffness: 120, damping: 14 }), ry = useSpring(useMotionValue(0), { stiffness: 120, damping: 14 });
-  const tilt = e => { if (reduce || !fig.current) return; const r = fig.current.getBoundingClientRect(); ry.set(((e.clientX - r.left) / r.width - 0.5) * 14); rx.set(-((e.clientY - r.top) / r.height - 0.5) * 14); };
-  const untilt = () => { rx.set(0); ry.set(0); };
   const rise = i => reduce ? {} : { initial: { opacity: 0, y: 22 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.8, delay: 0.1 + i * 0.1, ease: [0.2, 0.8, 0.2, 1] } };
 
   return (
@@ -62,11 +58,13 @@ export default function Hero({ guest }) {
           <a href={cv} download className="btn-ghost">{t("downloadCv")} <Download size={16} /></a>
         </motion.div>
         </div>
-        <motion.figure {...rise(2)} ref={fig} onPointerMove={tilt} onPointerLeave={untilt} style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }} className="relative hidden lg:block">
+        <motion.figure {...rise(2)} className="relative hidden lg:block">
           <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-signal/20 blur-3xl" aria-hidden="true" />
           <img src="/engin.jpg" alt={t("portrait")} width="720" height="720" className="aspect-square w-full rounded-[2rem] border border-white/10 object-cover shadow-2xl" />
-          <figcaption className="absolute -bottom-5 left-4 right-4 rounded-2xl border border-white/10 bg-ink/90 px-4 py-2 text-sm backdrop-blur">
-            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-emerald-400 align-middle" />{t("photoLabel")}
+          <figcaption className="absolute inset-x-3 -bottom-4 flex flex-wrap justify-center gap-1.5">
+            {pillarChips.map(d => (
+              <span key={d.id} className={`rounded-full border px-3 py-1.5 text-[13px] font-medium backdrop-blur ${d.id === "ai" ? "border-signal/60 bg-ink/90 text-signal" : "border-white/15 bg-ink/90 text-snow"}`}>{d.title}</span>
+            ))}
           </figcaption>
         </motion.figure>
         </div>
