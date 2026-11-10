@@ -10,7 +10,6 @@ import NetworkCanvas from "./components/NetworkCanvas.jsx";
 import ServiceMatrix from "./components/ServiceMatrix.jsx";
 import Footer from "./components/Footer.jsx";
 import ScrollProgress from "./components/ScrollProgress.jsx";
-import Spotlight from "./components/Spotlight.jsx";
 import LogoWall from "./components/LogoWall.jsx";
 import { person, logoStrip } from "./data/profile.js";
 import { pillars as rawPillars, aiVertical as rawAi, process as rawProcess, industries, timing as rawTiming, formats as rawFormats, fl } from "./data/services.js";
@@ -41,7 +40,6 @@ function Page() {
   return (
     <>
       <ScrollProgress />
-      <Spotlight />
       <header className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-ink/85 backdrop-blur-xl" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="wrap flex h-16 items-center justify-between gap-3">
           <a href={`/?lang=${lang}`} className="inline-flex min-w-0 items-center gap-2 text-sm text-mist hover:text-snow"><ArrowLeft size={16} /><span className="truncate"><span className="text-snow">{person.name}</span>, {person.degree} · {T.back}</span></a>

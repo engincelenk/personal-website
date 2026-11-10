@@ -36,12 +36,7 @@
 @keyframes sweep { 0% { transform: translateX(0); } 60%, 100% { transform: translateX(450%); } }
 
 /* --- visual polish --- */
-.panel, .spot { position: relative; }
-.panel::before, .spot::before {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
-  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(232,101,10,.13), transparent 62%);
-}
-@media (hover: hover) { .panel:hover::before, .spot:hover::before { opacity: 1; } }
+.panel { position: relative; }
 
 /* sections: soft colour bands and a glowing hairline between them */
 main > .section::after {

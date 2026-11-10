@@ -2,14 +2,14 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check } from "lucide-react";
 import SectionHead from "./SectionHead.jsx";
 import Icon from "./Icon.jsx";
-import { domains as rawDomains, aiVertical as rawAi } from "../data/profile.js";
+import { domains as rawDomains, aiVertical as rawAi, corpNote as rawCorp } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
 /* Three equal pillars with AI as the vertical across all three (same model as the freelance page and the PDF). */
 export default function Expertise({ domain, setDomain }) {
   const reduce = useReducedMotion();
   const { t, L, lang } = useLang();
-  const domains = L(rawDomains), ai = L(rawAi);
+  const domains = L(rawDomains), ai = L(rawAi), corp = L(rawCorp);
   const pillars = domains.filter(d => d.id !== "ai");
   const aiDomain = domains.find(d => d.id === "ai");
   const sel = domains.find(d => d.id === domain) || pillars[0];
@@ -24,7 +24,7 @@ export default function Expertise({ domain, setDomain }) {
             const on = sel.id === p.id;
             return (
               <button key={p.id} type="button" onClick={() => setDomain(p.id)} aria-pressed={on}
-                className={`spot flex min-w-0 flex-col rounded-2xl border p-5 text-left transition-all duration-300 ${on ? "border-signal/70 bg-navy/60 shadow-[0_0_50px_-24px_rgba(232,101,10,.7)]" : sel.id === "ai" ? "border-white/[0.08] bg-navy/20" : "border-white/[0.08] bg-navy/20 opacity-70 hover:opacity-100"}`}>
+                className={`flex min-w-0 flex-col rounded-2xl border p-5 text-left transition-all duration-300 ${on ? "border-signal/70 bg-navy/60 shadow-[0_0_50px_-24px_rgba(232,101,10,.7)]" : sel.id === "ai" ? "border-white/[0.08] bg-navy/20" : "border-white/[0.08] bg-navy/20 opacity-70 hover:opacity-100"}`}>
                 <span className="flex items-start gap-3">
                   <span className={`grid h-11 w-11 flex-none place-items-center rounded-xl ${on ? "bg-signal text-ink" : "bg-white/[0.06] text-signal"}`}><Icon name={p.icon} size={20} /></span>
                   <span className="min-w-0">
@@ -63,6 +63,7 @@ export default function Expertise({ domain, setDomain }) {
             <motion.div key={sel.id + lang} initial={reduce ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={reduce ? undefined : { opacity: 0 }} transition={{ duration: 0.25 }}>
               <div className="flex flex-wrap items-baseline gap-x-3"><h3 className="text-xl font-semibold tracking-tight">{sel.title}</h3>{sel.subtitle && <span className="text-sm text-mist">{sel.subtitle}</span>}</div>
               {sel.id === "ai" && <p className="mt-1 text-mist">{ai.claim}</p>}
+              {sel.id !== "ai" && <p className="mt-3 flex items-start gap-2.5 rounded-xl border border-signal/30 bg-signal/10 px-4 py-3 text-snow"><Check size={16} className="mt-1 flex-none text-signal" />{corp}</p>}
               <ul className="mt-4 flex flex-wrap gap-2">{sel.keywords.map(k => <li key={k} className="rounded-full border border-white/10 px-3 py-1.5 text-sm">{k}</li>)}</ul>
               <ul className="mt-5 grid gap-x-8 gap-y-2.5 border-t border-white/[0.07] pt-5 md:grid-cols-2">
                 {sel.evidence.map(e => <li key={e} className="flex gap-3 text-snow/85"><Check size={16} className="mt-1 flex-none text-signal" />{e}</li>)}

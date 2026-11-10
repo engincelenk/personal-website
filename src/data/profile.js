@@ -149,6 +149,12 @@ export const domains = [
     evidence: [{ en: "Familiar with agentic AI architectures", de: "Vertraut mit agentischen KI-Architekturen" }, { en: "Built ImmoFuchs", de: "ImmoFuchs entwickelt" }, { en: "Built this portfolio with AI", de: "Dieses Portfolio mit KI gebaut" }] }
 ];
 
+/* Shown in the detail text of every pillar (CV page and freelance page). */
+export const corpNote = {
+  en: "Several dedicated projects already delivered in renowned large corporations.",
+  de: "Bereits mehrere dedizierte Projekte in renommierten Großkonzernen."
+};
+
 /* AI as the vertical across the three pillars. Same wording on CV page, PDF and freelance page. */
 export const aiVertical = {
   claim: { en: "The vertical across all three pillars: AI as part of architecture, security and delivery.", de: "Die Vertikale über alle drei Säulen: KI als Teil von Architektur, Security und Umsetzung." },
