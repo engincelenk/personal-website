@@ -653,6 +653,17 @@ a.btn { text-decoration: none; }
 .ls-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
 .ls-tools input { flex: 1 1 180px; min-width: 0; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--fg); font-size: 16px; }
 .ls-replace { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--fg-muted); margin-bottom: 12px; }
+.ls-box { margin-bottom: 12px; padding: 12px 16px; }
+.ls-box > summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+.ls-box select, .ls-box input[type=file] { font-size: 16px; }
+.ls-imp-group h4 { margin: 14px 0 6px; font-size: 14px; }
+.ls-imp-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 4px 0; }
+.ls-imp-row .imp-value { flex: 2 1 200px; min-width: 0; }
+.ls-imp-row .imp-extra, .ls-imp-row .imp-scope { flex: 1 1 140px; min-width: 0; }
+.ls-imp-row input[type=text], .ls-imp-row select { padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--fg); font-size: 15px; }
+.ls-imp-row.exists { opacity: .65; }
+.ls-badge.warn { color: var(--gold); border-color: var(--gold); }
+.ls-badge { font-size: 11px; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 10px; padding: 1px 8px; }
 .ls-list { list-style: none; margin: 0; padding: 0; background: var(--bg-card); box-shadow: var(--shadow); border-radius: var(--radius); }
 .ls-list li { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
 .ls-list li:last-child { border-bottom: none; }
@@ -1153,11 +1164,13 @@ function clearSession() {
   EVENTS.length = 0; TEACHER_LIST = []; SYNCED = null; LEARNED = []; SUGG = {};
 }
 async function api(path, opts = {}) {
-  const headers = { 'Content-Type': 'application/json' };
+  const headers = {};
+  const isForm = typeof FormData !== 'undefined' && opts.body instanceof FormData; // Datei-Upload: Content-Type setzt der Browser
+  if (!isForm) headers['Content-Type'] = 'application/json';
   if (AUTH.token) headers.Authorization = 'Bearer ' + AUTH.token;
   let res;
   try {
-    res = await fetch(API_URL + path, { method: opts.method || 'GET', headers, body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined });
+    res = await fetch(API_URL + path, { method: opts.method || 'GET', headers, body: opts.body === undefined ? undefined : isForm ? opts.body : JSON.stringify(opts.body) });
   } catch (e) { throw Object.assign(new Error('Keine Verbindung zum Server.'), { status: 0 }); }
   let data = null;
   try { data = await res.json(); } catch (e) {}
@@ -2950,6 +2963,8 @@ function renderListsPage() {
       <button type="button" class="btn btn-secondary btn-sm" id="lsDelete"${n < 1 ? ' disabled' : ''}>🗑 Löschen${n ? ` (${n})` : ''}</button>
     </div>
     <label class="ls-replace"><input type="checkbox" id="lsReplace"${LISTS.replace ? ' checked' : ''}> Beim Umbenennen/Zusammenführen auch in bestehenden Veranstaltungen und Beiträgen ersetzen</label>
+    ${listsAddHtml()}
+    ${listsImportHtml()}
     ${!items ? '<p class="form-hint">Wird geladen …</p>' : !rows.length ? '<p class="form-hint">Keine Einträge.</p>' : `
     <ul class="ls-list">${rows.map(i => `
       <li data-v="${esc(i.value)}">
@@ -2958,6 +2973,106 @@ function renderListsPage() {
         <span class="ls-uses">${i.uses}×</span>
         <button type="button" class="btn btn-icon btn-sm ls-edit" title="Umbenennen" aria-label="Umbenennen">✎</button>
       </li>`).join('')}</ul>`}`;
+}
+const LIST_LABEL = Object.fromEntries(LIST_FIELDS);
+const LIST_EXTRA = { werk: 'Komponist', performer: 'Instrument' };
+LISTS.imp = null; LISTS.openAdd = false; LISTS.openImp = false;
+function teacherOptions(sel) { return `<option value="">– Lehrkraft (Klasse) wählen –</option>${TEACHER_LIST.map(t => `<option${t.name === sel ? ' selected' : ''}>${esc(t.name)}</option>`).join('')}`; }
+
+// Von Hand anlegen
+function listsAddHtml() {
+  const f = LISTS.field, ex = LIST_EXTRA[f];
+  return `<details class="entry-section ls-box" id="lsAddBox"${LISTS.openAdd ? ' open' : ''}>
+    <summary>＋ Neuen Eintrag anlegen – ${LIST_LABEL[f]}</summary>
+    <div class="form-grid" style="margin-top:12px">
+      <div class="form-group full"><label for="lsNewValue">${LIST_LABEL[f]}</label><input type="text" id="lsNewValue" autocomplete="off"></div>
+      ${ex ? `<div class="form-group"><label for="lsNewExtra">${ex} (optional)</label><input type="text" id="lsNewExtra" autocomplete="off"></div>` : ''}
+      ${f === 'performer' ? `<div class="form-group"><label for="lsNewScope">Klasse *</label><select id="lsNewScope">${teacherOptions('')}</select></div>` : ''}
+    </div>
+    ${f === 'performer' ? '<p class="form-hint">Schülernamen sehen nur die jeweilige Lehrkraft und du.</p>' : ''}
+    <div class="page-actions"><button type="button" class="btn btn-primary" id="lsAddBtn">＋ Anlegen</button></div>
+  </details>`;
+}
+
+// Import aus Dokument (KI liest, Admin prüft, dann erst Speichern)
+function listsImportHtml() {
+  const imp = LISTS.imp;
+  let body = '';
+  if (imp && imp.busy) body = `<p class="form-hint">⏳ „${esc(imp.name)}“ wird gelesen und von der KI zugeordnet … (kann bis zu einer Minute dauern)</p>`;
+  else if (imp && imp.items) {
+    const n = imp.items.filter(i => i.on).length;
+    const groups = LIST_FIELDS.map(([f, l]) => [f, l, imp.items.map((it, idx) => ({ it, idx })).filter(o => o.it.field === f)]).filter(g => g[2].length);
+    body = `<p class="form-hint">Bitte prüfen: Texte lassen sich ändern, Haken entfernen, was nicht übernommen werden soll.${imp.items.some(i => i.field === 'performer' && !i.scope) ? ' <strong>Mitwirkende brauchen eine Klasse.</strong>' : ''}</p>
+      ${groups.map(([f, l, rows]) => `<div class="ls-imp-group"><h4>${l} <span class="ls-n">${rows.length}</span></h4>${rows.map(({ it, idx }) => `
+        <div class="ls-imp-row${it.exists ? ' exists' : ''}" data-i="${idx}">
+          <input type="checkbox" class="imp-on" aria-label="Übernehmen"${it.on ? ' checked' : ''}>
+          <input type="text" class="imp-value" value="${esc(it.value)}" aria-label="${l}">
+          ${LIST_EXTRA[f] ? `<input type="text" class="imp-extra" value="${esc(it.extra)}" placeholder="${LIST_EXTRA[f]}" aria-label="${LIST_EXTRA[f]}">` : ''}
+          ${f === 'performer' ? `<select class="imp-scope" aria-label="Klasse">${teacherOptions(it.scope)}</select>` : ''}
+          ${it.exists ? '<span class="ls-badge">schon vorhanden</span>' : ''}${it.uncertain ? '<span class="ls-badge warn" title="Dieser Text wurde im Dokument nicht gefunden – bitte prüfen">⚠ prüfen</span>' : it.fixed ? '<span class="ls-badge" title="Schreibweise anhand des Dokuments korrigiert">korrigiert</span>' : ''}
+        </div>`).join('')}</div>`).join('') || '<p class="form-hint">Es wurde nichts erkannt.</p>'}
+      <div class="page-actions">
+        <button type="button" class="btn btn-secondary" id="impCancel">Verwerfen</button>
+        <button type="button" class="btn btn-primary" id="impApply"${n ? '' : ' disabled'}>${n} Einträge übernehmen</button>
+      </div>`;
+  } else body = `<p class="form-hint">PDF, Word, Bild oder Text hochladen (z. B. ein altes Programmheft). Die KI liest Titel, Ort, Komponisten, Stücke und Mitwirkende aus und ordnet sie den Listen zu. Du siehst zuerst eine Vorschau, nichts wird ohne deine Bestätigung gespeichert.</p>
+      <p class="form-hint">Datenschutz: Der Inhalt der Datei wird zur Auswertung an Cloudflare Workers AI gesendet (wird nicht zum Training genutzt) und nicht gespeichert. Bei Programmen mit Schülernamen bitte beachten.</p>
+      <input type="file" id="lsFile" accept=".pdf,.docx,.doc,.txt,.md,.csv,image/*">
+      ${imp && imp.err ? `<p class="warn-inline" style="margin-top:8px">⚠️ ${esc(imp.err)}</p>` : ''}`;
+  return `<details class="entry-section ls-box" id="lsImpBox"${LISTS.openImp || imp ? ' open' : ''}>
+    <summary>📥 Import aus Dokument (KI)</summary><div style="margin-top:12px">${body}</div></details>`;
+}
+function bindListsExtras() {
+  const addBox = document.getElementById('lsAddBox'), impBox = document.getElementById('lsImpBox');
+  if (addBox) addBox.addEventListener('toggle', () => { LISTS.openAdd = addBox.open; });
+  if (impBox) impBox.addEventListener('toggle', () => { LISTS.openImp = impBox.open; });
+  const addBtn = document.getElementById('lsAddBtn');
+  if (addBtn) addBtn.addEventListener('click', async () => {
+    const value = document.getElementById('lsNewValue').value.trim();
+    const extraEl = document.getElementById('lsNewExtra'), scopeEl = document.getElementById('lsNewScope');
+    if (!value) { toast('Bitte einen Wert eingeben.'); document.getElementById('lsNewValue').focus(); return; }
+    if (LISTS.field === 'performer' && !scopeEl.value) { toast('Bitte die Klasse (Lehrkraft) wählen.'); return; }
+    try {
+      await api('/api/suggestions/add', { method: 'POST', body: { items: [{ field: LISTS.field, value, extra: extraEl ? extraEl.value.trim() : '', scope: scopeEl ? scopeEl.value : '' }] } });
+      LISTS.openAdd = true; await listsReload(); toast('Angelegt'); renderOnly();
+    } catch (e) { toast('Fehlgeschlagen: ' + e.message); }
+  });
+  const file = document.getElementById('lsFile');
+  if (file) file.addEventListener('change', async () => {
+    const f = file.files[0]; if (!f) return;
+    LISTS.imp = { busy: true, name: f.name }; LISTS.openImp = true; renderOnly();
+    try {
+      const fd = new FormData(); fd.append('file', f);
+      const r = await api('/api/suggestions/import', { method: 'POST', body: fd });
+      LISTS.imp = { items: r.items.map(it => ({ ...it, on: !it.exists && !it.uncertain && (it.field !== 'performer' || !!it.scope) })), name: f.name };
+    } catch (e) { LISTS.imp = { err: e.message }; }
+    renderOnly();
+  });
+  if (LISTS.imp && LISTS.imp.items) {
+    const imp = LISTS.imp;
+    const refreshApply = () => {
+      const n = imp.items.filter(i => i.on).length, b = document.getElementById('impApply');
+      b.disabled = !n; b.textContent = `${n} Einträge übernehmen`;
+    };
+    $$('.ls-imp-row').forEach(row => {
+      const it = imp.items[+row.dataset.i];
+      row.querySelector('.imp-on').addEventListener('change', e => { it.on = e.target.checked; refreshApply(); });
+      row.querySelector('.imp-value').addEventListener('change', e => { it.value = e.target.value.trim(); });
+      const ex = row.querySelector('.imp-extra'); if (ex) ex.addEventListener('change', e => { it.extra = e.target.value.trim(); });
+      const sc = row.querySelector('.imp-scope'); if (sc) sc.addEventListener('change', e => { it.scope = e.target.value; if (it.scope && !it.exists) { it.on = true; row.querySelector('.imp-on').checked = true; refreshApply(); } });
+    });
+    document.getElementById('impCancel').addEventListener('click', () => { LISTS.imp = null; renderOnly(); });
+    document.getElementById('impApply').addEventListener('click', async () => {
+      const sel = imp.items.filter(i => i.on && i.value);
+      const missing = sel.find(i => i.field === 'performer' && !i.scope);
+      if (missing) { toast(`Für „${missing.value}“ bitte die Klasse wählen.`); return; }
+      try {
+        const r = await api('/api/suggestions/add', { method: 'POST', body: { items: sel.map(({ field, value, extra, scope }) => ({ field, value, extra, scope })) } });
+        LISTS.imp = null; await listsReload(); toast(`${r.added} Einträge übernommen`);
+      } catch (e) { toast('Fehlgeschlagen: ' + e.message); }
+      renderOnly();
+    });
+  }
 }
 async function listsReload() {
   const r = await api('/api/suggestions');
@@ -2977,6 +3092,7 @@ async function listsApply(method, body, msg) {
 function bindListsPage() {
   if (adminPage !== 'lists' || currentView !== 'admin') return;
   if (LISTS.items === null) { listsReload().then(() => { if (adminPage === 'lists') renderOnly(); }).catch(e => toast('Laden fehlgeschlagen: ' + e.message)); return; }
+  bindListsExtras();
   $$('.ls-field').forEach(b => b.addEventListener('click', () => { LISTS.field = b.dataset.f; LISTS.sel.clear(); LISTS.q = ''; renderOnly(); }));
   const s = document.getElementById('lsSearch');
   s.addEventListener('input', () => { LISTS.q = s.value; const pos = s.selectionStart; renderOnly(); const s2 = document.getElementById('lsSearch'); s2.focus(); s2.setSelectionRange(pos, pos); });
