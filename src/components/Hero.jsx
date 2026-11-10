@@ -61,10 +61,8 @@ export default function Hero({ guest }) {
         <motion.figure {...rise(2)} className="relative hidden lg:block">
           <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-signal/20 blur-3xl" aria-hidden="true" />
           <img src="/engin.jpg" alt={t("portrait")} width="720" height="720" className="aspect-square w-full rounded-[2rem] border border-white/10 object-cover shadow-2xl" />
-          <figcaption className="absolute inset-x-3 -bottom-4 flex flex-wrap justify-center gap-1.5">
-            {pillarChips.map(d => (
-              <span key={d.id} className={`rounded-full border px-3 py-1.5 text-[13px] font-medium backdrop-blur ${d.id === "ai" ? "border-signal/60 bg-ink/90 text-signal" : "border-white/15 bg-ink/90 text-snow"}`}>{d.title}</span>
-            ))}
+          <figcaption className="absolute -bottom-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/15 bg-ink/90 px-5 py-2 text-sm font-medium tracking-tight backdrop-blur">
+            {t("photoLabel")}
           </figcaption>
         </motion.figure>
         </div>
