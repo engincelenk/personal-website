@@ -152,12 +152,12 @@ export const domains = [
 /* Success story, confirmed by the VDA press release and trade press. The award followed in Feb 2024. */
 export const successStory = {
   label: { en: "Success story", de: "Erfolgsgeschichte" },
-  title: { en: "VDA Logistics Award 2024", de: "VDA Logistik-Award 2024" },
+  title: { en: "VDA Logistics Award 2024 · 1st place", de: "VDA Logistik-Award 2024 · 1. Platz" },
   text: {
-    en: "Next Generation Transport Management (NGTM), Bosch's central IT solution for worldwide transport management, won the VDA Logistics Award 2024. Overall responsibility for the solution: 2021–2023.",
-    de: "Next Generation Transport Management (NGTM), die zentrale IT-Lösung von Bosch für das weltweite Transportmanagement, wurde mit dem VDA Logistik-Award 2024 ausgezeichnet. Gesamtverantwortung für die Lösung: 2021–2023."
+    en: "Next Generation Transport Management (NGTM), Bosch's central IT solution for worldwide transport management, won 1st place. Role: IT solution manager, the central contact for everything from the IT side (2021–2023).",
+    de: "Next Generation Transport Management (NGTM), die zentrale IT-Lösung von Bosch für das weltweite Transportmanagement, belegte den 1. Platz. Rolle: IT Solution Manager, zentraler Ansprechpartner für alles aus IT-Sicht (2021–2023)."
   },
-  short: { en: "NGTM awarded the VDA Logistics Award 2024", de: "NGTM mit dem VDA Logistik-Award 2024 ausgezeichnet" },
+  short: { en: "NGTM: 1st place, VDA Logistics Award 2024", de: "NGTM: 1. Platz beim VDA Logistik-Award 2024" },
   source: { en: "VDA press release", de: "VDA-Pressemeldung" },
   link: { en: "https://www.vda.de/en/press/press-releases/2024/240228_PM_VDA_Logistics_Award_2024", de: "https://www.vda.de/de/presse/Pressemeldungen/2024/240228_PM_VDA-Logistik-Award_2024" }
 };
