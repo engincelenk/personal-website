@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check } from "lucide-react";
 import SectionHead from "./SectionHead.jsx";
 import Icon from "./Icon.jsx";
+import SuccessStory from "./SuccessStory.jsx";
 import { domains as rawDomains, aiVertical as rawAi, corpNote as rawCorp } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
@@ -68,6 +69,7 @@ export default function Expertise({ domain, setDomain }) {
               <ul className="mt-5 grid gap-x-8 gap-y-2.5 border-t border-white/[0.07] pt-5 md:grid-cols-2">
                 {sel.evidence.map(e => <li key={e} className="flex gap-3 text-snow/85"><Check size={16} className="mt-1 flex-none text-signal" />{e}</li>)}
               </ul>
+              {sel.id === "management" && <div className="mt-5"><SuccessStory /></div>}
             </motion.div>
           </AnimatePresence>
         </div>

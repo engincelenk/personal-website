@@ -90,7 +90,7 @@ export const career = [
       { en: "Overall responsibility for Bosch's central IT solution for transport management worldwide: Next Generation Transport Management (NGTM)", de: "Gesamtverantwortung für die zentrale IT-Lösung von Bosch für das weltweite Transportmanagement: Next Generation Transport Management (NGTM)" },
       { en: "Single point of contact on the IT side, full budget and project responsibility", de: "Single Point of Contact auf IT-Seite, volle Budget- und Projektverantwortung" },
       { en: "Expert for logistics IT solutions, partners SupplyOn & Eurolog", de: "Experte für Logistiklösungen, Partner SupplyOn & Eurolog" }],
-    projects: ["NGTM", "SupplyOn", "Eurolog"], domains: ["management"] },
+    projects: ["NGTM", "SupplyOn", "Eurolog"], story: true, domains: ["management"] },
   { id: "bosch-cse", from: "2024-01", to: null, logo: "bosch", place: "Stuttgart",
     short: { en: "Cyber Security Engineer", de: "Cyber Security Engineer" },
     role: { en: "Cyber Security Engineer", de: "Cyber Security Engineer" }, org: "Bosch Digital · Robert Bosch GmbH",
@@ -148,6 +148,19 @@ export const domains = [
     keywords: [{ en: "Agentic Architectures", de: "Agentische Architekturen" }, { en: "AI Applications", de: "KI-Anwendungen" }, { en: "AI-assisted Security", de: "KI-gestützte Security" }, { en: "Product Development", de: "Produktentwicklung" }],
     evidence: [{ en: "Familiar with agentic AI architectures", de: "Vertraut mit agentischen KI-Architekturen" }, { en: "Built ImmoFuchs", de: "ImmoFuchs entwickelt" }, { en: "Built this portfolio with AI", de: "Dieses Portfolio mit KI gebaut" }] }
 ];
+
+/* Success story, confirmed by the VDA press release and trade press. The award followed in Feb 2024. */
+export const successStory = {
+  label: { en: "Success story", de: "Erfolgsgeschichte" },
+  title: { en: "VDA Logistics Award 2024", de: "VDA Logistik-Award 2024" },
+  text: {
+    en: "Next Generation Transport Management (NGTM), Bosch's central IT solution for worldwide transport management, won the VDA Logistics Award 2024. Overall responsibility for the solution: 2021–2023.",
+    de: "Next Generation Transport Management (NGTM), die zentrale IT-Lösung von Bosch für das weltweite Transportmanagement, wurde mit dem VDA Logistik-Award 2024 ausgezeichnet. Gesamtverantwortung für die Lösung: 2021–2023."
+  },
+  short: { en: "NGTM awarded the VDA Logistics Award 2024", de: "NGTM mit dem VDA Logistik-Award 2024 ausgezeichnet" },
+  source: { en: "VDA press release", de: "VDA-Pressemeldung" },
+  link: { en: "https://www.vda.de/en/press/press-releases/2024/240228_PM_VDA_Logistics_Award_2024", de: "https://www.vda.de/de/presse/Pressemeldungen/2024/240228_PM_VDA-Logistik-Award_2024" }
+};
 
 /* Shown in the detail text of every pillar (CV page and freelance page). */
 export const corpNote = {
