@@ -662,6 +662,14 @@ a.btn { text-decoration: none; }
 .ls-imp-row .imp-extra, .ls-imp-row .imp-scope { flex: 1 1 140px; min-width: 0; }
 .ls-imp-row input[type=text], .ls-imp-row select { padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--fg); font-size: 15px; }
 .ls-imp-row.exists { opacity: .65; }
+.ls-prog-bar { height: 8px; background: var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 12px; }
+.ls-prog-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-bright, var(--accent)), var(--accent)); background-size: 200% 100%; border-radius: 8px; transition: width .6s ease; animation: lsShimmer 1.4s linear infinite; }
+@keyframes lsShimmer { from { background-position: 200% 0; } to { background-position: 0 0; } }
+.ls-steps { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 6px; font-size: 14px; color: var(--fg-muted); }
+.ls-steps li.done { color: var(--fg); }
+.ls-steps li.now { color: var(--accent); font-weight: 600; }
+.ls-steps em { font-style: normal; font-weight: 400; color: var(--fg-muted); }
+.ls-ic { display: inline-block; width: 22px; }
 .ls-badge.warn { color: var(--gold); border-color: var(--gold); }
 .ls-badge { font-size: 11px; color: var(--fg-muted); border: 1px solid var(--border); border-radius: 10px; padding: 1px 8px; }
 .ls-list { list-style: none; margin: 0; padding: 0; background: var(--bg-card); box-shadow: var(--shadow); border-radius: var(--radius); }
@@ -2998,11 +3006,21 @@ function listsAddHtml() {
 function listsImportHtml() {
   const imp = LISTS.imp;
   let body = '';
-  if (imp && imp.busy) body = `<p class="form-hint">⏳ „${esc(imp.name)}“ wird gelesen und von der KI zugeordnet … (kann bis zu einer Minute dauern)</p>`;
+  if (imp && imp.busy) {
+    const order = ['upload', 'read', 'ai', 'check'], cur = order.indexOf(imp.stage);
+    const labels = { upload: 'Datei wird hochgeladen', read: imp.labels.read || 'Dokument wird gelesen', ai: imp.labels.ai || 'KI ordnet die Angaben den Feldern zu', check: imp.labels.check || 'Ergebnis wird mit dem Text abgeglichen' };
+    const detail = { read: '', ai: imp.chars ? `${imp.chars} Zeichen gelesen` : '', check: imp.found != null ? `${imp.found} Stücke erkannt` : '' };
+    const pct = [8, 25, 60, 92][cur] || 5;
+    body = `<div class="ls-prog" role="status" aria-live="polite">
+      <div class="ls-prog-bar"><span style="width:${pct}%"></span></div>
+      <ol class="ls-steps">${order.map((k, i) => `<li class="${i < cur ? 'done' : i === cur ? 'now' : ''}"><span class="ls-ic">${i < cur ? '✔' : i === cur ? '⏳' : '○'}</span>${esc(labels[k])}${i <= cur && detail[k] ? ` <em>· ${esc(detail[k])}</em>` : ''}</li>`).join('')}</ol>
+      <p class="form-hint">„${esc(imp.name)}“ · ⏱ <span id="impElapsed">${Math.floor((Date.now() - imp.t0) / 1000)}</span> s · Das kann bei großen Dateien bis zu einer Minute dauern.</p>
+    </div>`;
+  }
   else if (imp && imp.items) {
     const n = imp.items.filter(i => i.on).length;
     const groups = LIST_FIELDS.map(([f, l]) => [f, l, imp.items.map((it, idx) => ({ it, idx })).filter(o => o.it.field === f)]).filter(g => g[2].length);
-    body = `<p class="form-hint">Bitte prüfen: Texte lassen sich ändern, Haken entfernen, was nicht übernommen werden soll.${imp.items.some(i => i.field === 'performer' && !i.scope) ? ' <strong>Mitwirkende brauchen eine Klasse.</strong>' : ''}</p>
+    body = `${imp.ocr ? '<p class="warn-inline">📷 Texterkennung aus Bildern kann Fehler machen – bitte vor allem Namen genau prüfen. Bekannte Schreibweisen aus den Auswahllisten wurden automatisch übernommen („korrigiert“).</p>' : ''}<p class="form-hint">Bitte prüfen: Texte lassen sich ändern, Haken entfernen, was nicht übernommen werden soll.${imp.items.some(i => i.field === 'performer' && !i.scope) ? ' <strong>Mitwirkende brauchen eine Klasse.</strong>' : ''}</p>
       ${groups.map(([f, l, rows]) => `<div class="ls-imp-group"><h4>${l} <span class="ls-n">${rows.length}</span></h4>${rows.map(({ it, idx }) => `
         <div class="ls-imp-row${it.exists ? ' exists' : ''}" data-i="${idx}">
           <input type="checkbox" class="imp-on" aria-label="Übernehmen"${it.on ? ' checked' : ''}>
@@ -3022,6 +3040,27 @@ function listsImportHtml() {
   return `<details class="entry-section ls-box" id="lsImpBox"${LISTS.openImp || imp ? ' open' : ''}>
     <summary>📥 Import aus Dokument (KI)</summary><div style="margin-top:12px">${body}</div></details>`;
 }
+// Import-Antwort als Stream (eine JSON-Zeile je Schritt) lesen; liefert das Ergebnis
+async function apiImportStream(formData, onEvent) {
+  let res;
+  try { res = await fetch(API_URL + '/api/suggestions/import', { method: 'POST', headers: { Authorization: 'Bearer ' + AUTH.token }, body: formData }); }
+  catch (e) { throw new Error('Keine Verbindung zum Server.'); }
+  if (!res.ok) { let d = null; try { d = await res.json(); } catch (e) {} throw new Error((d && d.error) || 'Fehler ' + res.status); }
+  if (!res.body) throw new Error('Der Browser unterstützt keine Fortschrittsanzeige.');
+  const rd = res.body.getReader(), dec = new TextDecoder(); let buf = '', result = null;
+  for (;;) {
+    const { done, value } = await rd.read(); if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i; while ((i = buf.indexOf('\n')) >= 0) {
+      const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (!line) continue;
+      let o; try { o = JSON.parse(line); } catch (e) { continue; }
+      if (o.error) throw new Error(o.error);
+      if (o.result) result = o.result; else onEvent(o);
+    }
+  }
+  if (!result) throw new Error('Die Verbindung wurde unterbrochen. Bitte erneut versuchen.');
+  return result;
+}
 function bindListsExtras() {
   const addBox = document.getElementById('lsAddBox'), impBox = document.getElementById('lsImpBox');
   if (addBox) addBox.addEventListener('toggle', () => { LISTS.openAdd = addBox.open; });
@@ -3040,12 +3079,23 @@ function bindListsExtras() {
   const file = document.getElementById('lsFile');
   if (file) file.addEventListener('change', async () => {
     const f = file.files[0]; if (!f) return;
-    LISTS.imp = { busy: true, name: f.name }; LISTS.openImp = true; renderOnly();
+    const imp = LISTS.imp = { busy: true, name: f.name, stage: 'upload', labels: {}, t0: Date.now() };
+    LISTS.openImp = true; renderOnly();
+    clearInterval(window.__impTimer);
+    window.__impTimer = setInterval(() => { const el = document.getElementById('impElapsed'); if (el) el.textContent = Math.floor((Date.now() - imp.t0) / 1000); }, 500);
     try {
-      const fd = new FormData(); fd.append('file', f);
-      const r = await api('/api/suggestions/import', { method: 'POST', body: fd });
-      LISTS.imp = { items: r.items.map(it => ({ ...it, on: !it.exists && !it.uncertain && (it.field !== 'performer' || !!it.scope) })), name: f.name };
+      let up = f;
+      if (/^image\//.test(f.type)) { // Fotos vorher verkleinern: schneller und zuverlässiger
+        try { const du = await downscaleImage(f, 1800, 0.88); up = new File([await (await fetch(du)).blob()], f.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg' }); } catch (e) { up = f; }
+      }
+      const fd = new FormData(); fd.append('file', up);
+      const r = await apiImportStream(fd, ev => {
+        if (LISTS.imp !== imp) return;
+        if (ev.stage) { imp.stage = ev.stage; imp.labels[ev.stage] = ev.label; if (ev.chars) imp.chars = ev.chars; if (ev.found != null) imp.found = ev.found; renderOnly(); }
+      });
+      LISTS.imp = { items: r.items.map(it => ({ ...it, on: !it.exists && !it.uncertain && (it.field !== 'performer' || !!it.scope) })), name: f.name, ocr: !!r.ocr };
     } catch (e) { LISTS.imp = { err: e.message }; }
+    clearInterval(window.__impTimer);
     renderOnly();
   });
   if (LISTS.imp && LISTS.imp.items) {
