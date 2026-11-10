@@ -1136,7 +1136,7 @@ try { ['jms-events-v1', 'jms-teachers-v1', 'jms-settings-v1', 'jms-images-v1', '
 
 function clearSession() {
   AUTH = { token: null, role: null, me: null }; saveAuth();
-  EVENTS.length = 0; TEACHER_LIST = []; SYNCED = null; LEARNED = [];
+  EVENTS.length = 0; TEACHER_LIST = []; SYNCED = null; LEARNED = []; SUGG = {};
 }
 async function api(path, opts = {}) {
   const headers = { 'Content-Type': 'application/json' };
@@ -1170,6 +1170,7 @@ function applyState(s) {
   }));
   s.images.forEach(i => { if (!IMAGES.some(x => x.id === i.id)) IMAGES.push({ id: i.id, label: i.label, src: imageUrl(i.id) }); });
   LEARNED = (s.repertoire || []).map(r => ({ ...r }));
+  SUGG = s.suggestions || {};
   AUTH.me = s.me;
   SYNCED = snapshot();
 }
@@ -1302,6 +1303,33 @@ function norm(s) { return (s || '').toLowerCase().normalize('NFD').replace(/[\u0
 
 const REPERTOIRE_STORE = 'jms-repertoire-v1';
 let LEARNED = []; // [{composer, werk, instrument, teacher, count}] – kommt vom Server (ohne Schülernamen)
+let SUGG = {};    // Auswahllisten aus der Datenbank: { feld: [{v: Wert, x: Zusatz, n: Anzahl}] } – alles, was je eingegeben wurde
+
+// Werte je Feld: aus der Datenbank + live aus den aktuellen Daten (damit Neues sofort erscheint)
+function suggestionsFor(field) {
+  const map = new Map();
+  const add = (v, x, n) => { v = (v || '').trim(); if (!v) return; const o = map.get(v); if (o) { o.n += n; if (!o.x && x) o.x = x; } else map.set(v, { v, x: x || '', n }); };
+  (SUGG[field] || []).forEach(s => add(s.v, s.x, s.n));
+  const live = (field === 'title' || field === 'subtitle' || field === 'location' || field === 'footer')
+    ? EVENTS.map(ev => ({ title: ev.title, subtitle: ev.subtitle, location: ev.location, footer: ev.pdfFooter }[field]))
+    : [];
+  live.forEach(v => { if (v && !map.has((v || '').trim())) add(v, '', 1); });
+  if (field === 'note') EVENTS.forEach(ev => ev.entries.forEach(e => { if (e.note && !map.has(e.note.trim())) add(e.note, '', 1); }));
+  return [...map.values()];
+}
+// Eingabefeld mit Auswahlliste aus der Datenbank (alle bisherigen Werte, häufigste zuerst)
+function attachFieldSuggest(input, field) {
+  if (!input) return;
+  if (input.parentElement.classList.contains('form-group')) { // Eingabefeld für die Liste in einen Wrapper setzen
+    const w = document.createElement('div'); input.parentElement.insertBefore(w, input); w.appendChild(input);
+  }
+  attachSuggest(input, q => {
+    const cur = norm(input.value).trim();
+    return suggestionsFor(field).map(s => ({ s, sc: scoreText(q, s.v) })).filter(o => o.sc && norm(o.s.v) !== cur)
+      .map(o => ({ rank: o.sc * 20 + Math.min(o.s.n, 10), value: o.s.v, title: o.s.v, sub: o.s.n > 1 ? `${o.s.n}×` : '' }))
+      .sort((a, b) => b.rank - a.rank).slice(0, 12);
+  });
+}
 function saveLearned() {}
 
 function learn(entry, teacher) {
@@ -1340,6 +1368,9 @@ function buildRepertoire() {
     add(e.composer, e.werk, instr, e.teacher, 1);
   }));
   LEARNED.forEach(l => add(l.composer, l.werk, l.instrument, l.teacher, l.count));
+  // Alles, was je in der Datenbank gemerkt wurde (auch aus gelöschten Veranstaltungen)
+  (SUGG.composer || []).forEach(s => add(s.v, '', '', '', 0));
+  (SUGG.werk || []).forEach(s => add(s.x, s.v, '', '', 0));
   return map;
 }
 
@@ -1403,6 +1434,7 @@ function suggestPieces(query, composerValue) {
 // Bekannte Schüler/innen -> zuletzt verwendetes Instrument
 function knownPerformers() {
   const m = new Map();
+  (SUGG.performer || []).forEach(s => { if (s.v) m.set(s.v, s.x || ''); });
   EVENTS.forEach(ev => ev.entries.forEach(e => e.performers.forEach(p => { if (p.name) m.set(p.name, p.instrument || m.get(p.name) || ''); })));
   return m;
 }
@@ -2215,6 +2247,7 @@ function bindPreviewOptions() {
   if (!ev || !document.querySelector('.sheet-stage')) return;
   $$('input[name=pdfLayout]').forEach(r => r.addEventListener('change', () => { ev.pdfLayout = r.value; render(); }));
   const f = document.getElementById('pdfFooter');
+  if (f) attachFieldSuggest(f, 'footer');
   if (f) f.addEventListener('change', () => { ev.pdfFooter = f.value.trim(); render(); });
   const b = document.getElementById('pdfBackText');
   if (b) b.addEventListener('change', () => { ev.backText = b.value; render(); });
@@ -2431,6 +2464,7 @@ function bindEvents() {
   // Vorschläge Komponist / Stück
   const fComposer = document.getElementById('fComposer');
   const fWerk = document.getElementById('fWerk');
+  attachFieldSuggest(document.getElementById('fNote'), 'note');
   if (fComposer && fWerk) {
     attachSuggest(fComposer, q => suggestComposers(q), () => fWerk.focus());
     attachSuggest(fWerk, q => suggestPieces(q, fComposer.value), it => { if (!fComposer.value.trim() && it.composer) fComposer.value = it.composer; });
@@ -2604,6 +2638,7 @@ function bindNewEventPage() {
   const toDe = v => v ? v.split('-').reverse().join('.') : '';
   document.getElementById('cancelNewEventBtn').addEventListener('click', () => go('/admin'));
   bindTeacherPicker();
+  bindEventFieldSuggest();
   create.addEventListener('click', () => {
     const title = document.getElementById('neTitle').value.trim();
     if (!title) { toast('Bitte Titel eingeben.'); document.getElementById('neTitle').focus(); return; }
@@ -2739,6 +2774,11 @@ function teacherPickerHtml(selected, excludeEventId) {
           <p class="form-hint" id="tpEmpty" hidden>Keine Lehrkraft gefunden.</p>
         </div>`;
 }
+function bindEventFieldSuggest() {
+  attachFieldSuggest(document.getElementById('neTitle'), 'title');
+  attachFieldSuggest(document.getElementById('neSubtitle'), 'subtitle');
+  attachFieldSuggest(document.getElementById('neLocation'), 'location');
+}
 function bindTeacherPicker() {
   const items = $$('.tp-item'), boxes = () => $$('.ne-teacher');
   const search = document.getElementById('tpSearch'), btnAll = document.getElementById('tpAll'), btnNone = document.getElementById('tpNone');
@@ -2795,6 +2835,7 @@ function bindEditEventPage() {
   const save = document.getElementById('saveEventBtn');
   if (!save) return;
   bindTeacherPicker();
+  bindEventFieldSuggest();
   document.getElementById('cancelEditEventBtn').addEventListener('click', () => go(parentPath()));
   save.addEventListener('click', () => {
     const ev = EVENTS.find(e => e.id === selectedEvent); if (!ev) return;
