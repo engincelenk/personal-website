@@ -6,7 +6,7 @@ import { localize } from "./i18n.jsx";
 import { period } from "./lib/dates.js";
 
 const lang = new URLSearchParams(location.search).get("lang") === "de" ? "de" : "en";
-const { person, cv, domains, aiVertical, career, education, certificates, trainings, logos } = localize({ ...raw }, lang);
+const { person, cv, domains, aiVertical, career, education, certificates, trainings, logos, successStory } = localize({ ...raw }, lang);
 const T = {
   en: { cv: "Curriculum vitae", pillars: "Competence profile", exp: "Experience", edu: "Education", certs: "Certificates & training", langs: "Languages", projects: "Projects", school: "School path", kw: "Keywords", interactive: "Interactive portfolio", dl: "Download PDF", back: "Back to portfolio" },
   de: { cv: "Lebenslauf", pillars: "Kompetenzprofil", exp: "Berufserfahrung", edu: "Bildung", certs: "Zertifikate & Weiterbildung", langs: "Sprachen", projects: "Projekte", school: "Schulweg", kw: "Schlagworte", interactive: "Interaktives Portfolio", dl: "PDF laden", back: "Zum Portfolio" }
@@ -55,7 +55,7 @@ document.getElementById("cv").innerHTML = `
           <div>
             <p class="when">${esc(period(c.from, c.to, lang))} · ${esc(c.place)}</p>
             <h3>${esc(c.role)}</h3><p class="org">${esc(c.org)}</p>
-            <ul>${c.points.map(r => `<li>${esc(r)}</li>`).join("")}${c.projects ? `<li>${T.projects}: ${esc(c.projects.join(", "))}</li>` : ""}</ul>
+            <ul>${c.points.map(r => `<li>${esc(r)}</li>`).join("")}${c.story ? `<li><b>${esc(successStory.short)}</b></li>` : ""}${c.projects ? `<li>${T.projects}: ${esc(c.projects.join(", "))}</li>` : ""}</ul>
           </div>
         </div>`).join("")}
     </div>

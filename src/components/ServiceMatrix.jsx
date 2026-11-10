@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check } from "lucide-react";
 import Icon from "./Icon.jsx";
+import SuccessStory from "./SuccessStory.jsx";
 import { pillars as rawPillars, aiVertical as rawAi } from "../data/services.js";
 import { corpNote as rawCorp } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
@@ -79,6 +80,7 @@ export default function ServiceMatrix({ T }) {
                 <p className="mt-3 flex items-start gap-2.5 rounded-xl border border-signal/30 bg-signal/10 px-4 py-3 text-snow"><Check size={16} className="mt-1 flex-none text-signal" />{corp}</p>
                 <ul className="mt-4 grid gap-x-6 gap-y-3 md:grid-cols-2">
                   {cur.offers.map(o => <li key={o.title} className="flex gap-2.5"><Check size={16} className="mt-1 flex-none text-signal" /><span><span className="block text-sm font-semibold">{o.title}</span><span className="block text-sm text-mist">{o.text}</span></span></li>)}
+                  {cur.id === "management" && <li className="md:col-span-2"><SuccessStory compact /></li>}
                   <li className="flex gap-2.5"><Icon name="Sparkles" size={16} className="mt-1 flex-none text-signal" /><span><span className="block text-sm font-semibold">{cur.ai.title}</span><span className="block text-sm text-mist">{cur.ai.text}</span></span></li>
                 </ul>
               </>

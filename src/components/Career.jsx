@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { MapPin } from "lucide-react";
+import SuccessStory from "./SuccessStory.jsx";
 import SectionHead from "./SectionHead.jsx";
 import PathMap from "./PathMap.jsx";
 import Logo from "./Logo.jsx";
@@ -18,6 +19,7 @@ function Card({ c, compact, lang }) {
         <ul className="mt-3 space-y-1.5 text-[15px] text-snow/85">
           {c.points.map(p => <li key={p} className="flex gap-2.5"><span className="mt-[0.55em] h-1.5 w-1.5 flex-none rounded-full bg-signal" />{p}</li>)}
         </ul>
+        {c.story && <div className="mt-4"><SuccessStory compact /></div>}
         {c.projects && <div className="mt-3 flex flex-wrap gap-1.5">{c.projects.map(p => <span key={p} className="rounded-full bg-white/[0.06] px-2.5 py-1 text-xs text-snow/80">{p}</span>)}</div>}
       </div>
     </div>
