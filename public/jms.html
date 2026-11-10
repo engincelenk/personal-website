@@ -646,6 +646,19 @@ a.btn { text-decoration: none; }
 /* ---- Lehrkräfte-Tabelle ---- */
 .teacher-table { background: var(--bg-card); box-shadow: var(--shadow); border-radius: var(--radius); }
 .tt-row { display: grid; grid-template-columns: 1.2fr 1.4fr 1.4fr auto; gap: 8px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.ls-fields { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.ls-field { cursor: pointer; border: 1px solid var(--border); background: var(--bg-card); color: var(--fg); }
+.ls-field.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.ls-n { opacity: .7; margin-left: 4px; font-size: 11px; }
+.ls-tools { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.ls-tools input { flex: 1 1 180px; min-width: 0; padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--fg); font-size: 16px; }
+.ls-replace { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--fg-muted); margin-bottom: 12px; }
+.ls-list { list-style: none; margin: 0; padding: 0; background: var(--bg-card); box-shadow: var(--shadow); border-radius: var(--radius); }
+.ls-list li { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.ls-list li:last-child { border-bottom: none; }
+.ls-text { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.ls-extra { display: block; font-size: 12px; color: var(--fg-muted); }
+.ls-uses { font-size: 12px; color: var(--fg-muted); flex-shrink: 0; }
 .tt-group { border-bottom: 1px solid var(--border); }
 .tt-group:last-child { border-bottom: none; }
 .tt-group .tt-row { border-bottom: none; }
@@ -786,6 +799,7 @@ a.btn { text-decoration: none; }
 .bk-head-r .bk-evt { font-family: 'Titillium Web', sans-serif; font-size: 20pt; font-weight: 300; color: #00a3a7; line-height: 1.15; }
 .bk-head-r .bk-when-sm { font-weight: 400; color: #555; font-size: 10pt; }
 .bk-tablewrap { flex: 1; min-height: 0; overflow: hidden; }
+.bk-table[hidden] { display: none; }
 .bk-table { font-size: 9.5pt; }
 .bk-comp { width: 33%; } .bk-werk { width: 31%; } .bk-perf { width: 36%; }
 .bk-comp span, .bk-perf span { color: #666; font-size: .88em; }
@@ -1549,6 +1563,7 @@ function handleRoute() {
     const sub = p[1];
     if (sub === 'neu') adminPage = 'newEvent';
     else if (sub === 'lehrkraefte') adminPage = 'teachers';
+    else if (sub === 'auswahllisten') { adminPage = 'lists'; LISTS.items = null; }
     else if (sub === 'einstellungen') adminPage = 'settings';
     else if (sub === 'v') {
       const ev = EVENTS.find(e => String(e.id) === p[2]);
@@ -1688,6 +1703,7 @@ function renderAdminHeader() {
     <nav class="admin-nav" aria-label="Adminbereich">
       <a href="#/admin" class="${['events', 'event', 'newEvent', 'editEvent', 'entry', 'reminder'].includes(adminPage) ? 'active' : ''}">Veranstaltungen</a>
       <a href="#/admin/lehrkraefte" class="${adminPage === 'teachers' ? 'active' : ''}">Lehrkräfte</a>
+      <a href="#/admin/auswahllisten" class="${adminPage === 'lists' ? 'active' : ''}">Auswahllisten</a>
       <a href="#/admin/einstellungen" class="${adminPage === 'settings' ? 'active' : ''}">Einstellungen</a>
     </nav>`;
 }
@@ -1703,6 +1719,7 @@ function renderAdminContent() {
     case 'editEvent': return renderEditEventPage();
     case 'entry': return renderEntryPage();
     case 'teachers': return renderTeachersPage();
+    case 'lists': return renderListsPage();
     case 'settings': return renderSettingsPage();
     case 'reminder': return renderReminderPage();
     case 'event': return renderEventDetail();
@@ -2000,8 +2017,8 @@ function sheetA4(ev, cover, strip) {
     </div></div>`;
 }
 
-function bookletTable(entries, dense) {
-  if (!entries.length) return '<p class="pg-empty">—</p>';
+function bookletTable(entries, dense, keep) {
+  if (!entries.length && !keep) return '<p class="pg-empty">—</p>';
   return `<table class="bk-table${dense}"><colgroup><col class="bk-comp"><col class="bk-werk"><col class="bk-perf"></colgroup>
     <thead><tr><th>Komponist</th><th>Werk</th><th>Mitwirkende</th></tr></thead><tbody>${entries.map(e => {
     const c = splitComposer(e.composer);
@@ -2014,12 +2031,8 @@ function bookletTable(entries, dense) {
 }
 
 function sheetsBooklet(ev, cover, strip) {
-  // Programm gleichmäßig auf Seite 2 und 3 verteilen
-  const weights = ev.entries.map(entryWeight);
-  const total = weights.reduce((a, b) => a + b, 0);
-  let acc = 0, cut = ev.entries.length;
-  for (let i = 0; i < weights.length; i++) { if (acc + weights[i] / 2 > total / 2) { cut = i; break; } acc += weights[i]; }
-  const p2 = ev.entries.slice(0, cut), p3 = ev.entries.slice(cut);
+  // Seite 2 wird zuerst voll; was nicht mehr passt, läuft auf Seite 3 (Aufteilung per Messung in autoDensity)
+  const p2 = ev.entries, p3 = [];
   const teachers = [...new Set(ev.entries.map(e => e.teacher))];
   const when = [weekdayDate(ev.date), ev.time].filter(Boolean).join(' · ');
   return `
@@ -2047,13 +2060,13 @@ function sheetsBooklet(ev, cover, strip) {
       <section class="half bk-inner">
         <span class="pg-tag">Seite 2</span>
         <div class="bk-head"><h2 class="pg-prog">Programm</h2><div class="bk-when-sm">${esc(when)}</div></div>
-        <div class="bk-tablewrap">${bookletTable(p2, '')}</div>
+        <div class="bk-tablewrap">${bookletTable(p2, '', true)}</div>
         <div class="bk-pn">2</div>
       </section>
       <section class="half bk-inner">
         <span class="pg-tag">Seite 3</span>
         <div class="bk-head bk-head-r"><div class="bk-evt">${esc(ev.title)}</div><div class="bk-when-sm">${esc(ev.location || '')}</div></div>
-        <div class="bk-tablewrap">${bookletTable(p3, '')}</div>
+        <div class="bk-tablewrap">${bookletTable(p3, '', true)}</div>
         <div class="bk-pn">3</div>
       </section>
     </div></div>`;
@@ -2136,14 +2149,27 @@ function autoDensity() {
     if (lv >= DENSITY.length) { fitsAt(sh, list, DENSITY.length - 1); overflow = true; sh.classList.add('overflowing'); }
     else sh.classList.remove('overflowing');
   });
-  // Heft: beide Innenseiten bekommen dieselbe (kleinste nötige) Schriftstufe
-  const wraps = [...stage.querySelectorAll('.bk-tablewrap')].filter(w => w.querySelector('.bk-table'));
-  if (wraps.length) {
+  // Heft: Seite 2 zuerst füllen, Rest auf Seite 3; beide Seiten haben dieselbe (kleinste nötige) Schriftstufe
+  const wraps = [...stage.querySelectorAll('.bk-tablewrap')];
+  if (wraps.length === 2 && wraps.every(w => w.querySelector('.bk-table'))) {
+    const [w2, w3] = wraps, t2 = w2.querySelector('.bk-table'), t3 = w3.querySelector('.bk-table');
+    const b2 = t2.tBodies[0], b3 = t3.tBodies[0];
+    const all = [...b2.rows, ...b3.rows];
+    const over = w => w.scrollHeight > w.clientHeight + 1;
+    const arrange = lv => {
+      all.forEach(r => b2.appendChild(r));
+      [t2, t3].forEach(t => { t.classList.remove('dense-1', 'dense-2'); if (DENSITY[lv]) t.classList.add(DENSITY[lv]); });
+      t3.hidden = false;
+      while (over(w2) && b2.rows.length > 1) b3.insertBefore(b2.rows[b2.rows.length - 1], b3.firstChild);
+      t3.hidden = !b3.rows.length;
+      return !over(w2) && !over(w3);
+    };
     let lv = 0;
-    while (lv < DENSITY.length && !wraps.every(w => fitsAt(w.querySelector('.bk-table'), w, lv))) lv++;
+    while (lv < DENSITY.length && !arrange(lv)) lv++;
     const ok = lv < DENSITY.length;
-    wraps.forEach(w => { fitsAt(w.querySelector('.bk-table'), w, ok ? lv : DENSITY.length - 1); w.parentElement.classList.toggle('overflowing', !ok && w.scrollHeight > w.clientHeight + 1); });
-    if (!ok) overflow = true;
+    if (!ok) { arrange(DENSITY.length - 1); overflow = true; }
+    [w2, w3].forEach(w => w.parentElement.classList.toggle('overflowing', !ok && over(w)));
+    w3.parentElement.querySelector('.bk-pn').style.visibility = b3.rows.length ? '' : 'hidden';
   }
   // Titel-/Rückseite: passt alles hinein?
   stage.querySelectorAll('.bk-back, .bk-cover').forEach(h => { if (h.scrollHeight > h.clientHeight + 1) { overflow = true; h.classList.add('overflowing'); } else h.classList.remove('overflowing'); });
@@ -2567,6 +2593,7 @@ function bindEvents() {
   bindTeacherEntryEdit();
   bindProgramAdmin();
   bindTeachersPage();
+  bindListsPage();
   bindSettingsPage();
   bindReminderPage();
 }
@@ -2901,6 +2928,79 @@ function bindTeacherEntryEdit() {
     Object.assign(e, v);
     toast('Beitrag gespeichert');
     go(teacherPath(currentRole, ev.id), true);
+  });
+}
+
+/* ---------- Auswahllisten pflegen (Admin): umbenennen, zusammenführen, löschen ---------- */
+const LIST_FIELDS = [['title', 'Titel'], ['subtitle', 'Untertitel'], ['location', 'Ort'], ['composer', 'Komponist'], ['werk', 'Stück / Werk'], ['performer', 'Mitwirkende'], ['note', 'Hinweis (Beitrag)'], ['footer', 'Hinweis unter Programm']];
+const LISTS = { field: 'composer', items: null, q: '', sel: new Set(), replace: true };
+function renderListsPage() {
+  const items = LISTS.items;
+  const count = f => items ? items.filter(i => i.field === f).length : 0;
+  const rows = items ? items.filter(i => i.field === LISTS.field && (!LISTS.q || scoreText(LISTS.q, i.value + ' ' + i.extra))).sort((a, b) => b.uses - a.uses || a.value.localeCompare(b.value, 'de')) : [];
+  const n = LISTS.sel.size;
+  const extraLabel = LISTS.field === 'werk' ? 'Komponist' : LISTS.field === 'performer' ? 'Instrument' : '';
+  return `
+    <h2 class="page-title">Auswahllisten</h2>
+    <p class="page-sub">Alles, was bisher eingegeben wurde, steht hier zur Auswahl. Tippfehler lassen sich umbenennen oder mit dem richtigen Eintrag zusammenführen.</p>
+    <div class="ls-fields" role="tablist">${LIST_FIELDS.map(([f, l]) => `<button type="button" class="chip ls-field${f === LISTS.field ? ' active' : ''}" data-f="${f}">${l} <span class="ls-n">${count(f)}</span></button>`).join('')}</div>
+    <div class="ls-tools">
+      <input type="search" id="lsSearch" placeholder="Suchen …" value="${esc(LISTS.q)}" aria-label="Suchen">
+      <button type="button" class="btn btn-secondary btn-sm" id="lsMerge"${n < 2 ? ' disabled' : ''}>Zusammenführen${n >= 2 ? ` (${n})` : ''}</button>
+      <button type="button" class="btn btn-secondary btn-sm" id="lsDelete"${n < 1 ? ' disabled' : ''}>🗑 Löschen${n ? ` (${n})` : ''}</button>
+    </div>
+    <label class="ls-replace"><input type="checkbox" id="lsReplace"${LISTS.replace ? ' checked' : ''}> Beim Umbenennen/Zusammenführen auch in bestehenden Veranstaltungen und Beiträgen ersetzen</label>
+    ${!items ? '<p class="form-hint">Wird geladen …</p>' : !rows.length ? '<p class="form-hint">Keine Einträge.</p>' : `
+    <ul class="ls-list">${rows.map(i => `
+      <li data-v="${esc(i.value)}">
+        <input type="checkbox" class="ls-sel" aria-label="Auswählen: ${esc(i.value)}"${LISTS.sel.has(i.value) ? ' checked' : ''}>
+        <div class="ls-text"><strong>${esc(i.value)}</strong>${i.extra && extraLabel ? `<span class="ls-extra">${extraLabel}: ${esc(i.extra)}</span>` : ''}${i.scopes && i.scopes.length ? `<span class="ls-extra">Klasse: ${esc(i.scopes.join(', '))}</span>` : ''}</div>
+        <span class="ls-uses">${i.uses}×</span>
+        <button type="button" class="btn btn-icon btn-sm ls-edit" title="Umbenennen" aria-label="Umbenennen">✎</button>
+      </li>`).join('')}</ul>`}`;
+}
+async function listsReload() {
+  const r = await api('/api/suggestions');
+  LISTS.items = r.items;
+  LISTS.sel = new Set([...LISTS.sel].filter(v => r.items.some(i => i.field === LISTS.field && i.value === v)));
+  try { await loadState(); } catch (e) { /* Listen in den Formularen aktualisieren sich beim nächsten Laden */ }
+}
+async function listsApply(method, body, msg) {
+  try {
+    const r = await api('/api/suggestions', { method, body: { field: LISTS.field, replaceInData: LISTS.replace, ...body } });
+    LISTS.sel.clear();
+    await listsReload();
+    toast(msg + (r && r.replaced ? ` (${r.replaced} Beitrag/Beiträge angepasst)` : ''));
+  } catch (e) { toast('Fehlgeschlagen: ' + e.message); }
+  if (adminPage === 'lists') renderOnly();
+}
+function bindListsPage() {
+  if (adminPage !== 'lists' || currentView !== 'admin') return;
+  if (LISTS.items === null) { listsReload().then(() => { if (adminPage === 'lists') renderOnly(); }).catch(e => toast('Laden fehlgeschlagen: ' + e.message)); return; }
+  $$('.ls-field').forEach(b => b.addEventListener('click', () => { LISTS.field = b.dataset.f; LISTS.sel.clear(); LISTS.q = ''; renderOnly(); }));
+  const s = document.getElementById('lsSearch');
+  s.addEventListener('input', () => { LISTS.q = s.value; const pos = s.selectionStart; renderOnly(); const s2 = document.getElementById('lsSearch'); s2.focus(); s2.setSelectionRange(pos, pos); });
+  document.getElementById('lsReplace').addEventListener('change', e => { LISTS.replace = e.target.checked; });
+  $$('.ls-sel').forEach(c => c.addEventListener('change', () => {
+    const v = c.closest('li').dataset.v; c.checked ? LISTS.sel.add(v) : LISTS.sel.delete(v); renderOnly();
+  }));
+  $$('.ls-edit').forEach(b => b.addEventListener('click', () => {
+    const v = b.closest('li').dataset.v;
+    const nv = prompt('Neuer Wert (existiert er schon, werden beide zusammengeführt):', v);
+    if (nv === null || !nv.trim() || nv.trim() === v) return;
+    listsApply('PUT', { values: [v], target: nv.trim() }, 'Umbenannt');
+  }));
+  document.getElementById('lsMerge').addEventListener('click', () => {
+    const vals = [...LISTS.sel]; if (vals.length < 2) return;
+    const top = LISTS.items.filter(i => i.field === LISTS.field && LISTS.sel.has(i.value)).sort((a, b) => b.uses - a.uses)[0].value;
+    const target = prompt(`${vals.length} Einträge zusammenführen zu:\n\n${vals.map(v => '• ' + v).join('\n')}\n\nZielwert (so wird es künftig geschrieben):`, top);
+    if (target === null || !target.trim()) return;
+    listsApply('PUT', { values: vals, target: target.trim() }, 'Zusammengeführt');
+  });
+  document.getElementById('lsDelete').addEventListener('click', () => {
+    const vals = [...LISTS.sel]; if (!vals.length) return;
+    if (!confirm(`${vals.length} Eintrag/Einträge aus der Auswahlliste löschen?\n\nBereits eingetragene Beiträge und Veranstaltungen bleiben unverändert.`)) return;
+    listsApply('DELETE', { values: vals }, 'Gelöscht');
   });
 }
 
