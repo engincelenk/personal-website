@@ -3049,13 +3049,15 @@ async function apiImportStream(formData, onEvent) {
   if (!res.body) throw new Error('Der Browser unterstützt keine Fortschrittsanzeige.');
   const rd = res.body.getReader(), dec = new TextDecoder(); let buf = '', result = null;
   for (;;) {
-    const { done, value } = await rd.read(); if (done) break;
+    let chunk;
+    try { chunk = await rd.read(); } catch (e) { throw new Error('Die Verbindung wurde unterbrochen (' + (e && e.message || 'Netzwerk') + '). Bitte erneut versuchen, am besten im WLAN und mit geöffnetem Bildschirm.'); }
+    const { done, value } = chunk; if (done) break;
     buf += dec.decode(value, { stream: true });
     let i; while ((i = buf.indexOf('\n')) >= 0) {
       const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1); if (!line) continue;
       let o; try { o = JSON.parse(line); } catch (e) { continue; }
       if (o.error) throw new Error(o.error);
-      if (o.result) result = o.result; else onEvent(o);
+      if (o.result) result = o.result; else if (!o.ping) onEvent(o);
     }
   }
   if (!result) throw new Error('Die Verbindung wurde unterbrochen. Bitte erneut versuchen.');
