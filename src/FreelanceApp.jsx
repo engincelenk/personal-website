@@ -11,7 +11,7 @@ import ServiceMatrix from "./components/ServiceMatrix.jsx";
 import Footer from "./components/Footer.jsx";
 import ScrollProgress from "./components/ScrollProgress.jsx";
 import Spotlight from "./components/Spotlight.jsx";
-import LogoMarquee from "./components/LogoMarquee.jsx";
+import LogoWall from "./components/LogoWall.jsx";
 import { person, logoStrip } from "./data/profile.js";
 import { pillars as rawPillars, aiVertical as rawAi, process as rawProcess, industries, timing as rawTiming, formats as rawFormats, fl } from "./data/services.js";
 
@@ -86,7 +86,7 @@ function Page() {
           <div className="wrap">
             <SectionHead no="03" kicker={T.expKicker} title={T.expTitle} />
             <ul className="flex flex-wrap gap-2">{L(industries).map(i => <li key={i} className="rounded-full border border-white/10 px-4 py-2 text-sm">{i}</li>)}</ul>
-<div className="mt-2"><LogoMarquee /></div>
+<div className="mt-2"><LogoWall /></div>
           </div>
         </section>
 

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useReducedMotion, useSpring } from "motion/react";
 import { ArrowUpRight, Download } from "lucide-react";
 import NetworkCanvas from "./NetworkCanvas.jsx";
-import LogoMarquee from "./LogoMarquee.jsx";
+import LogoWall from "./LogoWall.jsx";
 import { hero, person, cv as rawCv, domains } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
@@ -72,7 +72,7 @@ export default function Hero({ guest }) {
         </div>
         <motion.div {...rise(5)} className="mt-16 md:mt-20">
           <p className="label">{t("workedAt")}</p>
-          <LogoMarquee />
+          <LogoWall />
         </motion.div>
       </div>
     </section>

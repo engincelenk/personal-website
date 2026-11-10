@@ -5,7 +5,7 @@ Dauer: etwa 10 Minuten. Danach laufen alle Nachrichten über dein IONOS-Hosting 
 ## 1. Absender-Postfach prüfen
 Im IONOS Control Center unter **E-Mail** prüfen, ob es eine Adresse auf deiner Domain gibt, z. B. `kontakt@immofuchs.info`.
 Falls nicht: anlegen (ein einfaches Postfach oder eine Weiterleitung auf engincelenk@web.de genügt).
-Steht dort eine andere Adresse, in `contact.php` oben bei `$FROM` eintragen.
+Als Absender ist in `contact.php` oben bei `$FROM` aktuell engincelenk@web.de eingetragen.
 
 ## 2. Datei hochladen
 1. `contact.php` aus diesem Ordner herunterladen.
