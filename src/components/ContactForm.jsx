@@ -3,8 +3,8 @@ import { Check, Loader2, Send } from "lucide-react";
 import { contactForm } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
-/* Contact form without a visible address. Messages go to the IONOS script set in
-   data/profile.js (contactForm.endpoints), FormSubmit is only the fallback. Freelance
+/* Contact form without a visible address. Messages go to FormSubmit by default; set
+   contactForm.endpoints in data/profile.js to use the IONOS script instead. Freelance
    requests also get an automatic confirmation email from that script. */
 const endpoints = () => (contactForm.endpoints && contactForm.endpoints.length ? contactForm.endpoints : [`https://formsubmit.co/ajax/${contactForm.alias || [contactForm.user, contactForm.domain].join("@")}`]);
 
