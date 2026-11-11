@@ -1,14 +1,16 @@
 # Kontaktformular über IONOS
 
-Die Seite probiert nacheinander `https://immofuchs.info/api/contact.php` und `https://immofuchs.info/ec/api/contact.php` (siehe `src/data/profile.js`, `contactForm.endpoints`).
-Die Datei `contact.php` muss an einer dieser Stellen erreichbar sein (Ordner `api` → `contact.php`, im Hauptordner der Domain oder unter `ec`).
-Liegt sie woanders, die Liste in `profile.js` anpassen.
+Die Seite (GitHub Pages, `ec.immofuchs.info`) kann kein PHP ausführen. Das Formular schickt deshalb an `https://kontakt.immofuchs.info/api/contact.php` (siehe `src/data/profile.js`, `contactForm.endpoints`).
+
+Einrichtung bei IONOS:
+1. Subdomain `kontakt.immofuchs.info` anlegen, Ziel-Ordner `/ec` (nicht `/immofuchs`: der ImmoFuchs-Deploy löscht dort Dateien).
+2. `contact.php` nach `/ec/api/contact.php` hochladen.
 
 ## 1. Hochladen
-IONOS Control Center → Hosting → Webspace → `contact.php` aus diesem Ordner an den Zielort hochladen und die alte Datei ersetzen.
+`contact.php` aus diesem Ordner nach `/ec/api/contact.php` hochladen (per FTP oder Webspace-Explorer) und die alte Datei ersetzen.
 
 ## 2. Prüfen
-Adresse im Browser öffnen. Richtig ist eine Zeile wie:
+`https://kontakt.immofuchs.info/api/contact.php` im Browser öffnen. Richtig ist eine Zeile wie:
 `{"success":"false","message":"Contact endpoint is running. POST only.","php":"8.x","mail":true,"from":"kontakt@immofuchs.info","to":"**gincelenk@web.de"}`
 
 ## 3. Absender
