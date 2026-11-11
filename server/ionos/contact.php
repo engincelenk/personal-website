@@ -7,7 +7,8 @@
 
 // ---- Settings -------------------------------------------------
 $TO      = 'engincelenk@web.de';          // where messages go
-$FROM    = 'engincelenk@web.de';          // sender address shown in the mail
+$FROM    = 'kontakt@immofuchs.info';      // sender: an address on YOUR domain (IONOS only sends reliably from its own domains)
+$FROM2   = 'engincelenk@web.de';          // fallback sender if the first one is refused
 $ORIGINS = ['https://ec.immofuchs.info']; // sites allowed to use this form
 $LIMIT   = 5;                             // max messages per IP per hour
 $CONFIRM = ['freelance'];                 // form sources whose sender gets a confirmation email
@@ -22,7 +23,7 @@ if (in_array($origin, $ORIGINS, true)) {
   header('Access-Control-Allow-Headers: Content-Type, Accept');
 }
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
-if ($_SERVER['REQUEST_METHOD'] !== 'POST') { echo json_encode(['success' => 'false', 'message' => 'Contact endpoint is running. POST only.']); exit; }
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') { echo json_encode(['success' => 'false', 'message' => 'Contact endpoint is running. POST only.', 'php' => PHP_VERSION, 'mail' => function_exists('mail'), 'from' => $FROM, 'to' => preg_replace('/^.{2}/', '**', $TO)]); exit; }
 if ($origin && !in_array($origin, $ORIGINS, true)) { http_response_code(403); echo json_encode(['success' => 'false', 'message' => 'Origin not allowed']); exit; }
 
 $in = json_decode(file_get_contents('php://input'), true);
@@ -51,14 +52,17 @@ if ($hits >= $LIMIT) { http_response_code(429); echo json_encode(['success' => '
 @file_put_contents($key, (string)($hits + 1));
 
 $body = "Name: $name\nE-Mail: $email\n" . ($company !== '' ? "Unternehmen: $company\n" : '') . "Quelle: $source\n\n$message\n";
-$headers = [
-  'From: ec.immofuchs.info <' . $FROM . '>',
-  'Reply-To: ' . $email,
-  'MIME-Version: 1.0',
-  'Content-Type: text/plain; charset=UTF-8',
-  'Content-Transfer-Encoding: 8bit'
-];
-$ok = mail($TO, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, implode("\r\n", $headers), '-f' . $FROM);
+/* Send with fallbacks: sender on the own domain first, then the second sender; with and without -f. */
+$send = function ($to, $subj, $text, $from, $replyTo = null) {
+  $h = ['From: ec.immofuchs.info <' . $from . '>', 'MIME-Version: 1.0', 'Content-Type: text/plain; charset=UTF-8', 'Content-Transfer-Encoding: 8bit'];
+  if ($replyTo) $h[] = 'Reply-To: ' . $replyTo;
+  $s = '=?UTF-8?B?' . base64_encode($subj) . '?=';
+  return @mail($to, $s, $text, implode("\r\n", $h), '-f' . $from) || @mail($to, $s, $text, implode("\r\n", $h));
+};
+error_clear_last();
+$usedFrom = $FROM;
+$ok = $send($TO, $subject, $body, $FROM, $email);
+if (!$ok && $FROM2 && $FROM2 !== $FROM) { $usedFrom = $FROM2; $ok = $send($TO, $subject, $body, $FROM2, $email); }
 
 /* Confirmation to the sender. Fixed text only, no submitted content is echoed back,
    so the form cannot be abused to send arbitrary text to third parties. Only for
@@ -69,15 +73,8 @@ if ($ok && in_array($source, $CONFIRM, true) && in_array($origin, $ORIGINS, true
        "Hello,\n\nthank you for your request. Your message has reached me and I will get back to you shortly.\n\nKind regards\nEngin Celenk\nhttps://ec.immofuchs.info/freelance.html\n\nThis is an automatic confirmation. If you did not send a request, please ignore this email."]
     : ['Ihre Anfrage über ec.immofuchs.info',
        "Guten Tag,\n\nvielen Dank für Ihre Anfrage. Ihre Nachricht ist bei mir angekommen, ich melde mich zeitnah bei Ihnen.\n\nViele Grüße\nEngin Celenk\nhttps://ec.immofuchs.info/freelance.html\n\nDies ist eine automatische Bestätigung. Falls Sie keine Anfrage gesendet haben, ignorieren Sie diese E-Mail bitte."];
-  $cHeaders = [
-    'From: Engin Celenk <' . $FROM . '>',
-    'Auto-Submitted: auto-replied',
-    'MIME-Version: 1.0',
-    'Content-Type: text/plain; charset=UTF-8',
-    'Content-Transfer-Encoding: 8bit'
-  ];
-  @mail($email, '=?UTF-8?B?' . base64_encode($c[0]) . '?=', $c[1], implode("\r\n", $cHeaders), '-f' . $FROM);
+  $send($email, $c[0], $c[1], $usedFrom);
 }
 
 if ($ok) { echo json_encode(['success' => 'true']); }
-else { http_response_code(500); echo json_encode(['success' => 'false', 'message' => 'Mail could not be sent']); }
+else { $err = error_get_last(); http_response_code(500); echo json_encode(['success' => 'false', 'message' => 'Mail could not be sent', 'detail' => $err['message'] ?? 'mail() returned false', 'from' => $usedFrom]); }

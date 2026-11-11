@@ -1,21 +1,21 @@
-# Kontaktformular über IONOS einrichten
+# Kontaktformular über IONOS
 
-Dauer: etwa 10 Minuten. Danach laufen alle Nachrichten über dein IONOS-Hosting statt über einen Fremddienst.
+Die Seite ruft `https://immofuchs.info/ec/api/contact.php` auf (siehe `src/data/profile.js`, `contactForm.endpoint`).
+Die Datei `contact.php` muss genau dort liegen: Ordner `ec` → Ordner `api` → `contact.php`.
+Liegt sie woanders (z. B. `/api/contact.php`), den Endpunkt in `profile.js` anpassen.
 
-## 1. Absender-Postfach prüfen
-Im IONOS Control Center unter **E-Mail** prüfen, ob es eine Adresse auf deiner Domain gibt, z. B. `kontakt@immofuchs.info`.
-Falls nicht: anlegen (ein einfaches Postfach oder eine Weiterleitung auf engincelenk@web.de genügt).
-Als Absender ist in `contact.php` oben bei `$FROM` aktuell engincelenk@web.de eingetragen.
+## 1. Hochladen
+IONOS Control Center → Hosting → Webspace → `contact.php` aus diesem Ordner an den Zielort hochladen und die alte Datei ersetzen.
 
-## 2. Datei hochladen
-1. `contact.php` aus diesem Ordner herunterladen.
-2. IONOS Control Center → **Hosting** → das Paket von immofuchs.info → **Webspace** (Webspace-Explorer) öffnen.
-3. Im Ordner der Domain `immofuchs.info` einen Ordner `api` anlegen und `contact.php` hineinladen.
+## 2. Prüfen
+Adresse im Browser öffnen. Richtig ist eine Zeile wie:
+`{"success":"false","message":"Contact endpoint is running. POST only.","php":"8.x","mail":true,"from":"kontakt@immofuchs.info","to":"**gincelenk@web.de"}`
 
-## 3. Testen
-Im Browser öffnen: `https://immofuchs.info/api/contact.php`
-Erwartet: `{"success":"false","message":"Contact endpoint is running. POST only."}`
+## 3. Absender
+`$FROM` muss eine Adresse auf deiner Domain sein (IONOS verschickt nur von eigenen Domains zuverlässig). Existiert `kontakt@immofuchs.info` nicht,
+im IONOS Control Center unter E-Mail eine Adresse anlegen (eine Weiterleitung auf engincelenk@web.de genügt) oder `$FROM` anpassen.
+`$FROM2` (web.de) ist nur der Ersatz, falls der erste Absender abgelehnt wird.
 
-## 4. Bescheid geben
-Die Adresse aus Schritt 3 an Claude schicken. Dann wird das Formular auf der Seite umgestellt,
-die Datenschutzerklärung angepasst (IONOS statt FormSubmit) und live geschaltet.
+## 4. Fehlersuche
+Schlägt das Senden fehl, zeigt das Formular unter der Fehlermeldung einen „Technischen Hinweis“ (z. B. `HTTP 404`, `HTTP 500 · Mail could not be sent`).
+Diesen Text an Claude schicken.
