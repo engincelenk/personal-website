@@ -119,23 +119,24 @@ export const education = [
 /* Competence model. `evidence` = concrete, CV-backed highlights shown when a domain is opened. */
 export const domains = [
   { id: "architecture", icon: "Boxes", title: { en: "IT Architecture", de: "IT-Architektur" },
-    keywords: ["Solution Architecture", { en: "Microservices", de: "Microservices" }, "Cloud & SaaS", "Integration & APIs", "System Design"],
+    keywords: ["Solution Architecture", { en: "Microservices", de: "Microservices" }, "Cloud & SaaS", "Integration & APIs", "SAP", "System Design"],
     evidence: [
       { en: "Architect for multiple Bosch projects worldwide, across different technologies", de: "Als Architekt für mehrere Bosch-Projekte weltweit beauftragt, über verschiedene Technologien hinweg" },
       { en: "Microservice architectures", de: "Microservice-Architekturen" },
       { en: "Architectures for Security Class 3 (SC3) solutions", de: "Architekturen für Lösungen der Security Class 3 (SC3)" },
       { en: "Cloud and SaaS architectures", de: "Cloud- und SaaS-Architekturen" },
       { en: "Lead Architect at Bosch Central IT, Solution Architect at TRUMPF and Daimler", de: "Lead Architect bei Bosch Central IT, Solution Architect bei TRUMPF und Daimler" },
+      { en: "SAP project experience: BW/BI, SD, MM, FI, PP", de: "SAP-Projekterfahrung: BW/BI, SD, MM, FI, PP" },
       "Bosch Confirmed Architect"] },
   { id: "security", icon: "ShieldCheck", title: "Cyber Security",
-    keywords: ["Security Engineering", "TARA", "STRIDE", { en: "Risk Management", de: "Risikomanagement" }, "NIST CSF", "OWASP", "ISO 27001"],
+    keywords: ["Security Engineering", "TARA", "SAP", "STRIDE", { en: "Risk Management", de: "Risikomanagement" }, "NIST CSF", "OWASP", "ISO 27001"],
     evidence: [
       { en: "Cyber security engineer for multiple projects within Bosch worldwide", de: "Als Cyber Security Engineer für mehrere Projekte innerhalb von Bosch weltweit beauftragt" },
       { en: "Implementing cyber security concepts in line with the corporate cyber security policy", de: "Umsetzung von Cyber-Security-Konzepten gemäß Cyber Security Policy" },
       { en: "Threat analysis and risk assessment (TARA) for various projects and SAP", de: "Bedrohungs- und Risikoanalysen (TARA) für verschiedene Projekte und SAP" },
       { en: "Cyber security mentoring within the Bosch Group", de: "Cyber-Security-Mentoring innerhalb der Bosch-Gruppe" }] },
   { id: "management", icon: "Workflow", title: "IT Management", subtitle: { en: "Project, program & solution management", de: "Projekt-, Programm- & Solution Management" },
-    keywords: ["Solution Management", { en: "Project Management", de: "Projektmanagement" }, { en: "Budget Responsibility", de: "Budgetverantwortung" }, "Stakeholder", { en: "Logistics Solutions", de: "Logistiklösungen" }],
+    keywords: ["Solution Management", { en: "Project Management", de: "Projektmanagement" }, { en: "Budget Responsibility", de: "Budgetverantwortung" }, "Stakeholder", { en: "Logistics Solutions", de: "Logistiklösungen" }, "SAP"],
     evidence: [
       { en: "Single point of contact on the IT side", de: "Single Point of Contact auf IT-Seite" },
       { en: "Full budget and project responsibility", de: "Volle Budget- und Projektverantwortung" },
@@ -143,6 +144,7 @@ export const domains = [
       { en: "Project management for B, C and D projects", de: "Projektmanagement für B-, C- und D-Projekte" },
       { en: "Stakeholder management from team to executive level", de: "Stakeholder-Management vom Team bis zur Führungsebene" },
       { en: "Overall responsibility for Bosch's worldwide transport management (NGTM)", de: "Gesamtverantwortung für das weltweite Transportmanagement von Bosch (NGTM)" },
+      { en: "SAP project experience in SCM and SRM (supply chain and procurement)", de: "SAP-Projekterfahrung in SCM und SRM (Lieferkette und Einkauf)" },
       "IPMA D · PSM I · PSPO I · ITIL"] },
   { id: "ai", icon: "Sparkles", title: { en: "AI & Agentic", de: "KI & Agentic" },
     keywords: [{ en: "Agentic Architectures", de: "Agentische Architekturen" }, { en: "AI Applications", de: "KI-Anwendungen" }, { en: "AI-assisted Security", de: "KI-gestützte Security" }, { en: "Product Development", de: "Produktentwicklung" }],
