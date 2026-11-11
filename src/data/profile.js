@@ -119,7 +119,7 @@ export const education = [
 /* Competence model. `evidence` = concrete, CV-backed highlights shown when a domain is opened. */
 export const domains = [
   { id: "architecture", icon: "Boxes", title: { en: "IT Architecture", de: "IT-Architektur" },
-    keywords: ["Solution Architecture", { en: "Microservices", de: "Microservices" }, "Cloud & SaaS", "Integration & APIs", "SAP", "System Design"],
+    keywords: ["Solution Architecture", { en: "Microservices", de: "Microservices" }, "Cloud & SaaS", "Integration & APIs", "System Design"],
     evidence: [
       { en: "Architect for multiple Bosch projects worldwide, across different technologies", de: "Als Architekt für mehrere Bosch-Projekte weltweit beauftragt, über verschiedene Technologien hinweg" },
       { en: "Microservice architectures", de: "Microservice-Architekturen" },
@@ -128,14 +128,14 @@ export const domains = [
       { en: "Lead Architect at Bosch Central IT, Solution Architect at TRUMPF and Daimler", de: "Lead Architect bei Bosch Central IT, Solution Architect bei TRUMPF und Daimler" },
       "Bosch Confirmed Architect"] },
   { id: "security", icon: "ShieldCheck", title: "Cyber Security",
-    keywords: ["Security Engineering", "TARA", { en: "TARA for SAP", de: "TARA für SAP" }, "STRIDE", { en: "Risk Management", de: "Risikomanagement" }, "NIST CSF", "OWASP", "ISO 27001"],
+    keywords: ["Security Engineering", "TARA", "STRIDE", { en: "Risk Management", de: "Risikomanagement" }, "NIST CSF", "OWASP", "ISO 27001"],
     evidence: [
       { en: "Cyber security engineer for multiple projects within Bosch worldwide", de: "Als Cyber Security Engineer für mehrere Projekte innerhalb von Bosch weltweit beauftragt" },
       { en: "Implementing cyber security concepts in line with the corporate cyber security policy", de: "Umsetzung von Cyber-Security-Konzepten gemäß Cyber Security Policy" },
       { en: "Threat analysis and risk assessment (TARA) for various projects and SAP", de: "Bedrohungs- und Risikoanalysen (TARA) für verschiedene Projekte und SAP" },
       { en: "Cyber security mentoring within the Bosch Group", de: "Cyber-Security-Mentoring innerhalb der Bosch-Gruppe" }] },
   { id: "management", icon: "Workflow", title: "IT Management", subtitle: { en: "Project, program & solution management", de: "Projekt-, Programm- & Solution Management" },
-    keywords: ["Solution Management", { en: "Project Management", de: "Projektmanagement" }, { en: "Budget Responsibility", de: "Budgetverantwortung" }, "Stakeholder", { en: "Logistics Solutions", de: "Logistiklösungen" }, "SAP SCM · SRM"],
+    keywords: ["Solution Management", { en: "Project Management", de: "Projektmanagement" }, { en: "Budget Responsibility", de: "Budgetverantwortung" }, "Stakeholder", { en: "Logistics Solutions", de: "Logistiklösungen" }],
     evidence: [
       { en: "Single point of contact on the IT side", de: "Single Point of Contact auf IT-Seite" },
       { en: "Full budget and project responsibility", de: "Volle Budget- und Projektverantwortung" },
@@ -173,21 +173,6 @@ export const sap = {
     { id: "PP", label: { en: "Production planning", de: "Produktionsplanung" } },
     { id: "SCM", label: { en: "Supply chain mgmt.", de: "Supply Chain" } },
     { id: "SRM", label: { en: "Supplier relationship mgmt.", de: "Lieferantenmanagement" } }
-  ]
-};
-
-/* Technologies from the CV, grouped by the role they were used in. A selection, not a full list. */
-export const techMap = {
-  title: { en: "Technologies from my projects", de: "Technologien aus meinen Projekten" },
-  note: { en: "A selection from more than ten years of projects", de: "Eine Auswahl aus über zehn Jahren Projekten" },
-  more: { en: "+ more", de: "+ weitere" },
-  groups: [
-    { id: "architecture", role: { en: "As architect", de: "Als Architekt" },
-      items: ["Microservices", "Cloud", "SaaS", "REST & APIs", "SOA", "Hybris", "Intershop", "IBM Mainframe", "Sharedien", "GlassFish", "Nagios", "Sybase Unwired", "C#", "Java", "Objective-C"] },
-    { id: "security", role: { en: "As security engineer", de: "Als Security Engineer" },
-      items: ["TARA", "STRIDE", "Security Class 3", { en: "Security policy", de: "Cyber Security Policy" }, { en: "TARA for SAP", de: "TARA für SAP" }, "Zero Trust", "ISO 27001", "OWASP", { en: "Security mentoring", de: "Security-Mentoring" }] },
-    { id: "management", role: { en: "As manager", de: "Als Manager" },
-      items: ["Scrum", "JIRA", "ITIL", "IPMA", "TMS (NGTM)", "SupplyOn", "Eurolog", { en: "Budget", de: "Budget" }, { en: "Stakeholder", de: "Stakeholder" }] }
   ]
 };
 
