@@ -3,6 +3,7 @@ import { Check } from "lucide-react";
 import SectionHead from "./SectionHead.jsx";
 import Icon from "./Icon.jsx";
 import SuccessStory from "./SuccessStory.jsx";
+import TechMap from "./TechMap.jsx";
 import { domains as rawDomains, aiVertical as rawAi, corpNote as rawCorp } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
@@ -34,7 +35,8 @@ export default function Expertise({ domain, setDomain }) {
                   </span>
                 </span>
                 <span className="mt-4 flex flex-wrap gap-1.5">
-                  {p.keywords.slice(0, 4).map(k => <span key={k} className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-snow/80">{k}</span>)}
+                  {p.keywords.slice(0, 6).map(k => <span key={k} className="rounded-full border border-white/10 px-2.5 py-1 text-xs text-snow/80">{k}</span>)}
+                  {p.keywords.length > 6 && <span className="rounded-full border border-dashed border-white/20 px-2.5 py-1 text-xs text-mist">+{p.keywords.length - 6}</span>}
                 </span>
               </button>
             );
@@ -73,6 +75,8 @@ export default function Expertise({ domain, setDomain }) {
             </motion.div>
           </AnimatePresence>
         </div>
+
+        <TechMap />
       </div>
     </section>
   );

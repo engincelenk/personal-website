@@ -1,6 +1,6 @@
 /** Design DNA: Intelligence meets Technology. Deep navy ground, orange only for interaction and key statements. */
 export default {
-  content: ["./index.html", "./cv.html", "./legal.html", "./link.html", "./freelance.html", "./src/**/*.{js,jsx}"],
+  content: ["./index.html", "./cv.html", "./legal.html", "./link.html", "./freelance.html", "./tech-check.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
       colors: {

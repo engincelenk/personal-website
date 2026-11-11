@@ -12,7 +12,8 @@ export default defineConfig({
         cv: resolve(__dirname, "cv.html"),
         legal: resolve(__dirname, "legal.html"),
         link: resolve(__dirname, "link.html"),
-        freelance: resolve(__dirname, "freelance.html")
+        freelance: resolve(__dirname, "freelance.html"),
+        techcheck: resolve(__dirname, "tech-check.html")
       }
     }
   }

@@ -6,7 +6,7 @@ import { localize } from "./i18n.jsx";
 import { period } from "./lib/dates.js";
 
 const lang = new URLSearchParams(location.search).get("lang") === "de" ? "de" : "en";
-const { person, cv, domains, aiVertical, career, education, certificates, trainings, logos, successStory } = localize({ ...raw }, lang);
+const { person, cv, domains, aiVertical, career, education, certificates, trainings, logos, successStory, sap } = localize({ ...raw }, lang);
 const T = {
   en: { cv: "Curriculum vitae", pillars: "Competence profile", exp: "Experience", edu: "Education", certs: "Certificates & training", langs: "Languages", projects: "Projects", school: "School path", kw: "Keywords", interactive: "Interactive portfolio", dl: "Download PDF", back: "Back to portfolio" },
   de: { cv: "Lebenslauf", pillars: "Kompetenzprofil", exp: "Berufserfahrung", edu: "Bildung", certs: "Zertifikate & Weiterbildung", langs: "Sprachen", projects: "Projekte", school: "Schulweg", kw: "Schlagworte", interactive: "Interaktives Portfolio", dl: "PDF laden", back: "Zum Portfolio" }
@@ -46,6 +46,8 @@ document.getElementById("cv").innerHTML = `
     <p><b>${esc(ai.title)}</b> · ${esc(aiVertical.claim)}</p>
     <div class="aicells">${pillars.map(p => `<span>${esc(aiVertical.aspects[p.id])}</span>`).join("")}</div>
   </div>
+
+  <p class="sapline"><b>${esc(sap.title)}</b> · ${sap.modules.map(m => esc(m.id)).join(" · ")}</p>
 
   <div class="cols">
     <div class="main">
