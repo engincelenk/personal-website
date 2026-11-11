@@ -11,11 +11,13 @@ const endpoint = () => contactForm.endpoint || `https://formsubmit.co/ajax/${con
 const T = {
   en: { name: "Name", email: "Your email", company: "Company (optional)", message: "Message", send: "Send message", sending: "Sending…",
     ok: "Thank you. Your message has been sent, I will get back to you soon.", confirmSent: "You will receive a confirmation by email.", err: "Sending failed. Please try again later or write via LinkedIn.",
+    tech: "Technical note",
     activate: "The contact form is being set up right now. Please try again in a few hours or write via LinkedIn.",
     consent: "I agree that my details are used to answer my request.", privacy: "Privacy", required: "Please fill in name, email and message and confirm the consent.",
     subject: "New message via ec.immofuchs.info" },
   de: { name: "Name", email: "Ihre E-Mail", company: "Unternehmen (optional)", message: "Nachricht", send: "Nachricht senden", sending: "Wird gesendet…",
     ok: "Vielen Dank. Ihre Nachricht ist angekommen, ich melde mich zeitnah.", confirmSent: "Sie erhalten eine Bestätigung per E-Mail.", err: "Senden fehlgeschlagen. Bitte später erneut versuchen oder über LinkedIn schreiben.",
+    tech: "Technischer Hinweis",
     activate: "Das Kontaktformular wird gerade eingerichtet. Bitte in einigen Stunden erneut versuchen oder über LinkedIn schreiben.",
     consent: "Ich bin einverstanden, dass meine Angaben zur Beantwortung meiner Anfrage verwendet werden.", privacy: "Datenschutz", required: "Bitte Name, E-Mail und Nachricht ausfüllen und die Einwilligung bestätigen.",
     subject: "Neue Nachricht über ec.immofuchs.info" }
@@ -27,6 +29,7 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
   const [f, setF] = useState({ name: "", email: "", company: "", message: initialMessage, consent: false, hp: "" });
   const [state, setState] = useState("idle");
   const [hint, setHint] = useState("");
+  const [detail, setDetail] = useState("");
   useEffect(() => { if (initialMessage) setF(x => ({ ...x, message: initialMessage })); }, [initialMessage]);
   const set = k => e => setF(x => ({ ...x, [k]: e.target.type === "checkbox" ? e.target.checked : e.target.value }));
 
@@ -43,8 +46,9 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
       const j = await r.json().catch(() => ({}));
       if (r.ok && String(j.success) === "true") { setState("ok"); setF(x => ({ ...x, message: "", consent: false })); return; }
       console.warn("Contact form:", r.status, j.message);
+      setDetail([`HTTP ${r.status}`, j.message, j.detail].filter(Boolean).join(" · "));
       setState(/activat/i.test(j.message || "") ? "activate" : "err");
-    } catch (err) { console.warn("Contact form:", err); setState("err"); }
+    } catch (err) { console.warn("Contact form:", err); setDetail(String(err && err.message || err)); setState("err"); }
   };
 
   const field = "mt-2 min-h-[48px] w-full rounded-xl border border-white/10 bg-ink px-4 text-[16px] text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none";
@@ -64,7 +68,7 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
         <span>{t.consent} <a className="text-snow underline decoration-signal" href={`/legal.html?lang=${lang}#privacy`}>{t.privacy}</a></span>
       </label>
       {hint && <p className="text-sm text-signal" role="alert">{hint}</p>}
-      {state === "err" && <p className="text-sm text-signal" role="alert">{t.err}</p>}
+      {state === "err" && <div role="alert"><p className="text-sm text-signal">{t.err}</p>{detail && <p className="mt-1 break-words font-mono text-[11px] text-mist">{t.tech}: {detail}</p>}</div>}
       {state === "activate" && <p className="text-sm text-signal" role="alert">{t.activate}</p>}
       <button type="submit" disabled={state === "sending"} className="btn-primary disabled:opacity-60">
         {state === "sending" ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}{state === "sending" ? t.sending : t.send}
