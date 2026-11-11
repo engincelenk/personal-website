@@ -1,8 +1,8 @@
 # Kontaktformular über IONOS
 
-Die Seite ruft `https://immofuchs.info/ec/api/contact.php` auf (siehe `src/data/profile.js`, `contactForm.endpoint`).
-Die Datei `contact.php` muss genau dort liegen: Ordner `ec` → Ordner `api` → `contact.php`.
-Liegt sie woanders (z. B. `/api/contact.php`), den Endpunkt in `profile.js` anpassen.
+Die Seite probiert nacheinander `https://immofuchs.info/api/contact.php` und `https://immofuchs.info/ec/api/contact.php` (siehe `src/data/profile.js`, `contactForm.endpoints`).
+Die Datei `contact.php` muss an einer dieser Stellen erreichbar sein (Ordner `api` → `contact.php`, im Hauptordner der Domain oder unter `ec`).
+Liegt sie woanders, die Liste in `profile.js` anpassen.
 
 ## 1. Hochladen
 IONOS Control Center → Hosting → Webspace → `contact.php` aus diesem Ordner an den Zielort hochladen und die alte Datei ersetzen.

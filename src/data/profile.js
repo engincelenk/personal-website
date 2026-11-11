@@ -20,8 +20,8 @@ export const person = {
   ]
 };
 
-/* Contact form. Set `endpoint` to the uploaded IONOS script (server/ionos/contact.php) to use it; empty = FormSubmit fallback. */
-export const contactForm = { endpoint: "https://immofuchs.info/ec/api/contact.php", user: "engincelenk", domain: "web.de", alias: "" };
+/* Contact form. `endpoints` = places where the uploaded IONOS script (server/ionos/contact.php) may live; tried in order on 404/network errors. Empty = FormSubmit fallback. */
+export const contactForm = { endpoints: ["https://immofuchs.info/api/contact.php", "https://immofuchs.info/ec/api/contact.php"], user: "engincelenk", domain: "web.de", alias: "" };
 
 export const hero = {
   title: [{ en: "I connect technology,", de: "Ich verbinde Technologie," }, { en: "security & business.", de: "Security & Business." }],
