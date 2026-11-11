@@ -4,9 +4,9 @@ import { contactForm } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
 /* Contact form without a visible address. Messages go to the IONOS script set in
-   data/profile.js (contactForm.endpoint), FormSubmit is only the fallback. Freelance
+   data/profile.js (contactForm.endpoints), FormSubmit is only the fallback. Freelance
    requests also get an automatic confirmation email from that script. */
-const endpoint = () => contactForm.endpoint || `https://formsubmit.co/ajax/${contactForm.alias || [contactForm.user, contactForm.domain].join("@")}`;
+const endpoints = () => (contactForm.endpoints && contactForm.endpoints.length ? contactForm.endpoints : [`https://formsubmit.co/ajax/${contactForm.alias || [contactForm.user, contactForm.domain].join("@")}`]);
 
 const T = {
   en: { name: "Name", email: "Your email", company: "Company (optional)", message: "Message", send: "Send message", sending: "Sending…",
@@ -39,10 +39,17 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
     if (!f.name.trim() || !/^\S+@\S+\.\S+$/.test(f.email) || !f.message.trim() || !f.consent) { setHint(t.required); return; }
     setHint(""); setState("sending");
     try {
-      const r = await fetch(endpoint(), {
-        method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ name: f.name, email: f.email, company: f.company, message: f.message, source, lang, _subject: subject || t.subject, _template: "table", _captcha: "false", _replyto: f.email, _honey: f.hp })
-      });
+      // Try each location in order. A 404 or a network/CORS error means the script is not there, so nothing was delivered yet.
+      const payload = JSON.stringify({ name: f.name, email: f.email, company: f.company, message: f.message, source, lang, _subject: subject || t.subject, _template: "table", _captcha: "false", _replyto: f.email, _honey: f.hp });
+      let r = null, lastErr = "";
+      for (const url of endpoints()) {
+        try {
+          const res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: payload });
+          if (res.status === 404) { lastErr = `HTTP 404 · ${new URL(url).pathname}`; continue; }
+          r = res; break;
+        } catch (err) { lastErr = `${String((err && err.message) || err)} · ${new URL(url).pathname}`; }
+      }
+      if (!r) { console.warn("Contact form:", lastErr); setDetail(lastErr); setState("err"); return; }
       const j = await r.json().catch(() => ({}));
       if (r.ok && String(j.success) === "true") { setState("ok"); setF(x => ({ ...x, message: "", consent: false })); return; }
       console.warn("Contact form:", r.status, j.message);
@@ -52,7 +59,7 @@ export default function ContactForm({ initialMessage = "", subject, source = "po
   };
 
   const field = "mt-2 min-h-[48px] w-full rounded-xl border border-white/10 bg-ink px-4 text-[16px] text-snow placeholder:text-mist/60 focus:border-signal focus:outline-none";
-  if (state === "ok") return <p className="flex items-start gap-3 rounded-xl border border-signal/40 bg-signal/10 p-5" role="status"><Check size={20} className="mt-0.5 flex-none text-signal" />{t.ok}{source === "freelance" && contactForm.endpoint ? ` ${t.confirmSent}` : ""}</p>;
+  if (state === "ok") return <p className="flex items-start gap-3 rounded-xl border border-signal/40 bg-signal/10 p-5" role="status"><Check size={20} className="mt-0.5 flex-none text-signal" />{t.ok}{source === "freelance" && contactForm.endpoints ? ` ${t.confirmSent}` : ""}</p>;
 
   return (
     <form onSubmit={submit} noValidate className="space-y-4">
