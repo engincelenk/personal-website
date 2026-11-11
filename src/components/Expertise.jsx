@@ -3,15 +3,14 @@ import { Check } from "lucide-react";
 import SectionHead from "./SectionHead.jsx";
 import Icon from "./Icon.jsx";
 import SuccessStory from "./SuccessStory.jsx";
-import TechMap from "./TechMap.jsx";
-import { domains as rawDomains, aiVertical as rawAi, corpNote as rawCorp } from "../data/profile.js";
+import { domains as rawDomains, aiVertical as rawAi, corpNote as rawCorp, sap as rawSap } from "../data/profile.js";
 import { useLang } from "../i18n.jsx";
 
 /* Three equal pillars with AI as the vertical across all three (same model as the freelance page and the PDF). */
 export default function Expertise({ domain, setDomain }) {
   const reduce = useReducedMotion();
   const { t, L, lang } = useLang();
-  const domains = L(rawDomains), ai = L(rawAi), corp = L(rawCorp);
+  const domains = L(rawDomains), ai = L(rawAi), corp = L(rawCorp), sap = L(rawSap);
   const pillars = domains.filter(d => d.id !== "ai");
   const aiDomain = domains.find(d => d.id === "ai");
   const sel = domains.find(d => d.id === domain) || pillars[0];
@@ -60,6 +59,12 @@ export default function Expertise({ domain, setDomain }) {
           </span>
         </button>
 
+        {/* SAP, one general line under the pillars */}
+        <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1.5 px-1 text-sm text-mist">
+          <span className="font-mono text-[11px] uppercase tracking-wider text-snow/80">{sap.title}</span>
+          {sap.modules.map(m => <span key={m.id} className="rounded-full border border-white/10 px-2.5 py-0.5 text-xs text-snow/85">{m.id}</span>)}
+        </p>
+
         {/* Detail */}
         <div className="panel mt-4 p-5 sm:p-7" aria-live="polite">
           <AnimatePresence mode="wait">
@@ -76,7 +81,6 @@ export default function Expertise({ domain, setDomain }) {
           </AnimatePresence>
         </div>
 
-        <TechMap />
       </div>
     </section>
   );
